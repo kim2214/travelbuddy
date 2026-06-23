@@ -22,3 +22,6 @@ yarn-error.log*
 
 # misc
 .claude/
+
+# branding assets (store thumbnail/logo sources)
+branding/
