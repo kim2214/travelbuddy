@@ -19,6 +19,21 @@ function symbolOf(currency: string, country: { currencySymbol: string }) {
   return currency === "KRW" ? "₩" : country.currencySymbol;
 }
 
+// 통화별 자주 쓰는 금액 프리셋 (입력 통화 기준)
+const AMOUNT_PRESETS: Record<string, number[]> = {
+  KRW: [10000, 50000, 100000],
+  JPY: [1000, 5000, 10000],
+  THB: [100, 500, 1000],
+  VND: [100000, 500000, 1000000],
+  USD: [10, 50, 100],
+  SGD: [10, 50, 100],
+  EUR: [10, 50, 100],
+};
+
+function presetsFor(currency: string): number[] {
+  return AMOUNT_PRESETS[currency] ?? [10, 50, 100];
+}
+
 export function CurrencyConverter() {
   const { country } = useCountry();
   const { rates, fetchedAt, fromCache, loading, error, reload } = useExchangeRate();
@@ -92,9 +107,39 @@ export function CurrencyConverter() {
         labelOption="sustain"
         placeholder="금액을 입력해요"
         value={input}
+        inputMode="decimal"
         format={{ transform: (v) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
         onChange={(e) => setInput(e.target.value)}
       />
+
+      {/* 빠른 금액 프리셋 */}
+      <div style={{ display: "flex", gap: 8 }}>
+        {presetsFor(from).map((amount) => (
+          <button
+            key={amount}
+            type="button"
+            onClick={() =>
+              setInput((prev) => {
+                const current = Number(prev.replace(/[^0-9.]/g, "")) || 0;
+                return String(current + amount);
+              })
+            }
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: 10,
+              border: `1px solid ${adaptive.grey200}`,
+              backgroundColor: colors.white,
+              color: adaptive.grey700,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            +{amount.toLocaleString("ko-KR")}
+          </button>
+        ))}
+      </div>
 
       {/* 방향 전환 */}
       <div style={{ display: "flex", justifyContent: "center" }}>
