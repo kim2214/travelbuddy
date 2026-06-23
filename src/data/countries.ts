@@ -61,7 +61,7 @@ const commonChecklist: ChecklistPresetItem[] = [
   { id: "card", label: "해외결제 카드 / 토스 환전" },
 ];
 
-const TOSS_EXCHANGE_DEEPLINK = "https://www.toss.im";
+const TOSS_EXCHANGE_DEEPLINK = "https://www.tossbank.com/product-service/fx/account";
 
 export const COUNTRIES: Country[] = [
   {
