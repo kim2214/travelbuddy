@@ -6,12 +6,14 @@ import { adaptive } from "@toss/tds-colors";
 import { CountrySelector } from "../components/CountrySelector";
 import { Checklist } from "../components/Checklist";
 import { ProductCard } from "../components/ProductCard";
-import { TOSS_EXCHANGE_PRODUCT } from "../data/countries";
-import { useCountry } from "../context/CountryContext";
+import {
+  ESIM_PRODUCT,
+  INSURANCE_PRODUCT,
+  TOSS_EXCHANGE_PRODUCT,
+} from "../data/countries";
 
 export function ChecklistScreen() {
-  const { country } = useCountry();
-  const products = [...country.products, TOSS_EXCHANGE_PRODUCT];
+  const products = [ESIM_PRODUCT, INSURANCE_PRODUCT, TOSS_EXCHANGE_PRODUCT];
 
   return (
     <div>

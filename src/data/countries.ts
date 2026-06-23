@@ -50,7 +50,6 @@ export interface Country {
   currencyName: string;
   mannerTips: MannerTip[];
   checklistPreset: ChecklistPresetItem[];
-  products: Product[];
 }
 
 // 공통 준비물(모든 국가에 기본 포함). 국가별 preset 앞에 합쳐서 사용해요.
@@ -61,7 +60,12 @@ const commonChecklist: ChecklistPresetItem[] = [
   { id: "card", label: "해외결제 카드 / 토스 환전" },
 ];
 
-const TOSS_EXCHANGE_DEEPLINK = "https://www.tossbank.com/product-service/fx/account";
+const TOSS_EXCHANGE_DEEPLINK =
+  "https://www.tossbank.com/product-service/fx/account";
+// 투어모즈(위비즈엔㈜) 여행자보험 비교·가입 — 삼성·메리츠·한화 등 여러 보험사 비교
+const TRAVEL_INSURANCE_LINK = "https://www.tourmoz.com/v2/find";
+// 로밍도깨비(유엔젤㈜) 여행 eSIM 스토어
+const ROKEBI_ESIM_LINK = "https://www.rokebi.com/store?tab=best";
 
 export const COUNTRIES: Country[] = [
   {
@@ -74,38 +78,27 @@ export const COUNTRIES: Country[] = [
     mannerTips: [
       {
         title: "팁 문화",
-        description: "팁 문화가 없어요. 식당·택시에서 팁을 주면 오히려 당황스러워해요.",
+        description:
+          "팁 문화가 없어요. 식당·택시에서 팁을 주면 오히려 당황스러워해요.",
       },
       {
         title: "현금",
-        description: "소도시·식당은 아직 현금만 받는 곳이 많아요. 동전 지갑을 챙기면 편해요.",
+        description:
+          "소도시·식당은 아직 현금만 받는 곳이 많아요. 동전 지갑을 챙기면 편해요.",
       },
       {
         title: "주의할 점",
-        description: "길거리 흡연·통화는 눈총을 받아요. 대중교통에서는 통화를 자제해요.",
+        description:
+          "길거리 흡연·통화는 눈총을 받아요. 대중교통에서는 통화를 자제해요.",
       },
     ],
     checklistPreset: [
       ...commonChecklist,
       { id: "ic-card", label: "교통카드(Suica/ICOCA)" },
-      { id: "visit-japan", label: "Visit Japan Web 사전 등록", hint: "입국 심사 QR" },
-    ],
-    products: [
       {
-        id: "jp-esim",
-        kind: "esim",
-        name: "일본 eSIM 5일 데이터 무제한",
-        description: "QR 한 번으로 도착 즉시 데이터 연결",
-        priceLabel: "9,900원~",
-        deeplink: "https://www.toss.im",
-      },
-      {
-        id: "jp-ins",
-        kind: "insurance",
-        name: "일본 여행자보험 (3박 4일)",
-        description: "병원비·휴대품 손해 보장",
-        priceLabel: "3,200원~",
-        deeplink: "https://www.toss.im",
+        id: "visit-japan",
+        label: "Visit Japan Web 사전 등록",
+        hint: "입국 심사 QR",
       },
     ],
   },
@@ -123,35 +116,19 @@ export const COUNTRIES: Country[] = [
       },
       {
         title: "왕실 예절",
-        description: "국왕·왕실에 대한 비하는 법으로 엄격히 금지돼요. 발언에 주의해요.",
+        description:
+          "국왕·왕실에 대한 비하는 법으로 엄격히 금지돼요. 발언에 주의해요.",
       },
       {
         title: "사원 방문",
-        description: "사원에서는 어깨·무릎을 가리는 복장이 필요하고 신발은 벗어요.",
+        description:
+          "사원에서는 어깨·무릎을 가리는 복장이 필요하고 신발은 벗어요.",
       },
     ],
     checklistPreset: [
       ...commonChecklist,
       { id: "repellent", label: "모기 기피제 / 상비약" },
       { id: "adapter", label: "멀티 어댑터", hint: "A/C/F 타입 혼용" },
-    ],
-    products: [
-      {
-        id: "th-esim",
-        kind: "esim",
-        name: "태국 eSIM 8일 데이터 무제한",
-        description: "방콕·푸켓 전역 LTE",
-        priceLabel: "8,500원~",
-        deeplink: "https://www.toss.im",
-      },
-      {
-        id: "th-ins",
-        kind: "insurance",
-        name: "태국 여행자보험 (5박 6일)",
-        description: "오토바이 사고·식중독 보장",
-        priceLabel: "4,800원~",
-        deeplink: "https://www.toss.im",
-      },
     ],
   },
   {
@@ -164,11 +141,13 @@ export const COUNTRIES: Country[] = [
     mannerTips: [
       {
         title: "팁 문화",
-        description: "의무는 아니지만 고급 식당·스파에서는 소액 팁이 환영받아요.",
+        description:
+          "의무는 아니지만 고급 식당·스파에서는 소액 팁이 환영받아요.",
       },
       {
         title: "환전·계산",
-        description: "0이 많아 헷갈리기 쉬워요. 받은 거스름돈 단위를 꼭 확인해요.",
+        description:
+          "0이 많아 헷갈리기 쉬워요. 받은 거스름돈 단위를 꼭 확인해요.",
       },
       {
         title: "교통",
@@ -177,26 +156,12 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
-      { id: "evisa", label: "전자비자(E-visa) 발급", hint: "입국 전 필수 확인" },
+      {
+        id: "evisa",
+        label: "전자비자(E-visa) 발급",
+        hint: "입국 전 필수 확인",
+      },
       { id: "small-cash", label: "소액권 현금 준비" },
-    ],
-    products: [
-      {
-        id: "vn-esim",
-        kind: "esim",
-        name: "베트남 eSIM 7일 데이터 무제한",
-        description: "다낭·호치민·하노이 커버",
-        priceLabel: "7,200원~",
-        deeplink: "https://www.toss.im",
-      },
-      {
-        id: "vn-ins",
-        kind: "insurance",
-        name: "베트남 여행자보험 (4박 5일)",
-        description: "휴대품·상해 의료비 보장",
-        priceLabel: "3,900원~",
-        deeplink: "https://www.toss.im",
-      },
     ],
   },
   {
@@ -217,31 +182,14 @@ export const COUNTRIES: Country[] = [
       },
       {
         title: "입국",
-        description: "ESTA 사전 승인이 필요해요. 출발 최소 72시간 전 신청 권장.",
+        description:
+          "ESTA 사전 승인이 필요해요. 출발 최소 72시간 전 신청 권장.",
       },
     ],
     checklistPreset: [
       ...commonChecklist,
       { id: "esta", label: "ESTA 승인", hint: "전자여행허가" },
       { id: "tip-cash", label: "팁용 1달러 지폐" },
-    ],
-    products: [
-      {
-        id: "us-esim",
-        kind: "esim",
-        name: "미국 eSIM 10일 데이터 무제한",
-        description: "전역 5G/LTE, 핫스팟 가능",
-        priceLabel: "16,900원~",
-        deeplink: "https://www.toss.im",
-      },
-      {
-        id: "us-ins",
-        kind: "insurance",
-        name: "미국 여행자보험 (7박 8일)",
-        description: "고액 의료비 대비 보장 강화",
-        priceLabel: "12,000원~",
-        deeplink: "https://www.toss.im",
-      },
     ],
   },
   {
@@ -258,7 +206,8 @@ export const COUNTRIES: Country[] = [
       },
       {
         title: "벌금의 나라",
-        description: "껌 반입, 무단 횡단, 흡연 구역 외 흡연은 높은 벌금이 부과돼요.",
+        description:
+          "껌 반입, 무단 횡단, 흡연 구역 외 흡연은 높은 벌금이 부과돼요.",
       },
       {
         title: "음식물",
@@ -267,29 +216,35 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
-      { id: "sg-arrival", label: "SG Arrival Card 작성", hint: "입국 3일 전부터" },
+      {
+        id: "sg-arrival",
+        label: "SG Arrival Card 작성",
+        hint: "입국 3일 전부터",
+      },
       { id: "umbrella", label: "우산 (스콜 대비)" },
-    ],
-    products: [
-      {
-        id: "sg-esim",
-        kind: "esim",
-        name: "싱가포르 eSIM 5일 데이터 무제한",
-        description: "센토사·창이공항 전역 LTE",
-        priceLabel: "9,500원~",
-        deeplink: "https://www.toss.im",
-      },
-      {
-        id: "sg-ins",
-        kind: "insurance",
-        name: "싱가포르 여행자보험 (3박 4일)",
-        description: "휴대품·의료비 보장",
-        priceLabel: "3,500원~",
-        deeplink: "https://www.toss.im",
-      },
     ],
   },
 ];
+
+/** 모든 국가에 공통으로 노출하는 여행 eSIM 연계 상품 (로밍도깨비) */
+export const ESIM_PRODUCT: Product = {
+  id: "esim-rokebi",
+  kind: "esim",
+  name: "여행 eSIM",
+  description: "여행지 데이터, QR 한 번으로 도착 즉시 연결",
+  priceLabel: "베스트 요금제 보기",
+  deeplink: ROKEBI_ESIM_LINK,
+};
+
+/** 모든 국가에 공통으로 노출하는 여행자보험 비교·가입 상품 (투어모즈) */
+export const INSURANCE_PRODUCT: Product = {
+  id: "insurance-tourmoz",
+  kind: "insurance",
+  name: "여행자보험 비교·가입",
+  description: "여러 보험사를 비교하고 바로 가입해요",
+  priceLabel: "보험료 비교",
+  deeplink: TRAVEL_INSURANCE_LINK,
+};
 
 /** 모든 국가에 공통으로 노출하는 토스 환전 유도 상품 */
 export const TOSS_EXCHANGE_PRODUCT: Product = {
