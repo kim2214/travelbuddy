@@ -7,9 +7,9 @@
 
 import { Badge, Button, useBottomSheet } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
-import { openURL } from "@apps-in-toss/web-framework";
 
 import type { Product, ProductKind } from "../data/countries";
+import { openExternal } from "../lib/links";
 
 const KIND_META: Record<
   ProductKind,
@@ -19,15 +19,6 @@ const KIND_META: Record<
   insurance: { emoji: "🛡️", badge: "여행자보험", badgeColor: "teal", cta: "구매하기" },
   exchange: { emoji: "💱", badge: "환전", badgeColor: "green", cta: "환전하러 가기" },
 };
-
-async function go(url: string) {
-  try {
-    await openURL(url);
-  } catch {
-    // 네이티브 브릿지가 없는 환경(브라우저 개발 등) 폴백
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-}
 
 export function ProductCard({ product }: { product: Product }) {
   const meta = KIND_META[product.kind];
@@ -49,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
       ),
       leftButton: "닫기",
       rightButton: meta.cta,
-      onRightButtonClick: () => go(product.deeplink),
+      onRightButtonClick: () => openExternal(product.deeplink),
     });
   };
 

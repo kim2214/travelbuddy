@@ -306,3 +306,107 @@ export const DEFAULT_COUNTRY_CODE = "JP";
 export function getCountry(code: string): Country {
   return COUNTRIES.find((c) => c.code === code) ?? COUNTRIES[0];
 }
+
+// ---- 현지 실용 정보 (#7) ----
+
+export interface EmergencyContact {
+  label: string;
+  number: string;
+}
+
+export interface PracticalInfo {
+  /** 한국과의 시차 안내 문구 */
+  timeDiff: string;
+  /** 콘센트 플러그 타입 + 전압 */
+  plug: string;
+  /** 수돗물 음용 가능 여부 안내 */
+  tapWater: string;
+  /** 현지 긴급 전화번호 (경찰/구급 등) */
+  emergency: EmergencyContact[];
+  /** 해외에서 한국 영사 지원을 받는 연락처 */
+  embassy: EmergencyContact;
+  /** 흔한 사기/주의 사항 */
+  scams: string[];
+}
+
+// 외교부 영사콜센터(24시간) — 해외 어디서나 한국어 영사 지원
+const CONSULAR_CALL_CENTER: EmergencyContact = {
+  label: "외교부 영사콜센터 (24시간)",
+  number: "+82-2-3210-0404",
+};
+
+const PRACTICAL: Record<string, PracticalInfo> = {
+  JP: {
+    timeDiff: "한국과 시차가 없어요",
+    plug: "A타입 · 100V (한국 어댑터 필요)",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [
+      { label: "경찰", number: "110" },
+      { label: "구급·소방", number: "119" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "번화가 호객 술집(보타쿠리)의 바가지 요금을 조심하세요.",
+      "대부분 안전하지만 현금 위주라 분실에 유의하세요.",
+    ],
+  },
+  TH: {
+    timeDiff: "한국보다 2시간 느려요",
+    plug: "A·C·F타입 혼용 · 220V",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "관광경찰", number: "1155" },
+      { label: "긴급(경찰)", number: "191" },
+      { label: "구급", number: "1669" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "택시 미터기 거부·뚝뚝 바가지: 그랩(Grab) 사용을 권장해요.",
+      "보석·맞춤정장 호객, 젯스키 손상 클레임을 조심하세요.",
+    ],
+  },
+  VN: {
+    timeDiff: "한국보다 2시간 느려요",
+    plug: "A·C타입 · 220V",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "경찰", number: "113" },
+      { label: "구급", number: "115" },
+      { label: "소방", number: "114" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "택시 미터기 조작·거스름돈 적게 주기: 그랩(Grab)을 권장해요.",
+      "0이 많아 지폐 단위를 혼동하기 쉬우니 확인하세요.",
+    ],
+  },
+  US: {
+    timeDiff: "지역별로 13~16시간 느려요",
+    plug: "A·B타입 · 120V",
+    tapWater: "대체로 수돗물을 마실 수 있어요",
+    emergency: [{ label: "통합 긴급(경찰·구급·소방)", number: "911" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "길거리 CD·팔찌 강매, 가짜 공연 티켓을 조심하세요.",
+      "ATM 스키밍 위험이 있으니 실내 ATM을 이용하세요.",
+    ],
+  },
+  SG: {
+    timeDiff: "한국보다 1시간 느려요",
+    plug: "G타입(영국식) · 230V (전용 어댑터 필요)",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [
+      { label: "경찰", number: "999" },
+      { label: "구급·소방", number: "995" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "비교적 안전하지만 무허가 환전소·길거리 도박 사기를 조심하세요.",
+      "벌금 규정(껌·흡연·무단횡단)이 엄격하니 유의하세요.",
+    ],
+  },
+};
+
+export function getPracticalInfo(code: string): PracticalInfo {
+  return PRACTICAL[code] ?? PRACTICAL[DEFAULT_COUNTRY_CODE];
+}

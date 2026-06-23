@@ -4,6 +4,7 @@ import { Top } from "@toss/tds-mobile";
 
 import { CountrySelector } from "../components/CountrySelector";
 import { CurrencyConverter } from "../components/CurrencyConverter";
+import { LocalInfo } from "../components/LocalInfo";
 import { MannerTips } from "../components/MannerTips";
 
 export function ExchangeScreen() {
@@ -21,6 +22,7 @@ export function ExchangeScreen() {
       <div style={{ height: 8 }} />
       <CurrencyConverter />
       <MannerTips />
+      <LocalInfo />
     </div>
   );
 }
