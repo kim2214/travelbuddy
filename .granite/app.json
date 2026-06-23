@@ -1,0 +1,9 @@
+{
+  "appName": "travelbuddy",
+  "permissions": [
+    {
+      "name": "geolocation",
+      "access": "access"
+    }
+  ]
+}
