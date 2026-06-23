@@ -13,9 +13,14 @@ export interface ChecklistState {
   checkedIds: string[];
   /** 사용자가 직접 추가한 항목 */
   customItems: CustomChecklistItem[];
+  /**
+   * 커스텀 항목 id 생성용 단조 증가 시퀀스.
+   * 항목을 삭제 후 다시 추가해도 id가 겹치지 않도록 절대 되돌리지 않아요.
+   */
+  nextSeq: number;
 }
 
-const EMPTY_STATE: ChecklistState = { checkedIds: [], customItems: [] };
+const EMPTY_STATE: ChecklistState = { checkedIds: [], customItems: [], nextSeq: 0 };
 
 function keyFor(countryCode: string): string {
   return `checklist_${countryCode}_v1`;
@@ -28,9 +33,12 @@ export async function loadChecklist(countryCode: string): Promise<ChecklistState
       return { ...EMPTY_STATE };
     }
     const parsed = JSON.parse(raw) as Partial<ChecklistState>;
+    const customItems = Array.isArray(parsed.customItems) ? parsed.customItems : [];
     return {
       checkedIds: Array.isArray(parsed.checkedIds) ? parsed.checkedIds : [],
-      customItems: Array.isArray(parsed.customItems) ? parsed.customItems : [],
+      customItems,
+      // 구버전 저장 데이터(nextSeq 없음)는 현재 항목 수 이후부터 시작해 기존 id와 겹치지 않게 해요.
+      nextSeq: typeof parsed.nextSeq === "number" ? parsed.nextSeq : customItems.length,
     };
   } catch {
     return { ...EMPTY_STATE };

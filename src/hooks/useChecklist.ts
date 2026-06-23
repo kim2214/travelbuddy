@@ -30,7 +30,7 @@ interface UseChecklistResult {
   removeCustom: (id: string) => void;
 }
 
-const EMPTY_STATE: ChecklistState = { checkedIds: [], customItems: [] };
+const EMPTY_STATE: ChecklistState = { checkedIds: [], customItems: [], nextSeq: 0 };
 
 export function useChecklist(countryCode: string): UseChecklistResult {
   const country = useMemo(() => getCountry(countryCode), [countryCode]);
@@ -100,11 +100,16 @@ export function useChecklist(countryCode: string): UseChecklistResult {
       if (trimmed === "") {
         return;
       }
+      const seq = state.nextSeq;
       const item: CustomChecklistItem = {
-        id: `custom_${countryCode}_${state.customItems.length}_${trimmed}`,
+        id: `custom_${countryCode}_${seq}`,
         label: trimmed,
       };
-      persist({ ...state, customItems: [...state.customItems, item] });
+      persist({
+        ...state,
+        customItems: [...state.customItems, item],
+        nextSeq: seq + 1,
+      });
     },
     [countryCode, state, persist],
   );
@@ -112,6 +117,7 @@ export function useChecklist(countryCode: string): UseChecklistResult {
   const removeCustom = useCallback(
     (id: string) => {
       persist({
+        ...state,
         checkedIds: state.checkedIds.filter((x) => x !== id),
         customItems: state.customItems.filter((x) => x.id !== id),
       });
