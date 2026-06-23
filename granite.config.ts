@@ -15,6 +15,9 @@ export default defineConfig({
       build: "vite build",
     },
   },
-  permissions: [],
+  permissions: [
+    // 현재 위치로 여행지(국가)를 자동 감지하기 위한 위치 권한
+    { name: "geolocation", access: "access" },
+  ],
   outdir: "dist",
 });
