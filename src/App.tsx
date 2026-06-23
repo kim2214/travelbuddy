@@ -1,62 +1,79 @@
-import { Asset, Button, Top } from "@toss/tds-mobile";
+import { adaptive, colors } from "@toss/tds-colors";
+import { useState } from "react";
+
+import { ChecklistScreen } from "./screens/ChecklistScreen";
+import { ExchangeScreen } from "./screens/ExchangeScreen";
 import "./App.css";
 
-function App() {
-  return (
-    <>
-      <Top
-        title={<Top.TitleParagraph size={22}>반가워요</Top.TitleParagraph>}
-        subtitleBottom={
-          <Top.SubtitleParagraph size={17}>
-            앱인토스 개발을 시작해 보세요.
-          </Top.SubtitleParagraph>
-        }
-      />
+type TabKey = "exchange" | "checklist";
 
+const TABS: { key: TabKey; label: string; emoji: string }[] = [
+  { key: "exchange", label: "환율", emoji: "💱" },
+  { key: "checklist", label: "체크리스트", emoji: "🧳" },
+];
+
+const TAB_BAR_HEIGHT = 64;
+
+function App() {
+  const [tab, setTab] = useState<TabKey>("exchange");
+
+  return (
+    <div style={{ minHeight: "100vh", backgroundColor: colors.white }}>
+      {/* 탭 컨텐츠 (하단 탭바 높이 + safe area만큼 여백 확보) */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          padding: "24px",
+          paddingBottom: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))`,
         }}
       >
-        <Button
-          as="a"
-          variant="weak"
-          href="https://developers-apps-in-toss.toss.im"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          개발자센터
-        </Button>
-        <Button
-          as="a"
-          variant="weak"
-          href="https://techchat-apps-in-toss.toss.im"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          개발자 커뮤니티
-        </Button>
+        {tab === "exchange" ? <ExchangeScreen /> : <ChecklistScreen />}
       </div>
 
-      <div
+      {/* 하단 탭바 */}
+      <nav
         style={{
           position: "fixed",
-          bottom: "24px",
-          left: "50%",
-          transform: "translateX(-50%)",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: "flex",
+          height: TAB_BAR_HEIGHT,
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+          backgroundColor: colors.white,
+          borderTop: `1px solid ${adaptive.grey100}`,
+          zIndex: 10,
         }}
       >
-        <Asset.Image
-          alt="apps in toss logo"
-          frameShape={{ width: 160 }}
-          backgroundColor="transparent"
-          src={`${import.meta.env.BASE_URL}appsintoss-logo.png`}
-        />
-      </div>
-    </>
+        {TABS.map((t) => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              type="button"
+              aria-label={t.label}
+              aria-current={active ? "page" : undefined}
+              onClick={() => setTab(t.key)}
+              style={{
+                flex: 1,
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+                color: active ? adaptive.blue500 : adaptive.grey400,
+              }}
+            >
+              <span style={{ fontSize: 22, lineHeight: "24px" }}>{t.emoji}</span>
+              <span style={{ fontSize: 11, fontWeight: active ? 700 : 500 }}>
+                {t.label}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
 

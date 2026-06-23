@@ -3,7 +3,7 @@ import { defineConfig } from "@apps-in-toss/web-framework/config";
 export default defineConfig({
   appName: "TravelBuddy",
   brand: {
-    displayName: "앱 이름", // 화면에 노출될 앱의 한글 이름으로 바꿔주세요.
+    displayName: "여행친구", // 화면에 노출될 앱의 한글 이름으로 바꿔주세요.
     primaryColor: "#FD9B3C", // 화면에 노출될 앱의 기본 색상으로 바꿔주세요.
     icon: "", // 화면에 노출될 앱의 아이콘 이미지 주소로 바꿔주세요.
   },
