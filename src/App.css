@@ -4,6 +4,27 @@
   box-sizing: border-box;
 }
 
+/*
+ * 하단 탭바 버튼.
+ * 모바일 WebView(토스 인앱)에서 탭 후 남는 기본 포커스 아웃라인(플랫폼에 따라 주황색)을 제거해
+ * 데스크톱 Chrome과 동일하게 보이도록 해요.
+ * 키보드 포커스(:focus-visible)에는 접근성 링을 유지해요.
+ */
+.tab-bar-item {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.tab-bar-item:focus-visible {
+  outline: 2px solid #3182f6;
+  outline-offset: -2px;
+}
+
 @media (min-width: 481px) {
   #root {
     background-color: #ffffff !important;

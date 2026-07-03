@@ -49,6 +49,7 @@ function App() {
             <button
               key={t.key}
               type="button"
+              className="tab-bar-item"
               aria-label={t.label}
               aria-current={active ? "page" : undefined}
               onClick={() => setTab(t.key)}
