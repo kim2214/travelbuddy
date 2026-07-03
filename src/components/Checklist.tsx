@@ -92,6 +92,31 @@ export function Checklist() {
         <ProgressBar progress={progress} size="normal" animate />
       </div>
 
+      {/* 완료 델라이트 */}
+      {totalCount > 0 && checkedCount === totalCount && (
+        <div
+          style={{
+            margin: "0 24px 4px",
+            padding: "18px 20px",
+            borderRadius: 16,
+            backgroundColor: "#E7F8F0",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <span style={{ fontSize: 30 }}>✈️</span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#12B886" }}>
+              모든 준비 완료!
+            </div>
+            <div style={{ fontSize: 13, color: adaptive.grey600, marginTop: 2 }}>
+              즐거운 여행 되세요
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 카테고리별 항목 리스트 */}
       <div>
         {groups.map((group) => {

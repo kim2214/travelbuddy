@@ -1,9 +1,9 @@
 // 1초 환율 계산기.
 // 금액을 입력하면 KRW ↔ 현지 통화를 즉시 환산하고, 방향 전환 버튼을 제공해요.
 
-import { Button, Loader, TextButton, TextField } from "@toss/tds-mobile";
+import { Button, Loader, Skeleton, TextButton, TextField } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRate } from "../hooks/useExchangeRate";
@@ -88,18 +88,47 @@ export function CurrencyConverter() {
     return fromCache ? `${time} 기준 (저장된 환율)` : `${time} 기준`;
   })();
 
+  const containerStyle: CSSProperties = {
+    margin: "0 24px",
+    padding: 20,
+    borderRadius: 20,
+    backgroundColor: adaptive.grey50 ?? adaptive.greyBackground,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  };
+
+  // 최초 로딩: 아직 받은 환율이 없어요 → 스켈레톤
+  if (rates == null && loading) {
+    return (
+      <div style={containerStyle}>
+        <Skeleton custom={["card", "spacer(12)", "subtitle"]} />
+      </div>
+    );
+  }
+
+  // 완전 실패: 환율도 저장된 캐시도 없어요 → 재시도 안내
+  if (rates == null) {
+    return (
+      <div
+        style={{ ...containerStyle, gap: 8, alignItems: "center", textAlign: "center", padding: "28px 20px" }}
+      >
+        <div style={{ fontSize: 40 }}>📡</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: adaptive.grey800 }}>
+          환율을 불러오지 못했어요
+        </div>
+        <div style={{ fontSize: 13, color: adaptive.grey500 }}>
+          네트워크 상태를 확인하고 다시 시도해 주세요
+        </div>
+        <Button size="small" onClick={reload}>
+          다시 시도
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        margin: "0 24px",
-        padding: 20,
-        borderRadius: 20,
-        backgroundColor: adaptive.grey50 ?? adaptive.greyBackground,
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-      }}
-    >
+    <div style={containerStyle}>
       {/* 입력 (from 통화) */}
       <TextField
         variant="box"
@@ -192,7 +221,7 @@ export function CurrencyConverter() {
               color: colors.red500,
             }}
           >
-            <span>환율을 불러오지 못했어요.</span>
+            <span>최신 환율 갱신에 실패했어요 · 저장된 값</span>
             <TextButton size="small" variant="underline" onClick={reload}>
               다시 시도
             </TextButton>
