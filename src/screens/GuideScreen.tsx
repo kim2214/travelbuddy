@@ -6,6 +6,7 @@ import { CountryHero } from "../components/CountryHero";
 import { LocalInfo } from "../components/LocalInfo";
 import { MannerTips } from "../components/MannerTips";
 import { Phrasebook } from "../components/Phrasebook";
+import { ShareButton } from "../components/ShareButton";
 
 export function GuideScreen() {
   return (
@@ -17,6 +18,7 @@ export function GuideScreen() {
             현지에서 바로 꺼내보는 회화와 정보
           </Top.SubtitleParagraph>
         }
+        right={<ShareButton />}
       />
       <CountryHero />
       <div style={{ height: 12 }} />
