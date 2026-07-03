@@ -8,6 +8,7 @@
     "build": "ait build",
     "deploy": "ait deploy",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest"

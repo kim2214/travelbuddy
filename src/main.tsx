@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 
 import config from "../granite.config.ts";
 import App from "./App.tsx";
-import { CountryProvider } from "./context/CountryContext.tsx";
+import { CountryProvider } from "./context/CountryProvider.tsx";
 import { ExchangeRateProvider } from "./context/ExchangeRateProvider.tsx";
 import "./index.css";
 

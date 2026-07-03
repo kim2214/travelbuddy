@@ -1,14 +1,13 @@
-// 선택된 여행지(국가)를 두 탭('환율'/'체크리스트')이 공유하기 위한 경량 Context.
+// 선택된 여행지(국가)를 탭들이 공유하기 위한 Provider.
 //
-// 국가 결정 규칙 (#1):
-//  1) 저장된 수동 선택이 있으면 그걸 사용 (수동 우선, 자동 감지로 덮어쓰지 않음)
-//  2) 없으면 최초 1회 현재 위치(GPS)로 자동 감지해 기본 국가를 설정
+// 국가 결정 규칙:
+//  0) 진입 스킴(공유 링크 등)에 국가가 있으면 최우선으로 사용하고 저장
+//  1) 저장된 수동 선택이 있으면 그대로 사용
+//  2) 없으면 최초 1회 현재 위치(GPS)로 자동 감지
 //  - 사용자가 직접 고르면 그 선택을 저장하고, 이후 자동 감지가 끼어들지 않아요.
 
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -16,21 +15,11 @@ import {
   type ReactNode,
 } from "react";
 
-import { DEFAULT_COUNTRY_CODE, getCountry, type Country } from "../data/countries";
+import { DEFAULT_COUNTRY_CODE, getCountry } from "../data/countries";
 import { loadSelectedCountry, saveSelectedCountry } from "../lib/countryPreference";
 import { getCountryFromEntry } from "../lib/entry";
 import { detectCountryByGPS } from "../lib/geo";
-
-interface CountryContextValue {
-  country: Country;
-  countryCode: string;
-  /** 사용자가 직접 국가를 고를 때 호출해요. 선택을 저장하고 자동 감지보다 우선해요. */
-  setCountryCode: (code: string) => void;
-  /** 현재 위치로 자동 감지를 진행 중인지 여부 (UX 표시용) */
-  detecting: boolean;
-}
-
-const CountryContext = createContext<CountryContextValue | null>(null);
+import { CountryContext, type CountryContextValue } from "./CountryContext";
 
 export function CountryProvider({ children }: { children: ReactNode }) {
   const [countryCode, setCode] = useState(DEFAULT_COUNTRY_CODE);
@@ -97,12 +86,4 @@ export function CountryProvider({ children }: { children: ReactNode }) {
   );
 
   return <CountryContext.Provider value={value}>{children}</CountryContext.Provider>;
-}
-
-export function useCountry(): CountryContextValue {
-  const ctx = useContext(CountryContext);
-  if (ctx == null) {
-    throw new Error("useCountry must be used within a CountryProvider");
-  }
-  return ctx;
 }

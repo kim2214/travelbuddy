@@ -18,7 +18,7 @@ import { ThemeProvider } from "@toss/tds-mobile";
 import { Storage } from "@apps-in-toss/web-framework";
 import { loadSelectedCountry, saveSelectedCountry } from "../lib/countryPreference";
 import { detectCountryByGPS } from "../lib/geo";
-import { CountryProvider } from "../context/CountryContext";
+import { CountryProvider } from "../context/CountryProvider";
 import { ExchangeRateProvider } from "../context/ExchangeRateProvider";
 import { CurrencyConverter } from "./CurrencyConverter";
 

@@ -3,7 +3,8 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CountryProvider, useCountry } from "./CountryContext";
+import { useCountry } from "./CountryContext";
+import { CountryProvider } from "./CountryProvider";
 
 vi.mock("../lib/countryPreference", () => ({
   loadSelectedCountry: vi.fn(),
