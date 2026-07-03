@@ -21,7 +21,10 @@ describe("shareTravelBuddy", () => {
   it("국가 코드를 담은 딥링크로 공유 링크를 만들고 이름을 문구에 넣는다", async () => {
     await shareTravelBuddy({ code: "JP", name: "일본" });
 
-    expect(getLink).toHaveBeenCalledWith("intoss://travelbuddy?country=JP");
+    expect(getLink).toHaveBeenCalledWith(
+      "intoss://travelbuddy?country=JP",
+      expect.stringContaining("http"),
+    );
     const message = shareFn.mock.calls[0][0].message;
     expect(message).toContain("일본");
     expect(message).toContain("https://toss.im/share/abc");

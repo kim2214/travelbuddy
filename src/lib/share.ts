@@ -6,6 +6,9 @@ import { getTossShareLink, share } from "@apps-in-toss/web-framework";
 
 // granite.config.ts의 appName과 동일해야 해요.
 const APP_DEEPLINK = "intoss://travelbuddy";
+// 공유 카드 미리보기(OG) 이미지 — granite.config.ts의 앱 아이콘과 동일해요.
+const OG_IMAGE_URL =
+  "https://static.toss.im/appsintoss/53765/c9fb1bd6-f85b-4725-a2e3-c4aa2a7e759b.png";
 
 /**
  * 여행친구 앱을 공유해요.
@@ -13,7 +16,7 @@ const APP_DEEPLINK = "intoss://travelbuddy";
  */
 export async function shareTravelBuddy(country: { code: string; name: string }): Promise<void> {
   try {
-    const link = await getTossShareLink(`${APP_DEEPLINK}?country=${country.code}`);
+    const link = await getTossShareLink(`${APP_DEEPLINK}?country=${country.code}`, OG_IMAGE_URL);
     await share({
       message: `${country.name} 여행 준비, 여행친구에서 환율·준비물·현지정보를 한 번에! ${link}`,
     });

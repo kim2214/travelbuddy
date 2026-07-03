@@ -327,6 +327,101 @@ export const COUNTRIES: Country[] = [
       { id: "umbrella", label: "우산 (스콜 대비)", category: "기타" },
     ],
   },
+  {
+    code: "TW",
+    name: "대만",
+    flag: "🇹🇼",
+    currency: "TWD",
+    currencySymbol: "NT$",
+    currencyName: "대만 달러",
+    fractionDigits: 0,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 60 },
+      { emoji: "🧋", label: "버블티", amount: 55 },
+      { emoji: "🍜", label: "우육면", amount: 130 },
+      { emoji: "🚇", label: "MRT 기본", amount: 20 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "你好", pron: "니하오" },
+      { ko: "감사합니다", local: "謝謝", pron: "셰셰" },
+      { ko: "얼마예요?", local: "多少錢", pron: "뚸사오 첸" },
+      { ko: "화장실 어디예요?", local: "廁所在哪裡", pron: "처쒀 짜이 나리" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "팁 문화가 거의 없어요. 일부 식당은 봉사료(10%)가 계산서에 포함돼요.",
+      },
+      {
+        title: "교통카드",
+        description:
+          "이지카드(EasyCard)로 MRT·버스·편의점까지 편하게 쓸 수 있어요.",
+      },
+      {
+        title: "주의할 점",
+        description: "MRT 역·차량 안에서는 음식물 섭취가 금지되어 있어요(벌금).",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "easycard", label: "이지카드(EasyCard)", category: "기타" },
+      {
+        id: "tw-arrival",
+        label: "입국신고서 온라인 작성",
+        hint: "TW Arrival Card",
+        category: "서류",
+      },
+    ],
+  },
+  {
+    code: "PH",
+    name: "필리핀",
+    flag: "🇵🇭",
+    currency: "PHP",
+    currencySymbol: "₱",
+    currencyName: "페소",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 120 },
+      { emoji: "🍚", label: "현지 식사", amount: 150 },
+      { emoji: "🍺", label: "맥주", amount: 80 },
+      { emoji: "🚕", label: "택시 기본", amount: 45 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Kumusta", pron: "쿠무스타" },
+      { ko: "감사합니다", local: "Salamat", pron: "살라맛" },
+      { ko: "얼마예요?", local: "Magkano?", pron: "막카노" },
+      { ko: "화장실 어디예요?", local: "Nasaan ang banyo?", pron: "나사안 앙 반요" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description: "팁 문화가 있어요. 식당·호텔에서 10% 안팎을 주는 게 일반적이에요.",
+      },
+      {
+        title: "영어 소통",
+        description: "영어가 널리 통해서 의사소통이 어렵지 않아요.",
+      },
+      {
+        title: "주의할 점",
+        description:
+          "우기(6~11월) 스콜·태풍에 대비하고, 밤길 이동은 그랩(Grab)을 권장해요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      {
+        id: "etravel",
+        label: "eTravel 등록",
+        hint: "입국 전 온라인 신고",
+        category: "서류",
+      },
+      { id: "sunscreen-ph", label: "모기 기피제 / 자외선 차단제", category: "상비약" },
+    ],
+  },
 ];
 
 /** 모든 국가에 공통으로 노출하는 여행 eSIM 연계 상품 (로밍도깨비) */
@@ -479,6 +574,35 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     scams: [
       "비교적 안전하지만 무허가 환전소·길거리 도박 사기를 조심하세요.",
       "벌금 규정(껌·흡연·무단횡단)이 엄격하니 유의하세요.",
+    ],
+  },
+  TW: {
+    timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
+    plug: "A·B타입 · 110V",
+    plugShort: "110V · A·B",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "경찰", number: "110" },
+      { label: "구급·소방", number: "119" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "야시장에서 흥정·바가지에 유의하세요.",
+      "택시는 미터기 사용 여부를 확인하세요.",
+    ],
+  },
+  PH: {
+    timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
+    plug: "A·B·C타입 · 220V",
+    plugShort: "220V · A·B·C",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [{ label: "통합 긴급(경찰·구급·소방)", number: "911" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "택시 미터기 거부·바가지에 유의하고 그랩(Grab)을 권장해요.",
+      "환전은 인가 환전소를 이용하고 야간 이동을 조심하세요.",
     ],
   },
 };

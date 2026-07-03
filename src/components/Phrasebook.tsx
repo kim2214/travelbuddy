@@ -2,13 +2,19 @@
 
 import { Text } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
+import { useEffect } from "react";
 
+import { logImpression } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { SectionHeader } from "./SectionHeader";
 
 export function Phrasebook() {
   const { country } = useCountry();
   const phrases = country.phrases;
+
+  useEffect(() => {
+    logImpression("phrasebook_view", { country: country.code });
+  }, [country.code]);
 
   if (phrases.length === 0) {
     return null;

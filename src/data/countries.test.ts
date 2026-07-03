@@ -56,6 +56,13 @@ describe("countries 데이터 정합성", () => {
   it("기본 국가(DEFAULT_COUNTRY_CODE)가 목록에 존재한다", () => {
     expect(COUNTRIES.some((c) => c.code === DEFAULT_COUNTRY_CODE)).toBe(true);
   });
+
+  it("지원 국가 목록에 대만·필리핀이 포함된다", () => {
+    const codes = COUNTRIES.map((c) => c.code);
+    expect(codes).toEqual(
+      expect.arrayContaining(["JP", "TH", "VN", "US", "SG", "TW", "PH"]),
+    );
+  });
 });
 
 describe("getCountry", () => {

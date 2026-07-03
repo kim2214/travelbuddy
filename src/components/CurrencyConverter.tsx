@@ -5,6 +5,7 @@ import { Button, Loader, Skeleton, Text, TextButton, TextField } from "@toss/tds
 import { adaptive, colors } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
+import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
 import {
@@ -27,6 +28,8 @@ const AMOUNT_PRESETS: Record<string, number[]> = {
   VND: [100000, 500000, 1000000],
   USD: [10, 50, 100],
   SGD: [10, 50, 100],
+  TWD: [100, 500, 1000],
+  PHP: [100, 500, 1000],
   EUR: [10, 50, 100],
 };
 
@@ -67,6 +70,7 @@ export function CurrencyConverter() {
 
   const handleSwap = () => {
     setDirection((d) => (d === "foreignToKrw" ? "krwToForeign" : "foreignToKrw"));
+    logEvent("converter_swap", { country: country.code });
   };
 
   const updatedLabel = (() => {
@@ -155,7 +159,10 @@ export function CurrencyConverter() {
             key={amount}
             type="button"
             // "빠른 금액 프리셋"은 값을 설정해요(누적 아님).
-            onClick={() => setInput(String(amount))}
+            onClick={() => {
+              setInput(String(amount));
+              logEvent("amount_preset", { currency: from, amount });
+            }}
             style={{
               flex: 1,
               padding: "8px 0",

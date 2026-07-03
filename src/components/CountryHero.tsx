@@ -15,6 +15,8 @@ const GRADIENTS: Record<string, [string, string]> = {
   VN: ["#F5525E", "#C81E27"],
   US: ["#4C7DF0", "#2748B0"],
   SG: ["#FF6478", "#E23144"],
+  TW: ["#12B5A5", "#0E9488"],
+  PH: ["#F6A609", "#E8730C"],
 };
 const DEFAULT_GRADIENT: [string, string] = ["#4C7DF0", "#2748B0"];
 

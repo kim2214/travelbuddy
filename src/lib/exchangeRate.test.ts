@@ -70,12 +70,12 @@ describe("convert", () => {
 
 describe("fractionDigitsFor", () => {
   it("소수 없는 통화는 0자리", () => {
-    for (const c of ["JPY", "VND", "KRW"]) {
+    for (const c of ["JPY", "VND", "KRW", "TWD"]) {
       expect(fractionDigitsFor(c)).toBe(0);
     }
   });
   it("그 외 통화는 2자리", () => {
-    for (const c of ["USD", "THB", "SGD", "EUR"]) {
+    for (const c of ["USD", "THB", "SGD", "PHP", "EUR"]) {
       expect(fractionDigitsFor(c)).toBe(2);
     }
   });

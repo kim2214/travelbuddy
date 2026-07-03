@@ -3,9 +3,10 @@
 
 import { Button, Checkbox, ListRow, ProgressBar, Text, TextField } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { ChecklistCategory } from "../data/countries";
+import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useChecklist, type ChecklistRow } from "../hooks/useChecklist";
 
@@ -24,9 +25,24 @@ export function Checklist() {
   const [newItem, setNewItem] = useState("");
 
   const handleAdd = () => {
-    addCustom(newItem);
+    const trimmed = newItem.trim();
+    if (trimmed === "") {
+      return;
+    }
+    addCustom(trimmed);
+    logEvent("checklist_add_custom", { country: country.code });
     setNewItem("");
   };
+
+  // 준비물을 모두 체크하는 순간 1회 기록해요.
+  const isComplete = totalCount > 0 && checkedCount === totalCount;
+  const wasCompleteRef = useRef(false);
+  useEffect(() => {
+    if (isComplete && !wasCompleteRef.current) {
+      logEvent("checklist_complete", { country: country.code });
+    }
+    wasCompleteRef.current = isComplete;
+  }, [isComplete, country.code]);
 
   // 카테고리별로 그룹핑 (항목이 있는 그룹만 노출)
   const groups = CATEGORY_ORDER.map(({ key, emoji }) => ({

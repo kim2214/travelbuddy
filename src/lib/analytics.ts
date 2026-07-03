@@ -14,3 +14,12 @@ export function logEvent(name: string, params: LogParams = {}): void {
     // 분석 로깅 실패는 무시해요.
   }
 }
+
+/** 화면/영역 노출 이벤트를 기록해요. */
+export function logImpression(name: string, params: LogParams = {}): void {
+  try {
+    void Analytics.impression({ log_name: name, ...params });
+  } catch {
+    // 분석 로깅 실패는 무시해요.
+  }
+}
