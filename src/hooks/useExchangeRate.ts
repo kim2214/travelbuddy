@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { fetchRates, type Rates } from "../lib/exchangeRate";
 
-interface UseExchangeRateResult {
+export interface UseExchangeRateResult {
   rates: Rates | null;
   fetchedAt: number | null;
   fromCache: boolean;

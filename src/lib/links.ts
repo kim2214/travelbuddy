@@ -14,5 +14,9 @@ export async function openExternal(url: string): Promise<void> {
 /** 전화 걸기. 숫자/＋ 외 문자는 tel: URI에서 제거해요. */
 export async function dial(phoneNumber: string): Promise<void> {
   const sanitized = phoneNumber.replace(/[^0-9+]/g, "");
+  if (sanitized === "" || sanitized === "+") {
+    // 유효한 번호가 없으면 빈 tel: 을 열지 않아요.
+    return;
+  }
   await openExternal(`tel:${sanitized}`);
 }

@@ -156,6 +156,22 @@ describe("fetchRates", () => {
     await expect(fetchRates(NOW)).rejects.toThrow();
   });
 
+  it("캐시 시각이 미래면(시계 역행) 신선으로 보지 않고 새로 받는다", async () => {
+    getItem.mockResolvedValue(
+      JSON.stringify({ rates: { JPY: 0.09 }, fetchedAt: NOW + HOUR }),
+    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse({ result: "success", rates: { JPY: 0.1 } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchRates(NOW);
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(result.fromCache).toBe(false);
+    expect(result.rates).toEqual({ JPY: 0.1 });
+  });
+
   it("손상된 캐시(숫자 아닌 환율)는 무시하고 새로 가져온다", async () => {
     getItem.mockResolvedValue(
       JSON.stringify({ rates: { JPY: "bad" }, fetchedAt: NOW - HOUR }),

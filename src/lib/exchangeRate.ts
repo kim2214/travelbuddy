@@ -4,7 +4,14 @@
 
 import { Storage } from "@apps-in-toss/web-framework";
 
+import { COUNTRIES } from "../data/countries";
 import { fetchWithTimeout } from "./fetchWithTimeout";
+
+// 통화별 표시 소수 자릿수. 국가 데이터에서 파생하고, KRW는 0으로 둬요.
+const CURRENCY_FRACTION_DIGITS: Record<string, number> = {
+  KRW: 0,
+  ...Object.fromEntries(COUNTRIES.map((c) => [c.currency, c.fractionDigits])),
+};
 
 const API_URL = "https://open.er-api.com/v6/latest/KRW";
 const CACHE_KEY = "rates_cache_v1";
@@ -67,8 +74,12 @@ async function writeCache(payload: CachePayload): Promise<void> {
  */
 export async function fetchRates(now: number = Date.now()): Promise<RatesResult> {
   const cached = await readCache();
-  if (cached != null && now - cached.fetchedAt < CACHE_TTL_MS) {
-    return { rates: cached.rates, fetchedAt: cached.fetchedAt, fromCache: true };
+  if (cached != null) {
+    const age = now - cached.fetchedAt;
+    // age가 음수면(기기 시계 역행 등) 신선하다고 오판하지 않고 새로 받아요.
+    if (age >= 0 && age < CACHE_TTL_MS) {
+      return { rates: cached.rates, fetchedAt: cached.fetchedAt, fromCache: true };
+    }
   }
 
   try {
@@ -119,9 +130,9 @@ export function convert(
   return krw * krwPerTo;
 }
 
-/** 통화별 표시 소수 자릿수 (JPY/VND 등 소수 없는 통화 처리) */
+/** 통화별 표시 소수 자릿수. 국가 데이터 기반이며, 미지원 통화는 2자리로 처리해요. */
 export function fractionDigitsFor(currency: string): number {
-  return ["JPY", "VND", "KRW"].includes(currency) ? 0 : 2;
+  return CURRENCY_FRACTION_DIGITS[currency] ?? 2;
 }
 
 /** 환산 결과를 통화에 맞춰 천 단위 콤마 + 소수 자릿수로 포맷해요. */

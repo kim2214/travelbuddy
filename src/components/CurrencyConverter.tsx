@@ -6,7 +6,7 @@ import { adaptive, colors } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
 import { useCountry } from "../context/CountryContext";
-import { useExchangeRate } from "../hooks/useExchangeRate";
+import { useExchangeRateContext } from "../context/exchangeRateContext";
 import {
   convert,
   fractionDigitsFor,
@@ -36,7 +36,7 @@ function presetsFor(currency: string): number[] {
 
 export function CurrencyConverter() {
   const { country } = useCountry();
-  const { rates, fetchedAt, fromCache, loading, error, reload } = useExchangeRate();
+  const { rates, fetchedAt, fromCache, loading, error, reload } = useExchangeRateContext();
   const [direction, setDirection] = useState<Direction>("foreignToKrw");
   const [input, setInput] = useState("10000");
 

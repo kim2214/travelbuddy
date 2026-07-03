@@ -4,13 +4,13 @@
 import { adaptive, colors } from "@toss/tds-colors";
 
 import { useCountry } from "../context/CountryContext";
-import { useExchangeRate } from "../hooks/useExchangeRate";
+import { useExchangeRateContext } from "../context/exchangeRateContext";
 import { convert, formatAmount } from "../lib/exchangeRate";
 import { SectionHeader } from "./SectionHeader";
 
 export function LocalPricePresets() {
   const { country } = useCountry();
-  const { rates } = useExchangeRate();
+  const { rates } = useExchangeRateContext();
   const prices = country.localPrices;
 
   if (prices.length === 0) {

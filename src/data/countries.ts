@@ -71,6 +71,8 @@ export interface Country {
   currencySymbol: string;
   /** 통화 한글명 (예: 엔) */
   currencyName: string;
+  /** 통화 표시 소수 자릿수 (예: JPY 0, USD 2) */
+  fractionDigits: number;
   /** 현지 물가 감각용 프리셋 (환율 화면에서 원화로 환산해 보여줘요) */
   localPrices: LocalPrice[];
   /** 여행 회화 (현지 가이드 화면) */
@@ -102,6 +104,7 @@ export const COUNTRIES: Country[] = [
     currency: "JPY",
     currencySymbol: "¥",
     currencyName: "엔",
+    fractionDigits: 0,
     // 대략적 현지 물가(환산 감각용)
     localPrices: [
       { emoji: "☕", label: "커피", amount: 500 },
@@ -151,6 +154,7 @@ export const COUNTRIES: Country[] = [
     currency: "THB",
     currencySymbol: "฿",
     currencyName: "바트",
+    fractionDigits: 2,
     // 대략적 현지 물가(환산 감각용)
     localPrices: [
       { emoji: "☕", label: "커피", amount: 60 },
@@ -193,6 +197,7 @@ export const COUNTRIES: Country[] = [
     currency: "VND",
     currencySymbol: "₫",
     currencyName: "동",
+    fractionDigits: 0,
     // 대략적 현지 물가(환산 감각용)
     localPrices: [
       { emoji: "☕", label: "카페쓰어", amount: 25000 },
@@ -240,6 +245,7 @@ export const COUNTRIES: Country[] = [
     currency: "USD",
     currencySymbol: "$",
     currencyName: "달러",
+    fractionDigits: 2,
     // 대략적 현지 물가(환산 감각용)
     localPrices: [
       { emoji: "☕", label: "커피", amount: 4 },
@@ -281,6 +287,7 @@ export const COUNTRIES: Country[] = [
     currency: "SGD",
     currencySymbol: "S$",
     currencyName: "싱가포르 달러",
+    fractionDigits: 2,
     // 대략적 현지 물가(환산 감각용)
     localPrices: [
       { emoji: "☕", label: "코피(커피)", amount: 1.8 },

@@ -47,6 +47,12 @@ describe("countries 데이터 정합성", () => {
     }
   });
 
+  it("모든 국가의 소수 자릿수가 0 또는 2다", () => {
+    for (const c of COUNTRIES) {
+      expect([0, 2], `${c.code} fractionDigits`).toContain(c.fractionDigits);
+    }
+  });
+
   it("기본 국가(DEFAULT_COUNTRY_CODE)가 목록에 존재한다", () => {
     expect(COUNTRIES.some((c) => c.code === DEFAULT_COUNTRY_CODE)).toBe(true);
   });
