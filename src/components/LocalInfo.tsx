@@ -1,11 +1,13 @@
 // 현지 실용 정보: 시차/전원/수돗물, 긴급 전화(탭하면 전화 연결), 주의사항.
 
 import { ListRow, TableRow } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 
 import { getPracticalInfo } from "../data/countries";
 import { useCountry } from "../context/CountryContext";
 import { dial } from "../lib/links";
+import { cardSurface } from "../lib/styles";
+import { SectionHeader } from "./SectionHeader";
 
 export function LocalInfo() {
   const { country } = useCountry();
@@ -13,16 +15,7 @@ export function LocalInfo() {
 
   return (
     <div style={{ marginTop: 16 }}>
-      <div
-        style={{
-          padding: "16px 24px 8px",
-          fontSize: 17,
-          fontWeight: 700,
-          color: adaptive.grey800,
-        }}
-      >
-        🧭 {country.name} 현지 정보
-      </div>
+      <SectionHeader>🧭 {country.name} 현지 정보</SectionHeader>
 
       {/* 기본 정보 */}
       <div
@@ -60,21 +53,13 @@ export function LocalInfo() {
       </div>
 
       {/* 주의사항 */}
-      <div
-        style={{
-          margin: "8px 24px 0",
-          padding: 16,
-          borderRadius: 16,
-          backgroundColor: colors.white,
-          border: `1px solid ${adaptive.grey100}`,
-        }}
-      >
+      <div style={{ ...cardSurface, margin: "8px 24px 0", padding: 16 }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: adaptive.grey800, marginBottom: 8 }}>
           ⚠️ 이런 점은 주의하세요
         </div>
         <ul style={{ margin: 0, paddingLeft: 18, color: adaptive.grey600, fontSize: 14, lineHeight: 1.6 }}>
-          {info.scams.map((scam, index) => (
-            <li key={index}>{scam}</li>
+          {info.scams.map((scam) => (
+            <li key={scam}>{scam}</li>
           ))}
         </ul>
       </div>

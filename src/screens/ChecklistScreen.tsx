@@ -1,11 +1,11 @@
 // 탭2: 국가별 준비물 체크리스트 + 연계 상품(eSIM/보험/환전) 유도.
 
 import { Top } from "@toss/tds-mobile";
-import { adaptive } from "@toss/tds-colors";
 
 import { CountrySelector } from "../components/CountrySelector";
 import { Checklist } from "../components/Checklist";
 import { ProductCard } from "../components/ProductCard";
+import { SectionHeader } from "../components/SectionHeader";
 import {
   ESIM_PRODUCT,
   INSURANCE_PRODUCT,
@@ -29,16 +29,7 @@ export function ChecklistScreen() {
       <Checklist />
 
       <div style={{ marginTop: 16 }}>
-        <div
-          style={{
-            padding: "8px 24px 12px",
-            fontSize: 17,
-            fontWeight: 700,
-            color: adaptive.grey800,
-          }}
-        >
-          출발 전 한 번에 준비하기
-        </div>
+        <SectionHeader padding="8px 24px 12px">출발 전 한 번에 준비하기</SectionHeader>
         <div
           style={{
             display: "flex",

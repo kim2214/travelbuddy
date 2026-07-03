@@ -33,9 +33,20 @@ export async function loadChecklist(countryCode: string): Promise<ChecklistState
       return { ...EMPTY_STATE };
     }
     const parsed = JSON.parse(raw) as Partial<ChecklistState>;
-    const customItems = Array.isArray(parsed.customItems) ? parsed.customItems : [];
+    // 손상된 항목(문자열 아님, id/label 누락)은 걸러내요.
+    const checkedIds = Array.isArray(parsed.checkedIds)
+      ? parsed.checkedIds.filter((id): id is string => typeof id === "string")
+      : [];
+    const customItems = Array.isArray(parsed.customItems)
+      ? parsed.customItems.filter(
+          (item): item is CustomChecklistItem =>
+            item != null &&
+            typeof (item as CustomChecklistItem).id === "string" &&
+            typeof (item as CustomChecklistItem).label === "string",
+        )
+      : [];
     return {
-      checkedIds: Array.isArray(parsed.checkedIds) ? parsed.checkedIds : [],
+      checkedIds,
       customItems,
       // 구버전 저장 데이터(nextSeq 없음)는 현재 항목 수 이후부터 시작해 기존 id와 겹치지 않게 해요.
       nextSeq: typeof parsed.nextSeq === "number" ? parsed.nextSeq : customItems.length,

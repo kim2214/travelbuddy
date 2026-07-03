@@ -26,15 +26,24 @@ interface CachePayload {
   fetchedAt: number;
 }
 
+/** 값이 모두 유한한 숫자인 Rates 형태인지 런타임 검증해요. */
+function isValidRates(value: unknown): value is Rates {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const entries = Object.values(value as Record<string, unknown>);
+  return entries.length > 0 && entries.every((v) => typeof v === "number" && Number.isFinite(v));
+}
+
 async function readCache(): Promise<CachePayload | null> {
   try {
     const raw = await Storage.getItem(CACHE_KEY);
     if (raw == null) {
       return null;
     }
-    const parsed = JSON.parse(raw) as CachePayload;
-    if (parsed && parsed.rates && typeof parsed.fetchedAt === "number") {
-      return parsed;
+    const parsed = JSON.parse(raw) as Partial<CachePayload>;
+    if (isValidRates(parsed.rates) && typeof parsed.fetchedAt === "number") {
+      return { rates: parsed.rates, fetchedAt: parsed.fetchedAt };
     }
     return null;
   } catch {
@@ -67,8 +76,8 @@ export async function fetchRates(now: number = Date.now()): Promise<RatesResult>
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }
-    const data = (await res.json()) as { result?: string; rates?: Rates };
-    if (data.result !== "success" || data.rates == null) {
+    const data = (await res.json()) as { result?: string; rates?: unknown };
+    if (data.result !== "success" || !isValidRates(data.rates)) {
       throw new Error("invalid response");
     }
     const fetchedAt = now;

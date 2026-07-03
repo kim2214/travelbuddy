@@ -3,10 +3,11 @@
 // CTA는 eSIM·보험은 '확인하기'(외부 비교/정보), 환전은 '환전하러 가기'예요.
 
 import { Badge, Button, useBottomSheet } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 
 import type { Product, ProductKind } from "../data/countries";
 import { openExternal } from "../lib/links";
+import { cardSurface } from "../lib/styles";
 
 const KIND_META: Record<
   ProductKind,
@@ -77,13 +78,11 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div
       style={{
+        ...cardSurface,
         display: "flex",
         alignItems: "center",
         gap: 12,
         padding: 16,
-        borderRadius: 16,
-        backgroundColor: colors.white,
-        border: `1px solid ${adaptive.grey100}`,
       }}
     >
       <div
@@ -103,14 +102,7 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 2,
-          }}
-        >
+        <div style={{ marginBottom: 2 }}>
           <Badge size="xsmall" variant="weak" color={meta.badgeColor}>
             {meta.badge}
           </Badge>

@@ -259,7 +259,11 @@ export const TOSS_EXCHANGE_PRODUCT: Product = {
 export const DEFAULT_COUNTRY_CODE = "JP";
 
 export function getCountry(code: string): Country {
-  return COUNTRIES.find((c) => c.code === code) ?? COUNTRIES[0];
+  return (
+    COUNTRIES.find((c) => c.code === code) ??
+    COUNTRIES.find((c) => c.code === DEFAULT_COUNTRY_CODE) ??
+    COUNTRIES[0]
+  );
 }
 
 // ---- 현지 실용 정보 (#7) ----

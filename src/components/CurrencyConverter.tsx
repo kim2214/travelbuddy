@@ -1,7 +1,7 @@
 // 1초 환율 계산기.
 // 금액을 입력하면 KRW ↔ 현지 통화를 즉시 환산하고, 방향 전환 버튼을 제공해요.
 
-import { Button, ProgressBar, TextField } from "@toss/tds-mobile";
+import { Button, Loader, TextButton, TextField } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 import { useMemo, useState } from "react";
 
@@ -181,15 +181,32 @@ export function CurrencyConverter() {
             {country.currency} = {formatAmount(Number(unitRate.toFixed(2)), "KRW")}원
           </div>
         )}
-        <div
-          style={{ marginTop: 2, color: error ? colors.red500 : adaptive.grey400 }}
-          onClick={error ? reload : undefined}
-        >
-          {updatedLabel}
-        </div>
+        {error ? (
+          <div
+            style={{
+              marginTop: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 8,
+              color: colors.red500,
+            }}
+          >
+            <span>환율을 불러오지 못했어요.</span>
+            <TextButton size="small" variant="underline" onClick={reload}>
+              다시 시도
+            </TextButton>
+          </div>
+        ) : (
+          <div style={{ marginTop: 2, color: adaptive.grey400 }}>{updatedLabel}</div>
+        )}
       </div>
 
-      {loading && <ProgressBar progress={0.4} size="light" animate />}
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Loader size="small" />
+        </div>
+      )}
     </div>
   );
 }
