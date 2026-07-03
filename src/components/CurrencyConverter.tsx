@@ -1,7 +1,7 @@
 // 1초 환율 계산기.
 // 금액을 입력하면 KRW ↔ 현지 통화를 즉시 환산하고, 방향 전환 버튼을 제공해요.
 
-import { Button, Loader, Skeleton, TextButton, TextField } from "@toss/tds-mobile";
+import { Button, Loader, Skeleton, Text, TextButton, TextField } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
@@ -114,12 +114,12 @@ export function CurrencyConverter() {
         style={{ ...containerStyle, gap: 8, alignItems: "center", textAlign: "center", padding: "28px 20px" }}
       >
         <div style={{ fontSize: 40 }}>📡</div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: adaptive.grey800 }}>
+        <Text typography="st10" fontWeight="bold" color={adaptive.grey800} style={{ display: "block" }}>
           환율을 불러오지 못했어요
-        </div>
-        <div style={{ fontSize: 13, color: adaptive.grey500 }}>
+        </Text>
+        <Text typography="t7" color={adaptive.grey500} style={{ display: "block" }}>
           네트워크 상태를 확인하고 다시 시도해 주세요
-        </div>
+        </Text>
         <Button size="small" onClick={reload}>
           다시 시도
         </Button>
@@ -162,13 +162,12 @@ export function CurrencyConverter() {
               borderRadius: 10,
               border: `1px solid ${adaptive.grey200}`,
               backgroundColor: colors.white,
-              color: adaptive.grey700,
-              fontSize: 13,
-              fontWeight: 600,
               cursor: "pointer",
             }}
           >
-            {amount.toLocaleString("ko-KR")}
+            <Text typography="t7" fontWeight="semibold" color={adaptive.grey700}>
+              {amount.toLocaleString("ko-KR")}
+            </Text>
           </button>
         ))}
       </div>
@@ -189,26 +188,39 @@ export function CurrencyConverter() {
           textAlign: "right",
         }}
       >
-        <div style={{ fontSize: 13, color: adaptive.grey500, marginBottom: 4 }}>
+        <Text
+          typography="t7"
+          color={adaptive.grey500}
+          style={{ display: "block", marginBottom: 4 }}
+        >
           {symbolOf(to, country)} {to}
-        </div>
-        <div style={{ fontSize: 28, fontWeight: 700, color: adaptive.grey800 }}>
+        </Text>
+        <Text
+          typography="st2"
+          fontWeight="bold"
+          color={adaptive.grey800}
+          style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
+        >
           {result == null
             ? "—"
             : `${symbolOf(to, country)} ${formatAmount(
                 Number(result.toFixed(fractionDigitsFor(to))),
                 to,
               )}`}
-        </div>
+        </Text>
       </div>
 
       {/* 기준 환율 + 갱신 시각 */}
-      <div style={{ fontSize: 12, color: adaptive.grey500, textAlign: "center" }}>
+      <div style={{ textAlign: "center" }}>
         {unitRate != null && (
-          <div>
+          <Text
+            typography="st12"
+            color={adaptive.grey500}
+            style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
+          >
             1 {country.currencySymbol}
             {country.currency} = {formatAmount(Number(unitRate.toFixed(2)), "KRW")}원
-          </div>
+          </Text>
         )}
         {error ? (
           <div
@@ -218,16 +230,19 @@ export function CurrencyConverter() {
               justifyContent: "center",
               alignItems: "center",
               gap: 8,
-              color: colors.red500,
             }}
           >
-            <span>최신 환율 갱신에 실패했어요 · 저장된 값</span>
+            <Text typography="st12" color={colors.red500}>
+              최신 환율 갱신에 실패했어요 · 저장된 값
+            </Text>
             <TextButton size="small" variant="underline" onClick={reload}>
               다시 시도
             </TextButton>
           </div>
         ) : (
-          <div style={{ marginTop: 2, color: adaptive.grey400 }}>{updatedLabel}</div>
+          <Text typography="st12" color={adaptive.grey400} style={{ display: "block", marginTop: 2 }}>
+            {updatedLabel}
+          </Text>
         )}
       </div>
 

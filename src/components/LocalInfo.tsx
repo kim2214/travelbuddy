@@ -1,6 +1,6 @@
 // 현지 실용 정보: 시차/전원/수돗물, 긴급 전화(탭하면 전화 연결), 주의사항.
 
-import { ListRow, TableRow } from "@toss/tds-mobile";
+import { ListRow, TableRow, Text } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 
 import { getPracticalInfo } from "../data/countries";
@@ -32,9 +32,13 @@ export function LocalInfo() {
       </div>
 
       {/* 긴급 연락처 (탭하면 전화 연결) */}
-      <div style={{ marginTop: 8, padding: "8px 24px 0", fontSize: 14, color: adaptive.grey500 }}>
+      <Text
+        typography="st11"
+        color={adaptive.grey500}
+        style={{ display: "block", marginTop: 8, padding: "8px 24px 0" }}
+      >
         긴급 연락처 · 탭하면 전화 연결
-      </div>
+      </Text>
       <div>
         {[...info.emergency, info.embassy].map((contact) => (
           <ListRow
@@ -54,12 +58,25 @@ export function LocalInfo() {
 
       {/* 주의사항 */}
       <div style={{ ...cardSurface, margin: "8px 24px 0", padding: 16 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: adaptive.grey800, marginBottom: 8 }}>
+        <Text
+          typography="st11"
+          fontWeight="bold"
+          color={adaptive.grey800}
+          style={{ display: "block", marginBottom: 8 }}
+        >
           ⚠️ 이런 점은 주의하세요
-        </div>
-        <ul style={{ margin: 0, paddingLeft: 18, color: adaptive.grey600, fontSize: 14, lineHeight: 1.6 }}>
+        </Text>
+        <ul style={{ margin: 0, paddingLeft: 18 }}>
           {info.scams.map((scam) => (
-            <li key={scam}>{scam}</li>
+            <Text
+              as="li"
+              key={scam}
+              typography="st11"
+              color={adaptive.grey600}
+              style={{ marginBottom: 4 }}
+            >
+              {scam}
+            </Text>
           ))}
         </ul>
       </div>

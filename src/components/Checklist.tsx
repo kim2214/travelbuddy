@@ -1,7 +1,7 @@
 // 국가별 준비물 체크리스트.
 // 프리셋 + 사용자 커스텀 항목을 체크/추가/삭제하고, 진행률을 보여줘요. 상태는 Storage에 영속돼요.
 
-import { Button, Checkbox, ListRow, ProgressBar, TextField } from "@toss/tds-mobile";
+import { Button, Checkbox, ListRow, ProgressBar, Text, TextField } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 import { useState } from "react";
 
@@ -82,12 +82,16 @@ export function Checklist() {
             marginBottom: 8,
           }}
         >
-          <span style={{ fontSize: 17, fontWeight: 700, color: adaptive.grey800 }}>
+          <Text typography="t5" fontWeight="bold" color={adaptive.grey800}>
             {country.flag} {country.name} 준비물
-          </span>
-          <span style={{ fontSize: 14, color: adaptive.grey500 }}>
+          </Text>
+          <Text
+            typography="st11"
+            color={adaptive.grey500}
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
             {checkedCount}/{totalCount}
-          </span>
+          </Text>
         </div>
         <ProgressBar progress={progress} size="normal" animate />
       </div>
@@ -107,12 +111,12 @@ export function Checklist() {
         >
           <span style={{ fontSize: 30 }}>✈️</span>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#12B886" }}>
+            <Text typography="t6" fontWeight="bold" color="#12B886" style={{ display: "block" }}>
               모든 준비 완료!
-            </div>
-            <div style={{ fontSize: 13, color: adaptive.grey600, marginTop: 2 }}>
+            </Text>
+            <Text typography="t7" color={adaptive.grey600} style={{ display: "block", marginTop: 2 }}>
               즐거운 여행 되세요
-            </div>
+            </Text>
           </div>
         </div>
       )}
@@ -129,23 +133,19 @@ export function Checklist() {
                   alignItems: "center",
                   gap: 7,
                   padding: "14px 24px 8px",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: adaptive.grey700,
                 }}
               >
-                <span>
+                <Text typography="t7" fontWeight="bold" color={adaptive.grey700}>
                   {group.emoji} {group.key}
-                </span>
-                <span
-                  style={{
-                    color: adaptive.grey400,
-                    fontWeight: 700,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
+                </Text>
+                <Text
+                  typography="t7"
+                  fontWeight="semibold"
+                  color={adaptive.grey400}
+                  style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   {done}/{group.items.length}
-                </span>
+                </Text>
               </div>
               {group.items.map(renderRow)}
             </div>

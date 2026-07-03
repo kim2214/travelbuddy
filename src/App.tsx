@@ -1,3 +1,4 @@
+import { Text } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 import { useState } from "react";
 
@@ -72,9 +73,13 @@ function App() {
               }}
             >
               <span style={{ fontSize: 22, lineHeight: "24px" }}>{t.emoji}</span>
-              <span style={{ fontSize: 11, fontWeight: active ? 700 : 500 }}>
+              <Text
+                typography="st13"
+                fontWeight={active ? "bold" : "medium"}
+                color={active ? adaptive.blue500 : adaptive.grey400}
+              >
                 {t.label}
-              </span>
+              </Text>
             </button>
           );
         })}

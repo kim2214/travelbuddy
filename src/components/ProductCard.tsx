@@ -2,7 +2,7 @@
 // 카드 클릭 → 안내 BottomSheet → 종류별 안내 문구 + CTA로 외부 서비스(openExternal)로 이동해요.
 // CTA는 eSIM·보험은 '확인하기'(외부 비교/정보), 환전은 '환전하러 가기'예요.
 
-import { Badge, Button, useBottomSheet } from "@toss/tds-mobile";
+import { Badge, Button, Text, useBottomSheet } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 
 import type { Product, ProductKind } from "../data/countries";
@@ -51,22 +51,21 @@ export function ProductCard({ product }: { product: Product }) {
     void openAsyncTwoButtonSheet({
       header: product.name,
       children: (
-        <div
-          style={{
-            margin: "0 24px 8px",
-            color: adaptive.grey600,
-            fontSize: 15,
-          }}
-        >
-          {product.description}
-          <div
-            style={{ marginTop: 8, color: adaptive.grey800, fontWeight: 600 }}
+        <div style={{ margin: "0 24px 8px" }}>
+          <Text typography="t6" color={adaptive.grey600} style={{ display: "block" }}>
+            {product.description}
+          </Text>
+          <Text
+            typography="t6"
+            fontWeight="semibold"
+            color={adaptive.grey800}
+            style={{ display: "block", marginTop: 8 }}
           >
             {product.priceLabel}
-          </div>
-          <div style={{ marginTop: 12, fontSize: 13, color: adaptive.grey400 }}>
+          </Text>
+          <Text typography="t7" color={adaptive.grey400} style={{ display: "block", marginTop: 12 }}>
             {meta.guide}
-          </div>
+          </Text>
         </div>
       ),
       leftButton: "닫기",
@@ -107,21 +106,22 @@ export function ProductCard({ product }: { product: Product }) {
             {meta.badge}
           </Badge>
         </div>
-        <div
+        <Text
+          typography="t6"
+          fontWeight="semibold"
+          color={adaptive.grey800}
           style={{
-            fontSize: 15,
-            fontWeight: 600,
-            color: adaptive.grey800,
+            display: "block",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
           {product.name}
-        </div>
-        <div style={{ fontSize: 13, color: adaptive.grey500 }}>
+        </Text>
+        <Text typography="t7" color={adaptive.grey500} style={{ display: "block" }}>
           {product.priceLabel}
-        </div>
+        </Text>
       </div>
 
       <Button size="small" color="primary" variant="weak" onClick={handleClick}>

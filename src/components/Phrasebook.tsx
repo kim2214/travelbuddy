@@ -1,5 +1,6 @@
 // 여행 회화. 한국어 뜻 · 현지어 표기 · 한글 발음을 카드로 보여줘요.
 
+import { Text } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 
 import { useCountry } from "../context/CountryContext";
@@ -30,15 +31,24 @@ export function Phrasebook() {
               borderTop: index === 0 ? "none" : `1px solid ${adaptive.grey100}`,
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 700, color: adaptive.grey800 }}>
+            <Text typography="st11" fontWeight="semibold" color={adaptive.grey800}>
               {p.ko}
-            </span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: adaptive.blue500, textAlign: "right" }}>
+            </Text>
+            <Text
+              typography="t6"
+              fontWeight="semibold"
+              color={adaptive.blue500}
+              style={{ textAlign: "right" }}
+            >
               {p.local}
-            </span>
-            <span style={{ gridColumn: "1 / -1", fontSize: 12, color: adaptive.grey500 }}>
+            </Text>
+            <Text
+              typography="st12"
+              color={adaptive.grey500}
+              style={{ gridColumn: "1 / -1", display: "block" }}
+            >
               {p.pron}
-            </span>
+            </Text>
           </div>
         ))}
       </div>

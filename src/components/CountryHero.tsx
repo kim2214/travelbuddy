@@ -1,6 +1,7 @@
 // 여행지 히어로 카드. 국기·통화·시차·전원을 한 장으로 요약하고, 탭하면 여행지를 바꿀 수 있어요.
 // 국가별 테마 그라디언트로 "여행지 가이드" 인상을 줘요.
 
+import { Text } from "@toss/tds-mobile";
 import { useState } from "react";
 
 import { getPracticalInfo } from "../data/countries";
@@ -66,18 +67,28 @@ export function CountryHero() {
             {country.flag}
           </span>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.01em" }}>
+            <Text
+              typography="t3"
+              fontWeight="bold"
+              color="#fff"
+              style={{ display: "block", letterSpacing: "-0.01em" }}
+            >
               {country.name}
-            </div>
-            <div style={{ fontSize: 13, opacity: 0.9, marginTop: 1 }}>
+            </Text>
+            <Text typography="t7" color="#fff" style={{ display: "block", opacity: 0.9, marginTop: 1 }}>
               {detecting
                 ? "📍 현재 위치로 찾는 중…"
                 : `${country.currencyName} · ${country.currency}`}
-            </div>
+            </Text>
           </div>
-          <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, opacity: 0.9 }}>
+          <Text
+            typography="t7"
+            fontWeight="semibold"
+            color="#fff"
+            style={{ marginLeft: "auto", opacity: 0.9, whiteSpace: "nowrap" }}
+          >
             바꾸기 ▾
-          </span>
+          </Text>
         </div>
 
         <div
@@ -97,17 +108,22 @@ export function CountryHero() {
                 padding: "11px 12px",
               }}
             >
-              <div style={{ fontSize: 11, opacity: 0.85, fontWeight: 600 }}>{s.k}</div>
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 800,
-                  marginTop: 3,
-                  fontVariantNumeric: "tabular-nums",
-                }}
+              <Text
+                typography="st13"
+                fontWeight="semibold"
+                color="#fff"
+                style={{ display: "block", opacity: 0.85 }}
+              >
+                {s.k}
+              </Text>
+              <Text
+                typography="t6"
+                fontWeight="bold"
+                color="#fff"
+                style={{ display: "block", marginTop: 3, fontVariantNumeric: "tabular-nums" }}
               >
                 {s.v}
-              </div>
+              </Text>
             </div>
           ))}
         </div>

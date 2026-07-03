@@ -1,6 +1,7 @@
 // 현지 물가로 감 잡기.
 // 커피·라멘·택시 같은 현지 대표 물가를 원화로 즉시 환산해 "체감 물가"를 보여줘요.
 
+import { Text } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 
 import { useCountry } from "../context/CountryContext";
@@ -47,41 +48,40 @@ export function LocalPricePresets() {
             >
               <span style={{ fontSize: 22, flexShrink: 0 }}>{p.emoji}</span>
               <div style={{ minWidth: 0 }}>
-                <div
+                <Text
+                  typography="t7"
+                  fontWeight="semibold"
+                  color={adaptive.grey800}
                   style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: adaptive.grey800,
+                    display: "block",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
                   {p.label}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: adaptive.grey500,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
+                </Text>
+                <Text
+                  typography="st12"
+                  color={adaptive.grey500}
+                  style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
                 >
                   {country.currencySymbol}
                   {p.amount.toLocaleString("ko-KR")}
-                </div>
+                </Text>
               </div>
-              <span
+              <Text
+                typography="t7"
+                fontWeight="bold"
+                color={adaptive.blue500}
                 style={{
                   marginLeft: "auto",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: adaptive.blue500,
                   fontVariantNumeric: "tabular-nums",
                   whiteSpace: "nowrap",
                 }}
               >
                 {krw == null ? "—" : `${formatAmount(Math.round(krw), "KRW")}원`}
-              </span>
+              </Text>
             </div>
           );
         })}
