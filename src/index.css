@@ -6,6 +6,16 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/*
+ * 모바일 WebView(토스 인앱)에서 탭/포커스 시 나타나는 기본 아웃라인
+ * (플랫폼에 따라 노란/주황 가이드 라인)을 전역으로 제거해요.
+ * 터치 기반 인앱 환경이라 포커스 링을 노출하지 않아요.
+ */
+*:focus,
+*:focus-visible {
+  outline: none;
+}
+
 body {
   margin: 0;
   min-width: 320px;

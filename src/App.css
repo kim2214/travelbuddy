@@ -5,10 +5,8 @@
 }
 
 /*
- * 하단 탭바 버튼.
- * 모바일 WebView(토스 인앱)에서 탭 후 남는 기본 포커스 아웃라인(플랫폼에 따라 주황색)을 제거해
- * 데스크톱 Chrome과 동일하게 보이도록 해요.
- * 키보드 포커스(:focus-visible)에는 접근성 링을 유지해요.
+ * 하단 탭바 버튼. 탭 후 남는 기본 하이라이트/선택 동작을 억제해요.
+ * (포커스 아웃라인 제거는 index.css의 전역 규칙에서 처리해요.)
  */
 .tab-bar-item {
   outline: none;
@@ -18,11 +16,6 @@
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
-}
-
-.tab-bar-item:focus-visible {
-  outline: 2px solid #3182f6;
-  outline-offset: -2px;
 }
 
 @media (min-width: 481px) {
