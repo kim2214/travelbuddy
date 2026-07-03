@@ -49,11 +49,9 @@ export function Checklist() {
             onClick={() => toggle(row.id)}
             withTouchEffect
             left={
-              <Checkbox.Circle
-                checked={row.checked}
-                onCheckedChange={() => toggle(row.id)}
-                aria-label={row.label}
-              />
+              // 토글은 ListRow.onClick이 단일 처리해요.
+              // 체크박스에도 핸들러를 두면 체크박스 탭 시 change→click 버블링으로 두 번 실행돼 상태가 상쇄돼요.
+              <Checkbox.Circle checked={row.checked} aria-label={row.label} />
             }
             contents={
               row.hint ? (

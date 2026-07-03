@@ -4,6 +4,8 @@
 
 import { Storage } from "@apps-in-toss/web-framework";
 
+import { fetchWithTimeout } from "./fetchWithTimeout";
+
 const API_URL = "https://open.er-api.com/v6/latest/KRW";
 const CACHE_KEY = "rates_cache_v1";
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6시간
@@ -61,7 +63,7 @@ export async function fetchRates(now: number = Date.now()): Promise<RatesResult>
   }
 
   try {
-    const res = await fetch(API_URL);
+    const res = await fetchWithTimeout(API_URL);
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }

@@ -5,6 +5,7 @@
 import { Accuracy, getCurrentLocation } from "@apps-in-toss/web-framework";
 
 import { COUNTRIES } from "../data/countries";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const SUPPORTED = new Set(COUNTRIES.map((c) => c.code));
 
@@ -23,7 +24,7 @@ export async function detectCountryByGPS(): Promise<string | null> {
     const url =
       "https://api.bigdatacloud.net/data/reverse-geocode-client" +
       `?latitude=${latitude}&longitude=${longitude}&localityLanguage=ko`;
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url);
     if (!res.ok) {
       return null;
     }

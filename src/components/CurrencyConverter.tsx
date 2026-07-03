@@ -108,7 +108,14 @@ export function CurrencyConverter() {
         placeholder="금액을 입력해요"
         value={input}
         inputMode="decimal"
-        format={{ transform: (v) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+        format={{
+          transform: (v) => {
+            // 정수부에만 천 단위 콤마를 넣어요. 소수부까지 그룹핑하면 "1,234.5,678"처럼 깨져요.
+            const [int, ...frac] = String(v).split(".");
+            const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return frac.length > 0 ? `${grouped}.${frac.join(".")}` : grouped;
+          },
+        }}
         onChange={(e) => setInput(e.target.value)}
       />
 
@@ -118,12 +125,8 @@ export function CurrencyConverter() {
           <button
             key={amount}
             type="button"
-            onClick={() =>
-              setInput((prev) => {
-                const current = Number(prev.replace(/[^0-9.]/g, "")) || 0;
-                return String(current + amount);
-              })
-            }
+            // "빠른 금액 프리셋"은 값을 설정해요(누적 아님).
+            onClick={() => setInput(String(amount))}
             style={{
               flex: 1,
               padding: "8px 0",
@@ -136,7 +139,7 @@ export function CurrencyConverter() {
               cursor: "pointer",
             }}
           >
-            +{amount.toLocaleString("ko-KR")}
+            {amount.toLocaleString("ko-KR")}
           </button>
         ))}
       </div>
