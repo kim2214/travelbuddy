@@ -60,6 +60,9 @@ function App() {
               className="tab-bar-item"
               aria-label={t.label}
               aria-current={active ? "page" : undefined}
+              // 탭 시 포커스를 받지 않게 해 WebView 네이티브 포커스 하이라이트(노란 선)를 막아요.
+              // onClick은 그대로 실행돼요.
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
                 setTab(t.key);
                 logEvent("tab_change", { tab: t.key });
