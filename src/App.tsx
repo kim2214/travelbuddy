@@ -2,6 +2,8 @@ import { Text } from "@toss/tds-mobile";
 import { adaptive, colors } from "@toss/tds-colors";
 import { useState } from "react";
 
+import { logEvent } from "./lib/analytics";
+
 import { ChecklistScreen } from "./screens/ChecklistScreen";
 import { ExchangeScreen } from "./screens/ExchangeScreen";
 import { GuideScreen } from "./screens/GuideScreen";
@@ -58,7 +60,10 @@ function App() {
               className="tab-bar-item"
               aria-label={t.label}
               aria-current={active ? "page" : undefined}
-              onClick={() => setTab(t.key)}
+              onClick={() => {
+                setTab(t.key);
+                logEvent("tab_change", { tab: t.key });
+              }}
               style={{
                 flex: 1,
                 border: "none",

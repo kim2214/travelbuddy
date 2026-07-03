@@ -6,6 +6,7 @@ import { Badge, Button, Text, useBottomSheet } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 
 import type { Product, ProductKind } from "../data/countries";
+import { logEvent } from "../lib/analytics";
 import { openExternal } from "../lib/links";
 import { cardSurface } from "../lib/styles";
 
@@ -70,7 +71,10 @@ export function ProductCard({ product }: { product: Product }) {
       ),
       leftButton: "닫기",
       rightButton: meta.cta,
-      onRightButtonClick: () => openExternal(product.deeplink),
+      onRightButtonClick: () => {
+        logEvent("product_open", { product: product.id, kind: product.kind });
+        return openExternal(product.deeplink);
+      },
     });
   };
 

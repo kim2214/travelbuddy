@@ -5,6 +5,7 @@ import { adaptive } from "@toss/tds-colors";
 
 import { COUNTRIES } from "../data/countries";
 import { useCountry } from "../context/CountryContext";
+import { logEvent } from "../lib/analytics";
 
 interface CountryPickerSheetProps {
   open: boolean;
@@ -27,6 +28,7 @@ export function CountryPickerSheet({ open, onClose }: CountryPickerSheetProps) {
           value: c.code,
         }))}
         onChange={(event) => {
+          logEvent("country_change", { country: event.target.value });
           setCountryCode(event.target.value);
           onClose();
         }}
