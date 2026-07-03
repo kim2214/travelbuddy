@@ -7,12 +7,15 @@ import { getTossShareLink, share } from "@apps-in-toss/web-framework";
 // granite.config.ts의 appName과 동일해야 해요.
 const APP_DEEPLINK = "intoss://travelbuddy";
 
-/** 여행친구 앱을 공유해요. countryName은 공유 문구에 들어가요. */
-export async function shareTravelBuddy(countryName: string): Promise<void> {
+/**
+ * 여행친구 앱을 공유해요.
+ * 받은 사람이 같은 여행지로 바로 진입하도록 `?country=<code>`를 딥링크에 담아요.
+ */
+export async function shareTravelBuddy(country: { code: string; name: string }): Promise<void> {
   try {
-    const link = await getTossShareLink(APP_DEEPLINK);
+    const link = await getTossShareLink(`${APP_DEEPLINK}?country=${country.code}`);
     await share({
-      message: `${countryName} 여행 준비, 여행친구에서 환율·준비물·현지정보를 한 번에! ${link}`,
+      message: `${country.name} 여행 준비, 여행친구에서 환율·준비물·현지정보를 한 번에! ${link}`,
     });
   } catch {
     // 공유 취소/미지원 환경은 조용히 무시해요.

@@ -15,7 +15,7 @@ export function ShareButton() {
       variant="weak"
       onClick={() => {
         logEvent("share_click", { country: country.code });
-        void shareTravelBuddy(country.name);
+        void shareTravelBuddy(country);
       }}
     >
       공유

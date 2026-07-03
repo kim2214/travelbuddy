@@ -12,13 +12,18 @@ vi.mock("../lib/countryPreference", () => ({
 vi.mock("../lib/geo", () => ({
   detectCountryByGPS: vi.fn(),
 }));
+vi.mock("../lib/entry", () => ({
+  getCountryFromEntry: vi.fn(),
+}));
 
 import { loadSelectedCountry, saveSelectedCountry } from "../lib/countryPreference";
 import { detectCountryByGPS } from "../lib/geo";
+import { getCountryFromEntry } from "../lib/entry";
 
 const loadSaved = vi.mocked(loadSelectedCountry);
 const saveSaved = vi.mocked(saveSelectedCountry);
 const detectGPS = vi.mocked(detectCountryByGPS);
+const fromEntry = vi.mocked(getCountryFromEntry);
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <CountryProvider>{children}</CountryProvider>
@@ -28,9 +33,22 @@ beforeEach(() => {
   loadSaved.mockResolvedValue(null);
   saveSaved.mockResolvedValue(undefined);
   detectGPS.mockResolvedValue(null);
+  fromEntry.mockReturnValue(null);
 });
 
 describe("CountryContext 국가 결정 규칙", () => {
+  it("진입 스킴에 국가가 있으면 저장/GPS보다 우선하고 저장한다", async () => {
+    fromEntry.mockReturnValue("VN");
+    loadSaved.mockResolvedValue("JP"); // 저장된 선택이 있어도
+    detectGPS.mockResolvedValue("US");
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    await waitFor(() => expect(result.current.countryCode).toBe("VN"));
+    expect(saveSaved).toHaveBeenCalledWith("VN");
+    expect(detectGPS).not.toHaveBeenCalled();
+  });
+
   it("저장된 수동 선택이 있으면 그것을 쓰고 GPS 감지는 하지 않는다", async () => {
     loadSaved.mockResolvedValue("TH");
     detectGPS.mockResolvedValue("US");

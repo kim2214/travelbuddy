@@ -18,6 +18,7 @@ import {
 
 import { DEFAULT_COUNTRY_CODE, getCountry, type Country } from "../data/countries";
 import { loadSelectedCountry, saveSelectedCountry } from "../lib/countryPreference";
+import { getCountryFromEntry } from "../lib/entry";
 import { detectCountryByGPS } from "../lib/geo";
 
 interface CountryContextValue {
@@ -47,6 +48,15 @@ export function CountryProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     void (async () => {
+      // 0) 공유 링크 등 진입 스킴에 국가가 있으면 최우선으로 사용하고 저장해요.
+      const fromEntry = getCountryFromEntry();
+      if (fromEntry != null) {
+        manualRef.current = true;
+        setCode(fromEntry);
+        void saveSelectedCountry(fromEntry);
+        return;
+      }
+
       // 1) 저장된 수동 선택이 있으면 그대로 사용
       const saved = await loadSelectedCountry();
       if (!active) {
