@@ -25,3 +25,6 @@ yarn-error.log*
 
 # branding assets (store thumbnail/logo sources)
 branding/
+
+# 빌드 산출물 (앱 번들)
+*.ait
