@@ -19,9 +19,10 @@ function App() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: colors.white }}>
-      {/* 탭 컨텐츠 (하단 탭바 높이 + safe area만큼 여백 확보) */}
+      {/* 탭 컨텐츠 (상단 노치/상태바 + 하단 탭바 높이 + safe area만큼 여백 확보) */}
       <div
         style={{
+          paddingTop: "env(safe-area-inset-top, 0px)",
           paddingBottom: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))`,
         }}
       >
