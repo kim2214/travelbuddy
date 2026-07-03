@@ -17,6 +17,15 @@ export interface ChecklistPresetItem {
   hint?: string;
 }
 
+export interface LocalPrice {
+  /** 아이콘 이모지 */
+  emoji: string;
+  /** 항목명 (예: 커피, 라멘) */
+  label: string;
+  /** 현지 통화 기준 대략적 금액 (환산 감각용, 정확한 시세 아님) */
+  amount: number;
+}
+
 export type ProductKind = "esim" | "insurance" | "exchange";
 
 export interface Product {
@@ -48,6 +57,8 @@ export interface Country {
   currencySymbol: string;
   /** 통화 한글명 (예: 엔) */
   currencyName: string;
+  /** 현지 물가 감각용 프리셋 (환율 화면에서 원화로 환산해 보여줘요) */
+  localPrices: LocalPrice[];
   mannerTips: MannerTip[];
   checklistPreset: ChecklistPresetItem[];
 }
@@ -75,6 +86,13 @@ export const COUNTRIES: Country[] = [
     currency: "JPY",
     currencySymbol: "¥",
     currencyName: "엔",
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 500 },
+      { emoji: "🍜", label: "라멘", amount: 900 },
+      { emoji: "🚉", label: "전철 기본", amount: 200 },
+      { emoji: "🚕", label: "택시 기본", amount: 500 },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -109,6 +127,13 @@ export const COUNTRIES: Country[] = [
     currency: "THB",
     currencySymbol: "฿",
     currencyName: "바트",
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 60 },
+      { emoji: "🍜", label: "쌀국수 · 팟타이", amount: 60 },
+      { emoji: "🚕", label: "택시 기본", amount: 40 },
+      { emoji: "🍺", label: "맥주", amount: 70 },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -138,6 +163,13 @@ export const COUNTRIES: Country[] = [
     currency: "VND",
     currencySymbol: "₫",
     currencyName: "동",
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "카페쓰어", amount: 25000 },
+      { emoji: "🍜", label: "쌀국수", amount: 40000 },
+      { emoji: "🏍️", label: "쎄옴(오토바이)", amount: 15000 },
+      { emoji: "🍺", label: "맥주", amount: 20000 },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -171,6 +203,13 @@ export const COUNTRIES: Country[] = [
     currency: "USD",
     currencySymbol: "$",
     currencyName: "달러",
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 4 },
+      { emoji: "🍔", label: "버거 세트", amount: 12 },
+      { emoji: "🚇", label: "지하철", amount: 2.9 },
+      { emoji: "🍺", label: "맥주", amount: 7 },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -199,6 +238,13 @@ export const COUNTRIES: Country[] = [
     currency: "SGD",
     currencySymbol: "S$",
     currencyName: "싱가포르 달러",
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "코피(커피)", amount: 1.8 },
+      { emoji: "🍚", label: "치킨라이스", amount: 5 },
+      { emoji: "🚇", label: "MRT 기본", amount: 1.5 },
+      { emoji: "🍺", label: "맥주", amount: 10 },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -276,8 +322,12 @@ export interface EmergencyContact {
 export interface PracticalInfo {
   /** 한국과의 시차 안내 문구 */
   timeDiff: string;
+  /** 히어로 카드용 짧은 시차 표기 (예: "없음", "−2시간") */
+  timeDiffShort: string;
   /** 콘센트 플러그 타입 + 전압 */
   plug: string;
+  /** 히어로 카드용 짧은 전원 표기 (예: "100V · A") */
+  plugShort: string;
   /** 수돗물 음용 가능 여부 안내 */
   tapWater: string;
   /** 현지 긴급 전화번호 (경찰/구급 등) */
@@ -297,7 +347,9 @@ const CONSULAR_CALL_CENTER: EmergencyContact = {
 const PRACTICAL: Record<string, PracticalInfo> = {
   JP: {
     timeDiff: "한국과 시차가 없어요",
+    timeDiffShort: "없음",
     plug: "A타입 · 100V (한국 어댑터 필요)",
+    plugShort: "100V · A",
     tapWater: "수돗물을 마실 수 있어요",
     emergency: [
       { label: "경찰", number: "110" },
@@ -311,7 +363,9 @@ const PRACTICAL: Record<string, PracticalInfo> = {
   },
   TH: {
     timeDiff: "한국보다 2시간 느려요",
+    timeDiffShort: "−2시간",
     plug: "A·C·F타입 혼용 · 220V",
+    plugShort: "220V · A·C·F",
     tapWater: "수돗물은 마시지 말고 생수를 권장해요",
     emergency: [
       { label: "관광경찰", number: "1155" },
@@ -326,7 +380,9 @@ const PRACTICAL: Record<string, PracticalInfo> = {
   },
   VN: {
     timeDiff: "한국보다 2시간 느려요",
+    timeDiffShort: "−2시간",
     plug: "A·C타입 · 220V",
+    plugShort: "220V · A·C",
     tapWater: "수돗물은 마시지 말고 생수를 권장해요",
     emergency: [
       { label: "경찰", number: "113" },
@@ -341,7 +397,9 @@ const PRACTICAL: Record<string, PracticalInfo> = {
   },
   US: {
     timeDiff: "지역별로 13~16시간 느려요",
+    timeDiffShort: "−13~16시간",
     plug: "A·B타입 · 120V",
+    plugShort: "120V · A·B",
     tapWater: "대체로 수돗물을 마실 수 있어요",
     emergency: [{ label: "통합 긴급(경찰·구급·소방)", number: "911" }],
     embassy: CONSULAR_CALL_CENTER,
@@ -352,7 +410,9 @@ const PRACTICAL: Record<string, PracticalInfo> = {
   },
   SG: {
     timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
     plug: "G타입(영국식) · 230V (전용 어댑터 필요)",
+    plugShort: "230V · G",
     tapWater: "수돗물을 마실 수 있어요",
     emergency: [
       { label: "경찰", number: "999" },

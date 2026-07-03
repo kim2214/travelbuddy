@@ -1,15 +1,14 @@
-// 여행지(국가) 선택 트리거 + BottomSheet 선택지.
-// 환율/체크리스트 두 화면 상단에서 공통으로 사용해요.
+// 여행지(국가) 선택 트리거(리스트 행). 체크리스트 화면 상단에서 사용해요.
+// 실제 선택 UI는 공용 CountryPickerSheet가 담당해요.
 
-import { BottomSheet, ListRow } from "@toss/tds-mobile";
-import { adaptive } from "@toss/tds-colors";
+import { ListRow } from "@toss/tds-mobile";
 import { useState } from "react";
 
-import { COUNTRIES } from "../data/countries";
 import { useCountry } from "../context/CountryContext";
+import { CountryPickerSheet } from "./CountryPickerSheet";
 
 export function CountrySelector() {
-  const { country, countryCode, setCountryCode, detecting } = useCountry();
+  const { country, detecting } = useCountry();
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,25 +27,7 @@ export function CountrySelector() {
           />
         }
       />
-
-      <BottomSheet
-        open={open}
-        onClose={() => setOpen(false)}
-        header={<BottomSheet.Header>여행지를 선택해요</BottomSheet.Header>}
-      >
-        <BottomSheet.Select
-          value={countryCode}
-          options={COUNTRIES.map((c) => ({
-            name: `${c.flag}  ${c.name} · ${c.currencyName}(${c.currency})`,
-            value: c.code,
-          }))}
-          onChange={(event) => {
-            setCountryCode(event.target.value);
-            setOpen(false);
-          }}
-        />
-        <div style={{ height: 12, color: adaptive.greyBackground }} />
-      </BottomSheet>
+      <CountryPickerSheet open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

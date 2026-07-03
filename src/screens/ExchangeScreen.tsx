@@ -2,9 +2,10 @@
 
 import { Top } from "@toss/tds-mobile";
 
-import { CountrySelector } from "../components/CountrySelector";
+import { CountryHero } from "../components/CountryHero";
 import { CurrencyConverter } from "../components/CurrencyConverter";
 import { LocalInfo } from "../components/LocalInfo";
+import { LocalPricePresets } from "../components/LocalPricePresets";
 import { MannerTips } from "../components/MannerTips";
 
 export function ExchangeScreen() {
@@ -18,9 +19,10 @@ export function ExchangeScreen() {
           </Top.SubtitleParagraph>
         }
       />
-      <CountrySelector />
-      <div style={{ height: 8 }} />
+      <CountryHero />
+      <div style={{ height: 12 }} />
       <CurrencyConverter />
+      <LocalPricePresets />
       <MannerTips />
       <LocalInfo />
     </div>
