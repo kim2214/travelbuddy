@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getCountry } from "../data/countries";
+import { getCountry, type ChecklistCategory } from "../data/countries";
 import {
   loadChecklist,
   saveChecklist,
@@ -16,6 +16,7 @@ export interface ChecklistRow {
   hint?: string;
   checked: boolean;
   custom: boolean;
+  category: ChecklistCategory;
 }
 
 interface UseChecklistResult {
@@ -70,12 +71,14 @@ export function useChecklist(countryCode: string): UseChecklistResult {
       hint: item.hint,
       checked: checkedSet.has(item.id),
       custom: false,
+      category: item.category,
     }));
     const customRows: ChecklistRow[] = state.customItems.map((item) => ({
       id: item.id,
       label: item.label,
       checked: checkedSet.has(item.id),
       custom: true,
+      category: "기타",
     }));
     return [...presetRows, ...customRows];
   }, [country.checklistPreset, state.customItems, checkedSet]);

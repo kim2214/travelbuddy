@@ -8,6 +8,9 @@ export interface MannerTip {
   description: string;
 }
 
+/** 준비물 분류 (화면에서 이 순서로 그룹핑) */
+export type ChecklistCategory = "서류" | "전자기기" | "상비약" | "기타";
+
 export interface ChecklistPresetItem {
   /** 국가 내에서 고유한 항목 id */
   id: string;
@@ -15,6 +18,17 @@ export interface ChecklistPresetItem {
   label: string;
   /** 부가 설명 (선택) */
   hint?: string;
+  /** 준비물 분류 */
+  category: ChecklistCategory;
+}
+
+export interface Phrase {
+  /** 한국어 뜻 */
+  ko: string;
+  /** 현지어(또는 영어) 표기 */
+  local: string;
+  /** 한글 발음 */
+  pron: string;
 }
 
 export interface LocalPrice {
@@ -59,16 +73,18 @@ export interface Country {
   currencyName: string;
   /** 현지 물가 감각용 프리셋 (환율 화면에서 원화로 환산해 보여줘요) */
   localPrices: LocalPrice[];
+  /** 여행 회화 (현지 가이드 화면) */
+  phrases: Phrase[];
   mannerTips: MannerTip[];
   checklistPreset: ChecklistPresetItem[];
 }
 
 // 공통 준비물(모든 국가에 기본 포함). 국가별 preset 앞에 합쳐서 사용해요.
 const commonChecklist: ChecklistPresetItem[] = [
-  { id: "passport", label: "여권 (유효기간 6개월 이상)" },
-  { id: "esim", label: "eSIM / 로밍", hint: "현지 데이터 미리 준비" },
-  { id: "insurance", label: "여행자보험 가입" },
-  { id: "card", label: "해외결제 카드 / 토스 환전" },
+  { id: "passport", label: "여권 (유효기간 6개월 이상)", category: "서류" },
+  { id: "esim", label: "eSIM / 로밍", hint: "현지 데이터 미리 준비", category: "전자기기" },
+  { id: "insurance", label: "여행자보험 가입", category: "서류" },
+  { id: "card", label: "해외결제 카드 / 토스 환전", category: "기타" },
 ];
 
 const TOSS_EXCHANGE_DEEPLINK =
@@ -93,6 +109,13 @@ export const COUNTRIES: Country[] = [
       { emoji: "🚉", label: "전철 기본", amount: 200 },
       { emoji: "🚕", label: "택시 기본", amount: 500 },
     ],
+    phrases: [
+      { ko: "안녕하세요", local: "こんにちは", pron: "곤니치와" },
+      { ko: "감사합니다", local: "ありがとうございます", pron: "아리가토 고자이마스" },
+      { ko: "얼마예요?", local: "いくらですか", pron: "이쿠라데스카" },
+      { ko: "실례합니다 / 죄송합니다", local: "すみません", pron: "스미마셍" },
+      { ko: "화장실 어디예요?", local: "トイレはどこですか", pron: "토이레와 도코데스카" },
+    ],
     mannerTips: [
       {
         title: "팁 문화",
@@ -112,11 +135,12 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
-      { id: "ic-card", label: "교통카드(Suica/ICOCA)" },
+      { id: "ic-card", label: "교통카드(Suica/ICOCA)", category: "기타" },
       {
         id: "visit-japan",
         label: "Visit Japan Web 사전 등록",
         hint: "입국 심사 QR",
+        category: "서류",
       },
     ],
   },
@@ -133,6 +157,12 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍜", label: "쌀국수 · 팟타이", amount: 60 },
       { emoji: "🚕", label: "택시 기본", amount: 40 },
       { emoji: "🍺", label: "맥주", amount: 70 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "สวัสดีครับ / ค่ะ", pron: "사왓디 크랍 / 카" },
+      { ko: "감사합니다", local: "ขอบคุณครับ / ค่ะ", pron: "컵쿤 크랍 / 카" },
+      { ko: "얼마예요?", local: "เท่าไหร่", pron: "타올라이" },
+      { ko: "화장실 어디예요?", local: "ห้องน้ำอยู่ที่ไหน", pron: "헝남 유티나이" },
     ],
     mannerTips: [
       {
@@ -152,8 +182,8 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
-      { id: "repellent", label: "모기 기피제 / 상비약" },
-      { id: "adapter", label: "멀티 어댑터", hint: "A/C/F 타입 혼용" },
+      { id: "repellent", label: "모기 기피제 / 상비약", category: "상비약" },
+      { id: "adapter", label: "멀티 어댑터", hint: "A/C/F 타입 혼용", category: "전자기기" },
     ],
   },
   {
@@ -169,6 +199,12 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍜", label: "쌀국수", amount: 40000 },
       { emoji: "🏍️", label: "쎄옴(오토바이)", amount: 15000 },
       { emoji: "🍺", label: "맥주", amount: 20000 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Xin chào", pron: "신 짜오" },
+      { ko: "감사합니다", local: "Cảm ơn", pron: "깜 언" },
+      { ko: "얼마예요?", local: "Bao nhiêu tiền?", pron: "바오 니에우 띠엔" },
+      { ko: "화장실 어디예요?", local: "Nhà vệ sinh ở đâu?", pron: "냐 베 신 어 더우" },
     ],
     mannerTips: [
       {
@@ -192,8 +228,9 @@ export const COUNTRIES: Country[] = [
         id: "evisa",
         label: "전자비자(E-visa) 발급",
         hint: "입국 전 필수 확인",
+        category: "서류",
       },
-      { id: "small-cash", label: "소액권 현금 준비" },
+      { id: "small-cash", label: "소액권 현금 준비", category: "기타" },
     ],
   },
   {
@@ -209,6 +246,12 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍔", label: "버거 세트", amount: 12 },
       { emoji: "🚇", label: "지하철", amount: 2.9 },
       { emoji: "🍺", label: "맥주", amount: 7 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
     ],
     mannerTips: [
       {
@@ -227,8 +270,8 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
-      { id: "esta", label: "ESTA 승인", hint: "전자여행허가" },
-      { id: "tip-cash", label: "팁용 1달러 지폐" },
+      { id: "esta", label: "ESTA 승인", hint: "전자여행허가", category: "서류" },
+      { id: "tip-cash", label: "팁용 1달러 지폐", category: "기타" },
     ],
   },
   {
@@ -244,6 +287,12 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍚", label: "치킨라이스", amount: 5 },
       { emoji: "🚇", label: "MRT 기본", amount: 1.5 },
       { emoji: "🍺", label: "맥주", amount: 10 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { ko: "얼마예요?", local: "How much?", pron: "하우 머치" },
+      { ko: "화장실 어디예요?", local: "Where is the toilet?", pron: "웨어 이즈 더 토일렛" },
     ],
     mannerTips: [
       {
@@ -266,8 +315,9 @@ export const COUNTRIES: Country[] = [
         id: "sg-arrival",
         label: "SG Arrival Card 작성",
         hint: "입국 3일 전부터",
+        category: "서류",
       },
-      { id: "umbrella", label: "우산 (스콜 대비)" },
+      { id: "umbrella", label: "우산 (스콜 대비)", category: "기타" },
     ],
   },
 ];

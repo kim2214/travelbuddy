@@ -1,12 +1,10 @@
-// 탭1: 1초 환율 계산기 + 현지 매너 팁.
+// 탭1: 1초 환율 계산기 + 현지 물가 감각.
 
 import { Top } from "@toss/tds-mobile";
 
 import { CountryHero } from "../components/CountryHero";
 import { CurrencyConverter } from "../components/CurrencyConverter";
-import { LocalInfo } from "../components/LocalInfo";
 import { LocalPricePresets } from "../components/LocalPricePresets";
-import { MannerTips } from "../components/MannerTips";
 
 export function ExchangeScreen() {
   return (
@@ -23,8 +21,6 @@ export function ExchangeScreen() {
       <div style={{ height: 12 }} />
       <CurrencyConverter />
       <LocalPricePresets />
-      <MannerTips />
-      <LocalInfo />
     </div>
   );
 }

@@ -3,13 +3,15 @@ import { useState } from "react";
 
 import { ChecklistScreen } from "./screens/ChecklistScreen";
 import { ExchangeScreen } from "./screens/ExchangeScreen";
+import { GuideScreen } from "./screens/GuideScreen";
 import "./App.css";
 
-type TabKey = "exchange" | "checklist";
+type TabKey = "exchange" | "checklist" | "guide";
 
 const TABS: { key: TabKey; label: string; emoji: string }[] = [
   { key: "exchange", label: "환율", emoji: "💱" },
-  { key: "checklist", label: "체크리스트", emoji: "🧳" },
+  { key: "checklist", label: "준비물", emoji: "🧳" },
+  { key: "guide", label: "가이드", emoji: "🧭" },
 ];
 
 const TAB_BAR_HEIGHT = 64;
@@ -26,7 +28,9 @@ function App() {
           paddingBottom: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))`,
         }}
       >
-        {tab === "exchange" ? <ExchangeScreen /> : <ChecklistScreen />}
+        {tab === "exchange" && <ExchangeScreen />}
+        {tab === "checklist" && <ChecklistScreen />}
+        {tab === "guide" && <GuideScreen />}
       </div>
 
       {/* 하단 탭바 */}

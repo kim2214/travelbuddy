@@ -27,6 +27,26 @@ describe("countries 데이터 정합성", () => {
     }
   });
 
+  it("모든 준비물 항목에 카테고리가 지정돼 있다", () => {
+    const allowed = new Set(["서류", "전자기기", "상비약", "기타"]);
+    for (const c of COUNTRIES) {
+      for (const item of c.checklistPreset) {
+        expect(allowed.has(item.category), `${c.code} ${item.id} category`).toBe(true);
+      }
+    }
+  });
+
+  it("모든 국가가 여행 회화를 가진다", () => {
+    for (const c of COUNTRIES) {
+      expect(c.phrases.length, `${c.code} phrases`).toBeGreaterThan(0);
+      for (const p of c.phrases) {
+        expect(p.ko.trim(), `${c.code} ko`).toBeTruthy();
+        expect(p.local.trim(), `${c.code} local`).toBeTruthy();
+        expect(p.pron.trim(), `${c.code} pron`).toBeTruthy();
+      }
+    }
+  });
+
   it("기본 국가(DEFAULT_COUNTRY_CODE)가 목록에 존재한다", () => {
     expect(COUNTRIES.some((c) => c.code === DEFAULT_COUNTRY_CODE)).toBe(true);
   });
