@@ -40,6 +40,13 @@ export interface LocalPrice {
   amount: number;
 }
 
+export interface TippingInfo {
+  /** 자주 쓰는 팁 비율(%) 프리셋 (첫 번째 값이 기본 선택) */
+  presets: number[];
+  /** 팁 문화 한 줄 안내 */
+  note: string;
+}
+
 export type ProductKind = "esim" | "insurance" | "exchange";
 
 export interface Product {
@@ -79,6 +86,8 @@ export interface Country {
   phrases: Phrase[];
   mannerTips: MannerTip[];
   checklistPreset: ChecklistPresetItem[];
+  /** 팁 문화가 있는 나라의 팁 계산 정보. 있으면 환율 화면에 팁 계산기를 노출해요. */
+  tipping?: TippingInfo;
 }
 
 // 공통 준비물(모든 국가에 기본 포함). 국가별 preset 앞에 합쳐서 사용해요.
@@ -279,6 +288,10 @@ export const COUNTRIES: Country[] = [
       { id: "esta", label: "ESTA 승인", hint: "전자여행허가", category: "서류" },
       { id: "tip-cash", label: "팁용 1달러 지폐", category: "기타" },
     ],
+    tipping: {
+      presets: [18, 20, 15],
+      note: "식당은 보통 세전 금액의 15~20%를 팁으로 줘요.",
+    },
   },
   {
     code: "SG",

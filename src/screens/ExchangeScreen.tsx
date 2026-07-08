@@ -6,8 +6,12 @@ import { CountryHero } from "../components/CountryHero";
 import { CurrencyConverter } from "../components/CurrencyConverter";
 import { LocalPricePresets } from "../components/LocalPricePresets";
 import { ShareButton } from "../components/ShareButton";
+import { TipCalculator } from "../components/TipCalculator";
+import { useCountry } from "../context/CountryContext";
 
 export function ExchangeScreen() {
+  const { country } = useCountry();
+
   return (
     <div>
       <Top
@@ -23,6 +27,7 @@ export function ExchangeScreen() {
       <div style={{ height: 12 }} />
       <CurrencyConverter />
       <LocalPricePresets />
+      {country.tipping != null && <TipCalculator tipping={country.tipping} />}
     </div>
   );
 }

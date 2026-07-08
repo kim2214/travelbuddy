@@ -57,6 +57,23 @@ describe("countries 데이터 정합성", () => {
     expect(COUNTRIES.some((c) => c.code === DEFAULT_COUNTRY_CODE)).toBe(true);
   });
 
+  it("팁 정보가 있는 국가는 유효한 프리셋과 안내 문구를 가진다", () => {
+    for (const c of COUNTRIES) {
+      if (c.tipping == null) {
+        continue;
+      }
+      expect(c.tipping.presets.length, `${c.code} tipping presets`).toBeGreaterThan(0);
+      for (const pct of c.tipping.presets) {
+        expect(pct, `${c.code} tipping percent`).toBeGreaterThan(0);
+      }
+      expect(c.tipping.note.trim(), `${c.code} tipping note`).toBeTruthy();
+    }
+  });
+
+  it("미국은 팁 계산기 정보를 가진다", () => {
+    expect(getCountry("US").tipping).toBeTruthy();
+  });
+
   it("지원 국가 목록에 대만·필리핀이 포함된다", () => {
     const codes = COUNTRIES.map((c) => c.code);
     expect(codes).toEqual(
