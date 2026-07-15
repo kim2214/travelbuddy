@@ -22,7 +22,12 @@ export interface ChecklistPresetItem {
   category: ChecklistCategory;
 }
 
+/** 회화 분류 (화면에서 이 순서로 그룹핑) */
+export type PhraseCategory = "기본" | "식당" | "쇼핑" | "교통" | "긴급";
+
 export interface Phrase {
+  /** 회화 분류 */
+  category: PhraseCategory;
   /** 한국어 뜻 */
   ko: string;
   /** 현지어(또는 영어) 표기 */
@@ -122,11 +127,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🚕", label: "택시 기본", amount: 500 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "こんにちは", pron: "곤니치와" },
-      { ko: "감사합니다", local: "ありがとうございます", pron: "아리가토 고자이마스" },
-      { ko: "얼마예요?", local: "いくらですか", pron: "이쿠라데스카" },
-      { ko: "실례합니다 / 죄송합니다", local: "すみません", pron: "스미마셍" },
-      { ko: "화장실 어디예요?", local: "トイレはどこですか", pron: "토이레와 도코데스카" },
+      { category: "기본", ko: "안녕하세요", local: "こんにちは", pron: "곤니치와" },
+      { category: "기본", ko: "감사합니다", local: "ありがとうございます", pron: "아리가토 고자이마스" },
+      { category: "기본", ko: "실례합니다 / 죄송합니다", local: "すみません", pron: "스미마셍" },
+      { category: "식당", ko: "주문할게요", local: "注文お願いします", pron: "츄몬 오네가이시마스" },
+      { category: "식당", ko: "계산해 주세요", local: "お会計お願いします", pron: "오카이케이 오네가이시마스" },
+      { category: "쇼핑", ko: "얼마예요?", local: "いくらですか", pron: "이쿠라데스카" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "カードは使えますか", pron: "카-도와 츠카에마스카" },
+      { category: "교통", ko: "여기로 가주세요", local: "ここまでお願いします", pron: "코코마데 오네가이시마스" },
+      { category: "교통", ko: "역은 어디예요?", local: "駅はどこですか", pron: "에키와 도코데스카" },
+      { category: "긴급", ko: "도와주세요", local: "助けてください", pron: "타스케테 쿠다사이" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "トイレはどこですか", pron: "토이레와 도코데스카" },
     ],
     mannerTips: [
       {
@@ -172,10 +183,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 70 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "สวัสดีครับ / ค่ะ", pron: "사왓디 크랍 / 카" },
-      { ko: "감사합니다", local: "ขอบคุณครับ / ค่ะ", pron: "컵쿤 크랍 / 카" },
-      { ko: "얼마예요?", local: "เท่าไหร่", pron: "타올라이" },
-      { ko: "화장실 어디예요?", local: "ห้องน้ำอยู่ที่ไหน", pron: "헝남 유티나이" },
+      { category: "기본", ko: "안녕하세요", local: "สวัสดีครับ / ค่ะ", pron: "사왓디 크랍 / 카" },
+      { category: "기본", ko: "감사합니다", local: "ขอบคุณครับ / ค่ะ", pron: "컵쿤 크랍 / 카" },
+      { category: "기본", ko: "죄송합니다", local: "ขอโทษครับ / ค่ะ", pron: "커톳 크랍 / 카" },
+      { category: "식당", ko: "계산해 주세요", local: "เช็คบิล", pron: "첵빈" },
+      { category: "식당", ko: "맵지 않게 해주세요", local: "ไม่เผ็ด", pron: "마이 펫" },
+      { category: "쇼핑", ko: "얼마예요?", local: "เท่าไหร่", pron: "타올라이" },
+      { category: "쇼핑", ko: "깎아주세요", local: "ลดหน่อยได้ไหม", pron: "롯너이 다이마이" },
+      { category: "교통", ko: "여기로 가주세요", local: "ไปที่นี่", pron: "빠이 티니" },
+      { category: "교통", ko: "여기서 세워주세요", local: "จอดที่นี่", pron: "쩟 티니" },
+      { category: "긴급", ko: "도와주세요", local: "ช่วยด้วย", pron: "추어이 두어이" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "ห้องน้ำอยู่ที่ไหน", pron: "헝남 유티나이" },
     ],
     mannerTips: [
       {
@@ -215,10 +233,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 20000 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Xin chào", pron: "신 짜오" },
-      { ko: "감사합니다", local: "Cảm ơn", pron: "깜 언" },
-      { ko: "얼마예요?", local: "Bao nhiêu tiền?", pron: "바오 니에우 띠엔" },
-      { ko: "화장실 어디예요?", local: "Nhà vệ sinh ở đâu?", pron: "냐 베 신 어 더우" },
+      { category: "기본", ko: "안녕하세요", local: "Xin chào", pron: "신 짜오" },
+      { category: "기본", ko: "감사합니다", local: "Cảm ơn", pron: "깜 언" },
+      { category: "기본", ko: "죄송합니다", local: "Xin lỗi", pron: "신 로이" },
+      { category: "식당", ko: "계산해 주세요", local: "Tính tiền", pron: "띤 띠엔" },
+      { category: "식당", ko: "이거 주세요", local: "Cho tôi cái này", pron: "쩌 또이 까이 나이" },
+      { category: "쇼핑", ko: "얼마예요?", local: "Bao nhiêu tiền?", pron: "바오 니에우 띠엔" },
+      { category: "쇼핑", ko: "깎아주세요", local: "Giảm giá được không?", pron: "지암 자 드억 콩" },
+      { category: "교통", ko: "여기로 가주세요", local: "Cho tôi đến đây", pron: "쩌 또이 덴 더이" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Dừng ở đây", pron: "즈응 어 더이" },
+      { category: "긴급", ko: "도와주세요", local: "Cứu tôi với", pron: "끄우 또이 버이" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Nhà vệ sinh ở đâu?", pron: "냐 베 신 어 더우" },
     ],
     mannerTips: [
       {
@@ -263,10 +288,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 7 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
-      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
-      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
-      { ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
+      { category: "기본", ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { category: "기본", ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "I'd like to order", pron: "아이드 라이크 투 오더" },
+      { category: "식당", ko: "계산서 주세요", local: "Check, please", pron: "첵 플리즈" },
+      { category: "쇼핑", ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Do you take card?", pron: "두 유 테이크 카드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Take me here, please", pron: "테이크 미 히어 플리즈" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Stop here, please", pron: "스탑 히어 플리즈" },
+      { category: "긴급", ko: "도와주세요", local: "Help me, please", pron: "헬프 미 플리즈" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
     ],
     mannerTips: [
       {
@@ -309,10 +341,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 10 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
-      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
-      { ko: "얼마예요?", local: "How much?", pron: "하우 머치" },
-      { ko: "화장실 어디예요?", local: "Where is the toilet?", pron: "웨어 이즈 더 토일렛" },
+      { category: "기본", ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { category: "기본", ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "I'd like to order", pron: "아이드 라이크 투 오더" },
+      { category: "식당", ko: "계산서 주세요", local: "Bill, please", pron: "빌 플리즈" },
+      { category: "쇼핑", ko: "얼마예요?", local: "How much?", pron: "하우 머치" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Can I pay by card?", pron: "캔 아이 페이 바이 카드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Take me here, please", pron: "테이크 미 히어 플리즈" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Stop here, please", pron: "스탑 히어 플리즈" },
+      { category: "긴급", ko: "도와주세요", local: "Help, please", pron: "헬프 플리즈" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Where is the toilet?", pron: "웨어 이즈 더 토일렛" },
     ],
     mannerTips: [
       {
@@ -356,10 +395,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🚇", label: "MRT 기본", amount: 20 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "你好", pron: "니하오" },
-      { ko: "감사합니다", local: "謝謝", pron: "셰셰" },
-      { ko: "얼마예요?", local: "多少錢", pron: "뚸사오 첸" },
-      { ko: "화장실 어디예요?", local: "廁所在哪裡", pron: "처쒀 짜이 나리" },
+      { category: "기본", ko: "안녕하세요", local: "你好", pron: "니하오" },
+      { category: "기본", ko: "감사합니다", local: "謝謝", pron: "셰셰" },
+      { category: "기본", ko: "실례합니다", local: "不好意思", pron: "뿌하오이쓰" },
+      { category: "식당", ko: "주문할게요", local: "我要點餐", pron: "워 야오 디엔찬" },
+      { category: "식당", ko: "계산해 주세요", local: "買單", pron: "마이단" },
+      { category: "쇼핑", ko: "얼마예요?", local: "多少錢", pron: "뚸사오 첸" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "可以刷卡嗎", pron: "커이 슈아카 마" },
+      { category: "교통", ko: "여기로 가주세요", local: "到這裡", pron: "따오 저리" },
+      { category: "교통", ko: "여기서 세워주세요", local: "停這裡", pron: "팅 저리" },
+      { category: "긴급", ko: "도와주세요", local: "幫幫我", pron: "빵빵 워" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "廁所在哪裡", pron: "처쒀 짜이 나리" },
     ],
     mannerTips: [
       {
@@ -404,10 +450,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🚕", label: "택시 기본", amount: 45 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Kumusta", pron: "쿠무스타" },
-      { ko: "감사합니다", local: "Salamat", pron: "살라맛" },
-      { ko: "얼마예요?", local: "Magkano?", pron: "막카노" },
-      { ko: "화장실 어디예요?", local: "Nasaan ang banyo?", pron: "나사안 앙 반요" },
+      { category: "기본", ko: "안녕하세요", local: "Kumusta", pron: "쿠무스타" },
+      { category: "기본", ko: "감사합니다", local: "Salamat", pron: "살라맛" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "Order po", pron: "오더 뽀" },
+      { category: "식당", ko: "계산서 주세요", local: "Bill po", pron: "빌 뽀" },
+      { category: "쇼핑", ko: "얼마예요?", local: "Magkano?", pron: "막카노" },
+      { category: "쇼핑", ko: "깎아주세요", local: "Pwede tawad?", pron: "뿌웨데 따와드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Dito po", pron: "디또 뽀" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Para po", pron: "빠라 뽀" },
+      { category: "긴급", ko: "도와주세요", local: "Tulong!", pron: "뚤롱" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Nasaan ang banyo?", pron: "나사안 앙 반요" },
     ],
     mannerTips: [
       {
@@ -451,11 +504,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 7 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Bonjour", pron: "봉주르" },
-      { ko: "감사합니다", local: "Merci", pron: "메르시" },
-      { ko: "얼마예요?", local: "C'est combien ?", pron: "세 콩비앙" },
-      { ko: "실례합니다", local: "Excusez-moi", pron: "엑스퀴제무아" },
-      { ko: "화장실 어디예요?", local: "Où sont les toilettes ?", pron: "우 송 레 투알렛" },
+      { category: "기본", ko: "안녕하세요", local: "Bonjour", pron: "봉주르" },
+      { category: "기본", ko: "감사합니다", local: "Merci", pron: "메르시" },
+      { category: "기본", ko: "실례합니다", local: "Excusez-moi", pron: "엑스퀴제무아" },
+      { category: "식당", ko: "주문할게요", local: "Je voudrais commander", pron: "즈 부드레 코망데" },
+      { category: "식당", ko: "계산서 주세요", local: "L'addition, s'il vous plaît", pron: "라디시옹 실 부 플레" },
+      { category: "쇼핑", ko: "얼마예요?", local: "C'est combien ?", pron: "세 콩비앙" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Je peux payer par carte ?", pron: "즈 푀 페이에 파르 카르트" },
+      { category: "교통", ko: "여기로 가주세요", local: "Amenez-moi ici, s'il vous plaît", pron: "아므네무아 이시 실 부 플레" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Arrêtez-vous ici", pron: "아레테부 이시" },
+      { category: "긴급", ko: "도와주세요", local: "Au secours !", pron: "오 스쿠르" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Où sont les toilettes ?", pron: "우 송 레 투알렛" },
     ],
     mannerTips: [
       {
@@ -495,11 +554,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍨", label: "젤라토", amount: 3 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Buongiorno", pron: "부온조르노" },
-      { ko: "감사합니다", local: "Grazie", pron: "그라찌에" },
-      { ko: "얼마예요?", local: "Quanto costa?", pron: "콴토 코스타" },
-      { ko: "실례합니다", local: "Scusi", pron: "스쿠지" },
-      { ko: "화장실 어디예요?", local: "Dov'è il bagno?", pron: "도베 일 바뇨" },
+      { category: "기본", ko: "안녕하세요", local: "Buongiorno", pron: "부온조르노" },
+      { category: "기본", ko: "감사합니다", local: "Grazie", pron: "그라찌에" },
+      { category: "기본", ko: "실례합니다", local: "Scusi", pron: "스쿠지" },
+      { category: "식당", ko: "주문할게요", local: "Vorrei ordinare", pron: "보레이 오르디나레" },
+      { category: "식당", ko: "계산서 주세요", local: "Il conto, per favore", pron: "일 콘토 페르 파보레" },
+      { category: "쇼핑", ko: "얼마예요?", local: "Quanto costa?", pron: "콴토 코스타" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Posso pagare con carta?", pron: "포소 파가레 콘 카르타" },
+      { category: "교통", ko: "여기로 가주세요", local: "Mi porti qui, per favore", pron: "미 포르티 퀴 페르 파보레" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Si fermi qui", pron: "시 페르미 퀴" },
+      { category: "긴급", ko: "도와주세요", local: "Aiuto!", pron: "아이우토" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Dov'è il bagno?", pron: "도베 일 바뇨" },
     ],
     mannerTips: [
       {
@@ -543,11 +608,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주(카냐)", amount: 2.5 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hola", pron: "올라" },
-      { ko: "감사합니다", local: "Gracias", pron: "그라시아스" },
-      { ko: "얼마예요?", local: "¿Cuánto cuesta?", pron: "콴토 쿠에스타" },
-      { ko: "실례합니다", local: "Perdón", pron: "페르돈" },
-      { ko: "화장실 어디예요?", local: "¿Dónde está el baño?", pron: "돈데 에스타 엘 바뇨" },
+      { category: "기본", ko: "안녕하세요", local: "Hola", pron: "올라" },
+      { category: "기본", ko: "감사합니다", local: "Gracias", pron: "그라시아스" },
+      { category: "기본", ko: "실례합니다", local: "Perdón", pron: "페르돈" },
+      { category: "식당", ko: "주문할게요", local: "Quiero pedir", pron: "키에로 페디르" },
+      { category: "식당", ko: "계산서 주세요", local: "La cuenta, por favor", pron: "라 쿠엔타 포르 파보르" },
+      { category: "쇼핑", ko: "얼마예요?", local: "¿Cuánto cuesta?", pron: "콴토 쿠에스타" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "¿Puedo pagar con tarjeta?", pron: "푸에도 파가르 콘 타르헤타" },
+      { category: "교통", ko: "여기로 가주세요", local: "Lléveme aquí, por favor", pron: "예베메 아키 포르 파보르" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Pare aquí", pron: "파레 아키" },
+      { category: "긴급", ko: "도와주세요", local: "¡Ayuda!", pron: "아유다" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "¿Dónde está el baño?", pron: "돈데 에스타 엘 바뇨" },
     ],
     mannerTips: [
       {
@@ -586,10 +657,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주(파인트)", amount: 6 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
-      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
-      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
-      { ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
+      { category: "기본", ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { category: "기본", ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "I'd like to order", pron: "아이드 라이크 투 오더" },
+      { category: "식당", ko: "계산서 주세요", local: "Could I get the bill?", pron: "쿠드 아이 겟 더 빌" },
+      { category: "쇼핑", ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Do you take card?", pron: "두 유 테이크 카드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Take me here, please", pron: "테이크 미 히어 플리즈" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Stop here, please", pron: "스탑 히어 플리즈" },
+      { category: "긴급", ko: "도와주세요", local: "Help, please", pron: "헬프 플리즈" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
     ],
     mannerTips: [
       {
@@ -628,11 +706,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 10 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "你好", pron: "니하오" },
-      { ko: "감사합니다", local: "谢谢", pron: "셰셰" },
-      { ko: "얼마예요?", local: "多少钱", pron: "뚸사오 첸" },
-      { ko: "실례합니다", local: "不好意思", pron: "뿌하오이쓰" },
-      { ko: "화장실 어디예요?", local: "厕所在哪里", pron: "처쒀 짜이 나리" },
+      { category: "기본", ko: "안녕하세요", local: "你好", pron: "니하오" },
+      { category: "기본", ko: "감사합니다", local: "谢谢", pron: "셰셰" },
+      { category: "기본", ko: "실례합니다", local: "不好意思", pron: "뿌하오이쓰" },
+      { category: "식당", ko: "주문할게요", local: "我要点菜", pron: "워 야오 디엔차이" },
+      { category: "식당", ko: "계산해 주세요", local: "买单", pron: "마이단" },
+      { category: "쇼핑", ko: "얼마예요?", local: "多少钱", pron: "뚸사오 첸" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "可以刷卡吗", pron: "커이 슈아카 마" },
+      { category: "교통", ko: "여기로 가주세요", local: "到这里", pron: "따오 저리" },
+      { category: "교통", ko: "여기서 세워주세요", local: "停这里", pron: "팅 저리" },
+      { category: "긴급", ko: "도와주세요", local: "救命", pron: "지우밍" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "厕所在哪里", pron: "처쒀 짜이 나리" },
     ],
     mannerTips: [
       { title: "팁 문화", description: "팁 문화가 없어요." },
@@ -673,10 +757,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🥟", label: "딤섬", amount: 40 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "你好", pron: "네이호우" },
-      { ko: "감사합니다", local: "唔該", pron: "음꼬이" },
-      { ko: "얼마예요?", local: "幾多錢", pron: "께이도친" },
-      { ko: "화장실 어디예요?", local: "洗手間喺邊度", pron: "사이사우간 하이빈도" },
+      { category: "기본", ko: "안녕하세요", local: "你好", pron: "네이호우" },
+      { category: "기본", ko: "감사합니다", local: "唔該", pron: "음꼬이" },
+      { category: "기본", ko: "죄송합니다", local: "對唔住", pron: "도이음쥐" },
+      { category: "식당", ko: "계산해 주세요", local: "埋單", pron: "마이단" },
+      { category: "식당", ko: "이거 주세요", local: "要呢個", pron: "유 니고" },
+      { category: "쇼핑", ko: "얼마예요?", local: "幾多錢", pron: "께이도친" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "可唔可以碌卡", pron: "호음호이 룩카" },
+      { category: "교통", ko: "여기로 가주세요", local: "去呢度", pron: "회이 니도" },
+      { category: "교통", ko: "여기서 세워주세요", local: "呢度落車", pron: "니도 록체" },
+      { category: "긴급", ko: "도와주세요", local: "救命", pron: "까우멩" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "洗手間喺邊度", pron: "사이사우간 하이빈도" },
     ],
     mannerTips: [
       {
@@ -715,10 +806,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 6 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hello / Håfa adai", pron: "헬로 / 하파다이" },
-      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
-      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
-      { ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
+      { category: "기본", ko: "안녕하세요", local: "Hello / Håfa adai", pron: "헬로 / 하파다이" },
+      { category: "기본", ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "I'd like to order", pron: "아이드 라이크 투 오더" },
+      { category: "식당", ko: "계산서 주세요", local: "Check, please", pron: "첵 플리즈" },
+      { category: "쇼핑", ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Do you take card?", pron: "두 유 테이크 카드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Take me here, please", pron: "테이크 미 히어 플리즈" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Stop here, please", pron: "스탑 히어 플리즈" },
+      { category: "긴급", ko: "도와주세요", local: "Help me, please", pron: "헬프 미 플리즈" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
     ],
     mannerTips: [
       {
@@ -765,10 +863,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주(스쿠너)", amount: 9 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
-      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
-      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
-      { ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
+      { category: "기본", ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { category: "기본", ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { category: "기본", ko: "실례합니다", local: "Excuse me", pron: "익스큐즈 미" },
+      { category: "식당", ko: "주문할게요", local: "I'd like to order", pron: "아이드 라이크 투 오더" },
+      { category: "식당", ko: "계산서 주세요", local: "Can I get the bill?", pron: "캔 아이 겟 더 빌" },
+      { category: "쇼핑", ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { category: "쇼핑", ko: "카드 되나요?", local: "Do you take card?", pron: "두 유 테이크 카드" },
+      { category: "교통", ko: "여기로 가주세요", local: "Take me here, please", pron: "테이크 미 히어 플리즈" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Stop here, please", pron: "스탑 히어 플리즈" },
+      { category: "긴급", ko: "도와주세요", local: "Help, please", pron: "헬프 플리즈" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
     ],
     mannerTips: [
       {
@@ -809,10 +914,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주", amount: 15 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Apa khabar", pron: "아파 카바르" },
-      { ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
-      { ko: "얼마예요?", local: "Berapa harga?", pron: "브라파 하르가" },
-      { ko: "화장실 어디예요?", local: "Di mana tandas?", pron: "디 마나 딴다스" },
+      { category: "기본", ko: "안녕하세요", local: "Apa khabar", pron: "아파 카바르" },
+      { category: "기본", ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
+      { category: "기본", ko: "실례합니다", local: "Maaf", pron: "마아프" },
+      { category: "식당", ko: "주문할게요", local: "Saya nak pesan", pron: "사야 낙 프산" },
+      { category: "식당", ko: "계산해 주세요", local: "Boleh kira?", pron: "볼레 끼라" },
+      { category: "쇼핑", ko: "얼마예요?", local: "Berapa harga?", pron: "브라파 하르가" },
+      { category: "쇼핑", ko: "깎아주세요", local: "Boleh kurang?", pron: "볼레 꾸랑" },
+      { category: "교통", ko: "여기로 가주세요", local: "Ke sini", pron: "크 시니" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Berhenti di sini", pron: "브르헨티 디 시니" },
+      { category: "긴급", ko: "도와주세요", local: "Tolong!", pron: "똘롱" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Di mana tandas?", pron: "디 마나 딴다스" },
     ],
     mannerTips: [
       {
@@ -856,10 +968,17 @@ export const COUNTRIES: Country[] = [
       { emoji: "🍺", label: "맥주(빈땅)", amount: 35000 },
     ],
     phrases: [
-      { ko: "안녕하세요", local: "Halo", pron: "할로" },
-      { ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
-      { ko: "얼마예요?", local: "Berapa harganya?", pron: "브라파 하르가냐" },
-      { ko: "화장실 어디예요?", local: "Di mana toilet?", pron: "디 마나 토일렛" },
+      { category: "기본", ko: "안녕하세요", local: "Halo", pron: "할로" },
+      { category: "기본", ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
+      { category: "기본", ko: "실례합니다", local: "Permisi", pron: "프르미시" },
+      { category: "식당", ko: "주문할게요", local: "Saya mau pesan", pron: "사야 마우 프산" },
+      { category: "식당", ko: "계산해 주세요", local: "Minta bon", pron: "민따 본" },
+      { category: "쇼핑", ko: "얼마예요?", local: "Berapa harganya?", pron: "브라파 하르가냐" },
+      { category: "쇼핑", ko: "깎아주세요", local: "Boleh kurang?", pron: "볼레 꾸랑" },
+      { category: "교통", ko: "여기로 가주세요", local: "Ke sini", pron: "크 시니" },
+      { category: "교통", ko: "여기서 세워주세요", local: "Berhenti di sini", pron: "브르헨띠 디 시니" },
+      { category: "긴급", ko: "도와주세요", local: "Tolong!", pron: "똘롱" },
+      { category: "긴급", ko: "화장실 어디예요?", local: "Di mana toilet?", pron: "디 마나 토일렛" },
     ],
     mannerTips: [
       {

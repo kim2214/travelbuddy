@@ -37,13 +37,24 @@ describe("countries 데이터 정합성", () => {
   });
 
   it("모든 국가가 여행 회화를 가진다", () => {
+    const allowedCategories = new Set(["기본", "식당", "쇼핑", "교통", "긴급"]);
     for (const c of COUNTRIES) {
       expect(c.phrases.length, `${c.code} phrases`).toBeGreaterThan(0);
       for (const p of c.phrases) {
         expect(p.ko.trim(), `${c.code} ko`).toBeTruthy();
         expect(p.local.trim(), `${c.code} local`).toBeTruthy();
         expect(p.pron.trim(), `${c.code} pron`).toBeTruthy();
+        expect(allowedCategories.has(p.category), `${c.code} ${p.ko} category`).toBe(true);
       }
+    }
+  });
+
+  it("모든 국가의 회화가 기본 카테고리를 하나 이상 가진다", () => {
+    for (const c of COUNTRIES) {
+      expect(
+        c.phrases.some((p) => p.category === "기본"),
+        `${c.code} 기본 카테고리`,
+      ).toBe(true);
     }
   });
 
