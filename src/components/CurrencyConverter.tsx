@@ -31,6 +31,12 @@ const AMOUNT_PRESETS: Record<string, number[]> = {
   TWD: [100, 500, 1000],
   PHP: [100, 500, 1000],
   EUR: [10, 50, 100],
+  GBP: [10, 50, 100],
+  CNY: [50, 100, 500],
+  HKD: [100, 500, 1000],
+  AUD: [10, 50, 100],
+  MYR: [50, 100, 500],
+  IDR: [100000, 500000, 1000000],
 };
 
 function presetsFor(currency: string): number[] {

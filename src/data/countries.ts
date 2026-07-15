@@ -435,6 +435,458 @@ export const COUNTRIES: Country[] = [
       { id: "sunscreen-ph", label: "모기 기피제 / 자외선 차단제", category: "상비약" },
     ],
   },
+  {
+    code: "FR",
+    name: "프랑스",
+    flag: "🇫🇷",
+    currency: "EUR",
+    currencySymbol: "€",
+    currencyName: "유로",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "에스프레소", amount: 2 },
+      { emoji: "🥐", label: "크루아상", amount: 1.5 },
+      { emoji: "🚇", label: "지하철", amount: 2.15 },
+      { emoji: "🍺", label: "맥주", amount: 7 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Bonjour", pron: "봉주르" },
+      { ko: "감사합니다", local: "Merci", pron: "메르시" },
+      { ko: "얼마예요?", local: "C'est combien ?", pron: "세 콩비앙" },
+      { ko: "실례합니다", local: "Excusez-moi", pron: "엑스퀴제무아" },
+      { ko: "화장실 어디예요?", local: "Où sont les toilettes ?", pron: "우 송 레 투알렛" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "봉사료가 요금에 포함돼요. 만족했다면 잔돈 정도만 남기면 충분해요.",
+      },
+      {
+        title: "인사 예절",
+        description:
+          "상점에 들어가고 나올 때 Bonjour·Au revoir 인사가 기본 예의예요.",
+      },
+      {
+        title: "소매치기",
+        description: "관광지·지하철에 소매치기가 많아요. 가방은 앞으로 메세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "adapter-c", label: "C타입 멀티 어댑터", category: "전자기기" },
+      { id: "anti-theft", label: "소매치기 대비 크로스백", category: "기타" },
+    ],
+  },
+  {
+    code: "IT",
+    name: "이탈리아",
+    flag: "🇮🇹",
+    currency: "EUR",
+    currencySymbol: "€",
+    currencyName: "유로",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "에스프레소", amount: 1.2 },
+      { emoji: "🍕", label: "피자 마르게리타", amount: 8 },
+      { emoji: "🚇", label: "버스·지하철", amount: 1.5 },
+      { emoji: "🍨", label: "젤라토", amount: 3 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Buongiorno", pron: "부온조르노" },
+      { ko: "감사합니다", local: "Grazie", pron: "그라찌에" },
+      { ko: "얼마예요?", local: "Quanto costa?", pron: "콴토 코스타" },
+      { ko: "실례합니다", local: "Scusi", pron: "스쿠지" },
+      { ko: "화장실 어디예요?", local: "Dov'è il bagno?", pron: "도베 일 바뇨" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "자릿세(코페르토)가 계산서에 포함돼요. 별도 팁 관습은 약한 편이에요.",
+      },
+      {
+        title: "카페 이용",
+        description: "바에 서서 마시면 저렴하고, 앉으면 자릿세가 붙어요.",
+      },
+      {
+        title: "소매치기",
+        description: "로마·나폴리 등 관광지에서 소매치기를 조심하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "adapter-c", label: "C타입 멀티 어댑터", category: "전자기기" },
+      {
+        id: "attraction-booking",
+        label: "주요 명소 사전 예약",
+        hint: "콜로세오 등",
+        category: "기타",
+      },
+    ],
+  },
+  {
+    code: "ES",
+    name: "스페인",
+    flag: "🇪🇸",
+    currency: "EUR",
+    currencySymbol: "€",
+    currencyName: "유로",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 1.5 },
+      { emoji: "🥘", label: "타파스", amount: 3 },
+      { emoji: "🚇", label: "지하철", amount: 1.5 },
+      { emoji: "🍺", label: "맥주(카냐)", amount: 2.5 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hola", pron: "올라" },
+      { ko: "감사합니다", local: "Gracias", pron: "그라시아스" },
+      { ko: "얼마예요?", local: "¿Cuánto cuesta?", pron: "콴토 쿠에스타" },
+      { ko: "실례합니다", local: "Perdón", pron: "페르돈" },
+      { ko: "화장실 어디예요?", local: "¿Dónde está el baño?", pron: "돈데 에스타 엘 바뇨" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description: "의무가 아니에요. 만족하면 잔돈~5% 정도만 남겨요.",
+      },
+      {
+        title: "생활 리듬",
+        description:
+          "낮에 시에스타로 문을 닫는 상점이 있고, 저녁 식사는 21시 이후가 흔해요.",
+      },
+      {
+        title: "소매치기",
+        description: "바르셀로나 람블라스 거리 등에서 소매치기를 조심하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "adapter-c", label: "C타입 멀티 어댑터", category: "전자기기" },
+      { id: "anti-theft", label: "소매치기 대비 크로스백", category: "기타" },
+    ],
+  },
+  {
+    code: "GB",
+    name: "영국",
+    flag: "🇬🇧",
+    currency: "GBP",
+    currencySymbol: "£",
+    currencyName: "파운드",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 3 },
+      { emoji: "🍔", label: "버거 세트", amount: 8 },
+      { emoji: "🚇", label: "튜브 기본", amount: 2.8 },
+      { emoji: "🍺", label: "맥주(파인트)", amount: 6 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "식당은 10~12.5%가 일반적이에요. 서비스 차지 포함 여부를 확인하고, 펍에서 카운터 주문 시엔 팁이 없어요.",
+      },
+      {
+        title: "교통 예절",
+        description: "좌측통행이고, 에스컬레이터는 오른쪽에 서요.",
+      },
+      {
+        title: "결제",
+        description: "컨택리스(카드·폰) 탭 결제가 어디서나 통해요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "adapter-g", label: "G타입(영국식) 어댑터", category: "전자기기" },
+      { id: "contactless", label: "컨택리스 결제 카드", category: "기타" },
+    ],
+  },
+  {
+    code: "CN",
+    name: "중국",
+    flag: "🇨🇳",
+    currency: "CNY",
+    currencySymbol: "¥",
+    currencyName: "위안",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 25 },
+      { emoji: "🍜", label: "면 요리", amount: 25 },
+      { emoji: "🚇", label: "지하철 기본", amount: 3 },
+      { emoji: "🍺", label: "맥주", amount: 10 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "你好", pron: "니하오" },
+      { ko: "감사합니다", local: "谢谢", pron: "셰셰" },
+      { ko: "얼마예요?", local: "多少钱", pron: "뚸사오 첸" },
+      { ko: "실례합니다", local: "不好意思", pron: "뿌하오이쓰" },
+      { ko: "화장실 어디예요?", local: "厕所在哪里", pron: "처쒀 짜이 나리" },
+    ],
+    mannerTips: [
+      { title: "팁 문화", description: "팁 문화가 없어요." },
+      {
+        title: "결제",
+        description:
+          "알리페이·위챗페이 중심이에요. 현금·해외카드가 제한적이니 미리 준비하세요.",
+      },
+      {
+        title: "인터넷",
+        description: "구글·카카오톡 등이 차단돼요. 로밍이나 VPN을 고려하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      {
+        id: "cn-visa",
+        label: "비자·무비자 조건 확인",
+        hint: "체류 목적·기간별로 달라요",
+        category: "서류",
+      },
+      { id: "cn-pay", label: "알리페이·위챗페이 설정", category: "기타" },
+    ],
+  },
+  {
+    code: "HK",
+    name: "홍콩",
+    flag: "🇭🇰",
+    currency: "HKD",
+    currencySymbol: "HK$",
+    currencyName: "홍콩 달러",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 35 },
+      { emoji: "🍜", label: "완탕면", amount: 45 },
+      { emoji: "🚇", label: "MTR 기본", amount: 5 },
+      { emoji: "🥟", label: "딤섬", amount: 40 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "你好", pron: "네이호우" },
+      { ko: "감사합니다", local: "唔該", pron: "음꼬이" },
+      { ko: "얼마예요?", local: "幾多錢", pron: "께이도친" },
+      { ko: "화장실 어디예요?", local: "洗手間喺邊度", pron: "사이사우간 하이빈도" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "식당은 보통 봉사료 10%가 포함돼요. 잔돈 정도만 추가로 남겨요.",
+      },
+      {
+        title: "교통카드",
+        description: "옥토퍼스(Octopus) 카드로 MTR·버스·편의점까지 편하게 써요.",
+      },
+      {
+        title: "교통",
+        description: "좌측통행이에요. 길 건널 때 오는 방향에 유의하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "octopus", label: "옥토퍼스 카드", category: "기타" },
+      { id: "adapter-g", label: "G타입(영국식) 어댑터", category: "전자기기" },
+    ],
+  },
+  {
+    code: "GU",
+    name: "괌",
+    flag: "🇬🇺",
+    currency: "USD",
+    currencySymbol: "$",
+    currencyName: "달러",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 4 },
+      { emoji: "🍔", label: "버거 세트", amount: 12 },
+      { emoji: "🚕", label: "택시 기본", amount: 4 },
+      { emoji: "🍺", label: "맥주", amount: 6 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hello / Håfa adai", pron: "헬로 / 하파다이" },
+      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { ko: "화장실 어디예요?", local: "Where's the restroom?", pron: "웨어즈 더 레스트룸" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description: "미국식 팁 문화예요. 식당은 15~20% 정도 팁을 줘요.",
+      },
+      {
+        title: "세금",
+        description: "표시 가격에 세금이 빠져 있어 결제 시 금액이 올라가요.",
+      },
+      {
+        title: "입국",
+        description: "ESTA 또는 괌·CNMI 전용 무비자(G-visa) 자격을 확인하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      {
+        id: "gu-entry",
+        label: "ESTA 또는 무비자 서류 확인",
+        hint: "괌 G-visa waiver",
+        category: "서류",
+      },
+      { id: "sunscreen-gu", label: "자외선 차단제 / 물놀이 용품", category: "상비약" },
+    ],
+    tipping: {
+      presets: [18, 20, 15],
+      note: "식당은 보통 세전 금액의 15~20%를 팁으로 줘요.",
+    },
+  },
+  {
+    code: "AU",
+    name: "호주",
+    flag: "🇦🇺",
+    currency: "AUD",
+    currencySymbol: "A$",
+    currencyName: "호주 달러",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "플랫화이트", amount: 4.5 },
+      { emoji: "🍔", label: "버거", amount: 15 },
+      { emoji: "🚆", label: "대중교통 기본", amount: 4 },
+      { emoji: "🍺", label: "맥주(스쿠너)", amount: 9 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Hello", pron: "헬로" },
+      { ko: "감사합니다", local: "Thank you", pron: "땡큐" },
+      { ko: "얼마예요?", local: "How much is it?", pron: "하우 머치 이즈 잇" },
+      { ko: "화장실 어디예요?", local: "Where's the toilet?", pron: "웨어즈 더 토일렛" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "팁 문화가 약해요. 의무가 아니라 특별히 만족했을 때만 줘요.",
+      },
+      {
+        title: "입국·검역",
+        description:
+          "ETA(전자여행허가)가 필요하고, 음식물 검역이 매우 엄격해요. 반입품을 반드시 신고하세요.",
+      },
+      {
+        title: "자외선",
+        description: "자외선이 매우 강해요. 선크림과 모자를 꼭 챙기세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      { id: "au-eta", label: "ETA 전자여행허가", category: "서류" },
+      { id: "adapter-i", label: "I타입 어댑터", category: "전자기기" },
+      { id: "sunscreen-au", label: "자외선 차단제", category: "상비약" },
+    ],
+  },
+  {
+    code: "MY",
+    name: "말레이시아",
+    flag: "🇲🇾",
+    currency: "MYR",
+    currencySymbol: "RM",
+    currencyName: "링깃",
+    fractionDigits: 2,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피(코피)", amount: 3 },
+      { emoji: "🍚", label: "나시르막", amount: 8 },
+      { emoji: "🚆", label: "LRT 기본", amount: 2 },
+      { emoji: "🍺", label: "맥주", amount: 15 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Apa khabar", pron: "아파 카바르" },
+      { ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
+      { ko: "얼마예요?", local: "Berapa harga?", pron: "브라파 하르가" },
+      { ko: "화장실 어디예요?", local: "Di mana tandas?", pron: "디 마나 딴다스" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description: "보통 서비스 차지(10%)가 포함돼 별도 팁은 필요 없어요.",
+      },
+      {
+        title: "종교·예절",
+        description:
+          "이슬람 문화권이에요. 사원 방문 시 복장을 갖추고, 물건은 오른손으로 건네요.",
+      },
+      {
+        title: "날씨",
+        description: "덥고 스콜이 잦아요. 우산과 자외선 차단을 준비하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      {
+        id: "mdac",
+        label: "MDAC 온라인 등록",
+        hint: "말레이시아 입국카드",
+        category: "서류",
+      },
+      { id: "adapter-g", label: "G타입(영국식) 어댑터", category: "전자기기" },
+    ],
+  },
+  {
+    code: "ID",
+    name: "인도네시아",
+    flag: "🇮🇩",
+    currency: "IDR",
+    currencySymbol: "Rp",
+    currencyName: "루피아",
+    fractionDigits: 0,
+    // 대략적 현지 물가(환산 감각용)
+    localPrices: [
+      { emoji: "☕", label: "커피", amount: 25000 },
+      { emoji: "🍚", label: "나시고렝", amount: 35000 },
+      { emoji: "🏍️", label: "고젝(오토바이)", amount: 15000 },
+      { emoji: "🍺", label: "맥주(빈땅)", amount: 35000 },
+    ],
+    phrases: [
+      { ko: "안녕하세요", local: "Halo", pron: "할로" },
+      { ko: "감사합니다", local: "Terima kasih", pron: "뜨리마 까시" },
+      { ko: "얼마예요?", local: "Berapa harganya?", pron: "브라파 하르가냐" },
+      { ko: "화장실 어디예요?", local: "Di mana toilet?", pron: "디 마나 토일렛" },
+    ],
+    mannerTips: [
+      {
+        title: "팁 문화",
+        description:
+          "의무는 아니지만 소액 팁이 환영받아요. 일부 호텔·식당은 서비스 차지가 포함돼요.",
+      },
+      {
+        title: "사원 방문",
+        description: "발리 사원에서는 사룽(천)을 두르고 노출 있는 복장을 피해요.",
+      },
+      {
+        title: "교통·환전",
+        description: "고젝·그랩 이용을 권장하고, 환전은 인가 환전소를 이용하세요.",
+      },
+    ],
+    checklistPreset: [
+      ...commonChecklist,
+      {
+        id: "id-visa",
+        label: "도착비자(VOA) 또는 e-VOA 준비",
+        hint: "발리 등 입국 시",
+        category: "서류",
+      },
+      { id: "repellent-id", label: "모기 기피제 / 지사제", category: "상비약" },
+    ],
+  },
 ];
 
 /** 모든 국가에 공통으로 노출하는 여행 eSIM 연계 상품 (로밍도깨비) */
@@ -616,6 +1068,157 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     scams: [
       "택시 미터기 거부·바가지에 유의하고 그랩(Grab)을 권장해요.",
       "환전은 인가 환전소를 이용하고 야간 이동을 조심하세요.",
+    ],
+  },
+  FR: {
+    timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
+    timeDiffShort: "−7~8시간",
+    plug: "C·E타입 · 230V",
+    plugShort: "230V · C·E",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [
+      { label: "통합 긴급(EU)", number: "112" },
+      { label: "경찰", number: "17" },
+      { label: "구급(SAMU)", number: "15" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "에펠탑·몽마르트르 주변 팔찌 강매·서명 사기를 조심하세요.",
+      "지하철·기차에서 가방을 몸 앞으로 두세요.",
+    ],
+  },
+  IT: {
+    timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
+    timeDiffShort: "−7~8시간",
+    plug: "C·F·L타입 · 230V",
+    plugShort: "230V · C·F·L",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [{ label: "통합 긴급(EU)", number: "112" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "로마 명소 주변 팔찌 강매·가짜 청원 서명을 조심하세요.",
+      "버스·지하철 소매치기가 많으니 소지품에 유의하세요.",
+    ],
+  },
+  ES: {
+    timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
+    timeDiffShort: "−7~8시간",
+    plug: "C·F타입 · 230V",
+    plugShort: "230V · C·F",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [{ label: "통합 긴급(EU)", number: "112" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "바르셀로나 람블라스 거리 소매치기가 악명 높아요.",
+      "도움을 주는 척 시선을 끄는 수법에 주의하세요.",
+    ],
+  },
+  GB: {
+    timeDiff: "한국보다 8~9시간 느려요 (서머타임)",
+    timeDiffShort: "−8~9시간",
+    plug: "G타입(영국식) · 230V (전용 어댑터 필요)",
+    plugShort: "230V · G",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [
+      { label: "통합 긴급", number: "999" },
+      { label: "긴급(대체)", number: "112" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "관광지에서 소매치기와 가짜 자선 모금을 조심하세요.",
+      "무허가 택시 대신 블랙캡·우버를 이용하세요.",
+    ],
+  },
+  CN: {
+    timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
+    plug: "A·C·I타입 · 220V",
+    plugShort: "220V · A·C·I",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "경찰", number: "110" },
+      { label: "구급", number: "120" },
+      { label: "소방", number: "119" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "찻집·미술관 초대 후 바가지를 씌우는 수법을 조심하세요.",
+      "무허가 택시·환전을 피하고 공식 앱 결제를 이용하세요.",
+    ],
+  },
+  HK: {
+    timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
+    plug: "G타입(영국식) · 220V",
+    plugShort: "220V · G",
+    tapWater: "수돗물을 마실 수 있지만 생수를 쓰는 경우가 많아요",
+    emergency: [{ label: "통합 긴급", number: "999" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "관광지 상점의 전자제품 가격 바가지에 유의하세요.",
+      "번화가 호객·환전 사기를 조심하세요.",
+    ],
+  },
+  GU: {
+    timeDiff: "한국보다 1시간 빨라요",
+    timeDiffShort: "+1시간",
+    plug: "A·B타입 · 110~120V",
+    plugShort: "120V · A·B",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [{ label: "통합 긴급(경찰·구급·소방)", number: "911" }],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "대체로 안전하지만 렌터카·물놀이 시 귀중품 분실에 유의하세요.",
+      "야간에 인적 드문 해변은 피하세요.",
+    ],
+  },
+  AU: {
+    timeDiff: "한국보다 1~2시간 빨라요 (동부·서머타임)",
+    timeDiffShort: "+1~2시간",
+    plug: "I타입 · 230V (전용 어댑터 필요)",
+    plugShort: "230V · I",
+    tapWater: "수돗물을 마실 수 있어요",
+    emergency: [
+      { label: "통합 긴급", number: "000" },
+      { label: "긴급(휴대폰)", number: "112" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "가짜 검역·세금 환급 문자(스미싱)를 조심하세요.",
+      "야생동물 접근과 강한 파도·이안류에 유의하세요.",
+    ],
+  },
+  MY: {
+    timeDiff: "한국보다 1시간 느려요",
+    timeDiffShort: "−1시간",
+    plug: "G타입(영국식) · 240V",
+    plugShort: "240V · G",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "통합 긴급", number: "999" },
+      { label: "긴급(휴대폰)", number: "112" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "택시 미터기 거부·바가지에 유의하고 그랩(Grab)을 권장해요.",
+      "환전은 인가 환전소를 이용하세요.",
+    ],
+  },
+  ID: {
+    timeDiff: "한국보다 1~2시간 느려요 (지역별)",
+    timeDiffShort: "−1~2시간",
+    plug: "C·F타입 · 230V",
+    plugShort: "230V · C·F",
+    tapWater: "수돗물은 마시지 말고 생수를 권장해요",
+    emergency: [
+      { label: "통합 긴급", number: "112" },
+      { label: "경찰", number: "110" },
+      { label: "구급", number: "118" },
+    ],
+    embassy: CONSULAR_CALL_CENTER,
+    scams: [
+      "택시 미터기 거부·환전 사기에 유의하고 그랩·고젝을 권장해요.",
+      "오토바이 대여 시 보험·헬멧을 확인하세요.",
     ],
   },
 };

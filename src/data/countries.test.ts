@@ -74,11 +74,31 @@ describe("countries 데이터 정합성", () => {
     expect(getCountry("US").tipping).toBeTruthy();
   });
 
-  it("지원 국가 목록에 대만·필리핀이 포함된다", () => {
+  it("지원 국가 목록에 주요 여행지가 포함된다", () => {
     const codes = COUNTRIES.map((c) => c.code);
     expect(codes).toEqual(
-      expect.arrayContaining(["JP", "TH", "VN", "US", "SG", "TW", "PH"]),
+      expect.arrayContaining([
+        "JP", "TH", "VN", "US", "SG", "TW", "PH",
+        "FR", "IT", "ES", "GB", "CN", "HK", "GU", "AU", "MY", "ID",
+      ]),
     );
+  });
+
+  it("국가 코드에 중복이 없다", () => {
+    const codes = COUNTRIES.map((c) => c.code);
+    expect(new Set(codes).size).toBe(codes.length);
+  });
+
+  it("모든 국가가 폴백이 아닌 고유 실용정보를 가진다", () => {
+    // getPracticalInfo는 미정의 코드를 기본 국가 정보로 폴백하므로,
+    // PRACTICAL에 항목이 누락되면 기본 국가와 동일한 객체 참조가 반환돼요.
+    const fallback = getPracticalInfo("ZZ");
+    for (const c of COUNTRIES) {
+      if (c.code === DEFAULT_COUNTRY_CODE) {
+        continue;
+      }
+      expect(getPracticalInfo(c.code), `${c.code} practical`).not.toBe(fallback);
+    }
   });
 });
 

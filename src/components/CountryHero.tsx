@@ -17,6 +17,16 @@ const GRADIENTS: Record<string, [string, string]> = {
   SG: ["#FF6478", "#E23144"],
   TW: ["#12B5A5", "#0E9488"],
   PH: ["#F6A609", "#E8730C"],
+  FR: ["#5A86F0", "#2B4FC7"],
+  IT: ["#22B07A", "#12855A"],
+  ES: ["#F0A72B", "#D64530"],
+  GB: ["#3D5AAF", "#22346E"],
+  CN: ["#F04747", "#C21414"],
+  HK: ["#E85C6B", "#C22C3C"],
+  GU: ["#25B0D6", "#1476C8"],
+  AU: ["#1FB6C4", "#1279B8"],
+  MY: ["#2C8FD6", "#1E5FB0"],
+  ID: ["#F0525E", "#C31E2A"],
 };
 const DEFAULT_GRADIENT: [string, string] = ["#4C7DF0", "#2748B0"];
 

@@ -31,7 +31,7 @@ describe("getCountryFromEntry", () => {
   });
 
   it("지원하지 않는 국가는 null", () => {
-    schemeUri.mockReturnValue("intoss://travelbuddy?country=FR");
+    schemeUri.mockReturnValue("intoss://travelbuddy?country=DE");
     expect(getCountryFromEntry()).toBeNull();
   });
 

@@ -27,7 +27,7 @@ describe("detectCountryByGPS", () => {
   });
 
   it("지원하지 않는 국가면 null을 반환한다", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ countryCode: "FR" })));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ countryCode: "DE" })));
     expect(await detectCountryByGPS()).toBeNull();
   });
 
