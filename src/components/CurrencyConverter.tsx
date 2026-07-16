@@ -12,6 +12,7 @@ import {
   convert,
   fractionDigitsFor,
   formatAmount,
+  rateDisplayUnitFor,
 } from "../lib/exchangeRate";
 
 type Direction = "foreignToKrw" | "krwToForeign";
@@ -66,13 +67,14 @@ export function CurrencyConverter() {
     return convert(numericInput, from, to, rates);
   }, [rates, numericInput, from, to]);
 
-  // 1단위 기준 환율 (예: 1¥ = 9.1원)
+  // 통화별 보기 편한 단위 기준 환율 (예: 100¥ = 919원, 1$ = 1,490원)
+  const unitAmount = rateDisplayUnitFor(country.currency);
   const unitRate = useMemo(() => {
     if (rates == null) {
       return null;
     }
-    return convert(1, country.currency, "KRW", rates);
-  }, [rates, country.currency]);
+    return convert(unitAmount, country.currency, "KRW", rates);
+  }, [rates, country.currency, unitAmount]);
 
   const handleSwap = () => {
     setDirection((d) => (d === "foreignToKrw" ? "krwToForeign" : "foreignToKrw"));
@@ -231,8 +233,8 @@ export function CurrencyConverter() {
             color={adaptive.grey500}
             style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
           >
-            1 {country.currencySymbol}
-            {country.currency} = {formatAmount(Number(unitRate.toFixed(2)), "KRW")}원
+            {unitAmount.toLocaleString("ko-KR")} {country.currencySymbol}
+            {country.currency} = {formatAmount(Math.round(unitRate), "KRW")}원
           </Text>
         )}
         {error ? (

@@ -5,6 +5,7 @@ import {
   fetchRates,
   formatAmount,
   fractionDigitsFor,
+  rateDisplayUnitFor,
   type Rates,
 } from "./exchangeRate";
 
@@ -81,6 +82,19 @@ describe("fractionDigitsFor", () => {
   });
 });
 
+describe("rateDisplayUnitFor", () => {
+  it("소액 통화는 보기 편한 큰 단위를 쓴다", () => {
+    expect(rateDisplayUnitFor("JPY")).toBe(100);
+    expect(rateDisplayUnitFor("VND")).toBe(1000);
+    expect(rateDisplayUnitFor("IDR")).toBe(1000);
+  });
+  it("그 외 통화는 1단위를 쓴다", () => {
+    for (const c of ["USD", "EUR", "GBP", "THB", "TWD", "PHP", "SGD", "HKD", "CNY", "AUD", "MYR"]) {
+      expect(rateDisplayUnitFor(c), c).toBe(1);
+    }
+  });
+});
+
 describe("formatAmount", () => {
   it("천 단위 콤마를 넣는다", () => {
     expect(formatAmount(1000, "KRW")).toBe("1,000");
@@ -117,6 +131,50 @@ describe("fetchRates", () => {
     expect(result).toEqual({ rates: { JPY: 0.1 }, fetchedAt: NOW, fromCache: false });
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(setItem).toHaveBeenCalledOnce();
+  });
+
+  it("주 소스가 실패(HTTP 오류)하면 보조 소스로 폴백해 저장한다", async () => {
+    const fetchMock = vi.fn((url: string) =>
+      url.includes("open.er-api.com")
+        ? Promise.resolve(jsonResponse({ result: "error" }, false, 500))
+        : Promise.resolve(
+            jsonResponse({ date: "2024-01-01", krw: { jpy: 0.1, usd: 0.00075 } }),
+          ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchRates(NOW);
+
+    expect(result.fromCache).toBe(false);
+    expect(result.rates.JPY).toBeCloseTo(0.1);
+    expect(result.rates.USD).toBeCloseTo(0.00075);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(setItem).toHaveBeenCalledOnce();
+  });
+
+  it("주 소스 네트워크 오류 시 보조 소스로 폴백한다", async () => {
+    const fetchMock = vi.fn((url: string) =>
+      url.includes("open.er-api.com")
+        ? Promise.reject(new Error("network down"))
+        : Promise.resolve(jsonResponse({ krw: { jpy: 0.11 } })),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchRates(NOW);
+
+    expect(result.fromCache).toBe(false);
+    expect(result.rates.JPY).toBeCloseTo(0.11);
+  });
+
+  it("보조 소스 응답이 krw 객체를 주지 않으면 실패로 처리한다", async () => {
+    const fetchMock = vi.fn((url: string) =>
+      url.includes("open.er-api.com")
+        ? Promise.reject(new Error("network down"))
+        : Promise.resolve(jsonResponse({ date: "2024-01-01" })),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(fetchRates(NOW)).rejects.toThrow();
   });
 
   it("네트워크 실패 시 만료된 캐시로 폴백한다", async () => {
