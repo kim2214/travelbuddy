@@ -85,6 +85,18 @@ describe("countries 데이터 정합성", () => {
     expect(getCountry("US").tipping).toBeTruthy();
   });
 
+  it("백분율 팁 문화권(미국·괌·필리핀·영국·태국)에 팁 계산기 정보가 있다", () => {
+    for (const code of ["US", "GU", "PH", "GB", "TH"]) {
+      expect(getCountry(code).tipping, `${code} tipping`).toBeTruthy();
+    }
+  });
+
+  it("봉사료 포함/무팁 국가(싱가포르·홍콩·일본)에는 팁 계산기 정보가 없다", () => {
+    for (const code of ["SG", "HK", "JP"]) {
+      expect(getCountry(code).tipping, `${code} tipping`).toBeUndefined();
+    }
+  });
+
   it("지원 국가 목록에 주요 여행지가 포함된다", () => {
     const codes = COUNTRIES.map((c) => c.code);
     expect(codes).toEqual(

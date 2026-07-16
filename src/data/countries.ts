@@ -216,6 +216,10 @@ export const COUNTRIES: Country[] = [
       { id: "repellent", label: "모기 기피제 / 상비약", category: "상비약" },
       { id: "adapter", label: "멀티 어댑터", hint: "A/C/F 타입 혼용", category: "전자기기" },
     ],
+    tipping: {
+      presets: [10, 5, 15],
+      note: "식당에서 잔돈~10% 정도 남겨요. 고급 식당은 봉사료(10%)가 포함되기도 해요.",
+    },
   },
   {
     code: "VN",
@@ -487,6 +491,10 @@ export const COUNTRIES: Country[] = [
       },
       { id: "sunscreen-ph", label: "모기 기피제 / 자외선 차단제", category: "상비약" },
     ],
+    tipping: {
+      presets: [10, 15, 5],
+      note: "식당·호텔에서 보통 10% 안팎을 팁으로 줘요.",
+    },
   },
   {
     code: "FR",
@@ -689,6 +697,10 @@ export const COUNTRIES: Country[] = [
       { id: "adapter-g", label: "G타입(영국식) 어댑터", category: "전자기기" },
       { id: "contactless", label: "컨택리스 결제 카드", category: "기타" },
     ],
+    tipping: {
+      presets: [12.5, 10, 15],
+      note: "식당은 10~12.5%가 일반적이에요. 서비스 차지 포함 여부를 확인하세요.",
+    },
   },
   {
     code: "CN",
