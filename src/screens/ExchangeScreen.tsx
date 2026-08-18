@@ -4,6 +4,7 @@ import { Top } from "@toss/tds-mobile";
 
 import { CountryHero } from "../components/CountryHero";
 import { CurrencyConverter } from "../components/CurrencyConverter";
+import { DutyFreeCalculator } from "../components/DutyFreeCalculator";
 import { LocalPricePresets } from "../components/LocalPricePresets";
 import { RateTrend } from "../components/RateTrend";
 import { ShareButton } from "../components/ShareButton";
@@ -35,6 +36,8 @@ export function ExchangeScreen() {
       {country.tipping != null && (
         <TipCalculator key={country.code} tipping={country.tipping} />
       )}
+      {/* 입력 상태가 국가 간에 이어지지 않도록 리마운트해요. 내역 자체는 국가별로 저장돼요. */}
+      <DutyFreeCalculator key={`dutyfree-${country.code}`} />
     </div>
   );
 }
