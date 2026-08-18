@@ -7,6 +7,7 @@ import { LocalInfo } from "../components/LocalInfo";
 import { MannerTips } from "../components/MannerTips";
 import { Phrasebook } from "../components/Phrasebook";
 import { ShareButton } from "../components/ShareButton";
+import { SizeGuide } from "../components/SizeGuide";
 
 export function GuideScreen() {
   return (
@@ -25,6 +26,7 @@ export function GuideScreen() {
       <Phrasebook />
       <MannerTips />
       <LocalInfo />
+      <SizeGuide />
     </div>
   );
 }
