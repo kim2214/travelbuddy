@@ -4,6 +4,7 @@ import { Top } from "@toss/tds-mobile";
 
 import { CountrySelector } from "../components/CountrySelector";
 import { Checklist } from "../components/Checklist";
+import { DepartureDateRow } from "../components/DepartureDateRow";
 import { ProductCard } from "../components/ProductCard";
 import { SectionHeader } from "../components/SectionHeader";
 import {
@@ -26,6 +27,7 @@ export function ChecklistScreen() {
         }
       />
       <CountrySelector />
+      <DepartureDateRow />
       <Checklist />
 
       <div style={{ marginTop: 16 }}>
