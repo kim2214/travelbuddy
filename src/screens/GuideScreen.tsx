@@ -8,6 +8,7 @@ import { MannerTips } from "../components/MannerTips";
 import { Phrasebook } from "../components/Phrasebook";
 import { ShareButton } from "../components/ShareButton";
 import { SizeGuide } from "../components/SizeGuide";
+import { WeatherCard } from "../components/WeatherCard";
 
 export function GuideScreen() {
   return (
@@ -23,6 +24,8 @@ export function GuideScreen() {
       />
       <CountryHero />
       <div style={{ height: 12 }} />
+      <WeatherCard />
+      <div style={{ height: 8 }} />
       <Phrasebook />
       <MannerTips />
       <LocalInfo />
