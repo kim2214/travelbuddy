@@ -1,5 +1,5 @@
 import { Text } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 import { useState } from "react";
 
 import { logEvent } from "./lib/analytics";
@@ -23,7 +23,7 @@ function App() {
   const [tab, setTab] = useState<TabKey>("exchange");
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: colors.white }}>
+    <div style={{ minHeight: "100vh", backgroundColor: adaptive.background }}>
       {/* 탭 컨텐츠 (상단 노치/상태바 + 하단 탭바 높이 + safe area만큼 여백 확보) */}
       <div
         style={{
@@ -46,7 +46,7 @@ function App() {
           display: "flex",
           height: TAB_BAR_HEIGHT,
           paddingBottom: "env(safe-area-inset-bottom, 0px)",
-          backgroundColor: colors.white,
+          backgroundColor: adaptive.background,
           borderTop: `1px solid ${adaptive.grey100}`,
           zIndex: 10,
         }}
@@ -64,7 +64,12 @@ function App() {
               // onClick은 그대로 실행돼요.
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
+                if (t.key === tab) {
+                  return;
+                }
                 setTab(t.key);
+                // 이전 탭에서 스크롤한 위치가 새 탭에 남지 않게 최상단으로 이동해요.
+                window.scrollTo(0, 0);
                 logEvent("tab_change", { tab: t.key });
               }}
               style={{

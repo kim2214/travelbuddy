@@ -2,7 +2,7 @@
 // 카드를 탭하면 현지어가 클립보드에 복사돼, 현지에서 화면을 보여주거나 붙여넣어 쓸 수 있어요.
 
 import { Text, useToast } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 import { useEffect } from "react";
 
 import type { Phrase, PhraseCategory } from "../data/countries";
@@ -93,7 +93,7 @@ export function Phrasebook() {
                   padding: "14px 16px",
                   border: "none",
                   borderTop: index === 0 ? "none" : `1px solid ${adaptive.grey100}`,
-                  backgroundColor: colors.white,
+                  backgroundColor: adaptive.background,
                   textAlign: "left",
                   cursor: "pointer",
                 }}

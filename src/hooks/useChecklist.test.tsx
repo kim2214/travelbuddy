@@ -89,6 +89,32 @@ describe("useChecklist", () => {
     expect(second!.id).not.toBe(first!.id);
   });
 
+  it("로드가 끝나기 전의 토글은 무시한다 (로드 결과를 덮어쓰지 않음)", async () => {
+    let resolveLoad!: (value: string | null) => void;
+    getItem.mockReturnValue(
+      new Promise<string | null>((resolve) => {
+        resolveLoad = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useChecklist("JP"));
+    expect(result.current.loading).toBe(true);
+
+    // 로딩 중 토글: 저장되지도, 상태에 반영되지도 않아요.
+    act(() => result.current.toggle("passport"));
+    expect(setItem).not.toHaveBeenCalled();
+    expect(result.current.checkedCount).toBe(0);
+
+    await act(async () => {
+      resolveLoad(JSON.stringify({ checkedIds: ["esim"], customItems: [], nextSeq: 0 }));
+    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    // 로드 결과가 온전히 반영돼요.
+    expect(result.current.rows.find((r) => r.id === "passport")?.checked).toBe(false);
+    expect(result.current.rows.find((r) => r.id === "esim")?.checked).toBe(true);
+  });
+
   it("저장된 상태(체크·커스텀)를 복원한다", async () => {
     getItem.mockResolvedValue(
       JSON.stringify({

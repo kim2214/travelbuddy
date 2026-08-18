@@ -2,11 +2,12 @@
 // 프리셋 + 사용자 커스텀 항목을 체크/추가/삭제하고, 진행률을 보여줘요. 상태는 Storage에 영속돼요.
 
 import { Button, Checkbox, ListRow, ProgressBar, Text, TextField } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 import { useEffect, useRef, useState } from "react";
 
 import type { ChecklistCategory } from "../data/countries";
 import { logEvent } from "../lib/analytics";
+import { requestAppReview } from "../lib/review";
 import { useCountry } from "../context/CountryContext";
 import { useChecklist, type ChecklistRow } from "../hooks/useChecklist";
 
@@ -20,7 +21,7 @@ const CATEGORY_ORDER: { key: ChecklistCategory; emoji: string }[] = [
 
 export function Checklist() {
   const { country } = useCountry();
-  const { rows, checkedCount, totalCount, progress, toggle, addCustom, removeCustom } =
+  const { rows, checkedCount, totalCount, progress, loading, toggle, addCustom, removeCustom } =
     useChecklist(country.code);
   const [newItem, setNewItem] = useState("");
 
@@ -34,15 +35,22 @@ export function Checklist() {
     setNewItem("");
   };
 
-  // 준비물을 모두 체크하는 순간 1회 기록해요.
+  // 준비물을 모두 체크하는 순간(로드 후 미완료→완료 전이)에만 반응해요.
+  // null은 "아직 기준 없음"이라, 이미 완료된 채 열었을 때(탭 재방문 등) 중복 실행되지 않아요.
   const isComplete = totalCount > 0 && checkedCount === totalCount;
-  const wasCompleteRef = useRef(false);
+  const wasCompleteRef = useRef<boolean | null>(null);
   useEffect(() => {
-    if (isComplete && !wasCompleteRef.current) {
+    if (loading) {
+      wasCompleteRef.current = null;
+      return;
+    }
+    if (wasCompleteRef.current === false && isComplete) {
       logEvent("checklist_complete", { country: country.code });
+      // 준비를 마친 직후가 만족도가 가장 높은 순간이라 여기서 리뷰를 요청해요.
+      void requestAppReview();
     }
     wasCompleteRef.current = isComplete;
-  }, [isComplete, country.code]);
+  }, [loading, isComplete, country.code]);
 
   // 카테고리별로 그룹핑 (항목이 있는 그룹만 노출)
   const groups = CATEGORY_ORDER.map(({ key, emoji }) => ({
@@ -119,7 +127,7 @@ export function Checklist() {
             margin: "0 24px 4px",
             padding: "18px 20px",
             borderRadius: 16,
-            backgroundColor: "#E7F8F0",
+            backgroundColor: adaptive.green50,
             display: "flex",
             alignItems: "center",
             gap: 12,
@@ -127,7 +135,12 @@ export function Checklist() {
         >
           <span style={{ fontSize: 30 }}>✈️</span>
           <div>
-            <Text typography="t6" fontWeight="bold" color="#12B886" style={{ display: "block" }}>
+            <Text
+              typography="t6"
+              fontWeight="bold"
+              color={adaptive.green500}
+              style={{ display: "block" }}
+            >
               모든 준비 완료!
             </Text>
             <Text typography="t7" color={adaptive.grey600} style={{ display: "block", marginTop: 2 }}>
@@ -176,7 +189,7 @@ export function Checklist() {
           gap: 8,
           alignItems: "flex-end",
           padding: "16px 24px 8px",
-          backgroundColor: colors.white,
+          backgroundColor: adaptive.background,
         }}
       >
         <div style={{ flex: 1 }}>

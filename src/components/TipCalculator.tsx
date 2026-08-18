@@ -3,10 +3,11 @@
 // 합계는 원화로도 환산해 감을 잡을 수 있어요. tipping 정보가 있는 나라에서만 노출돼요.
 
 import { NumericSpinner, SegmentedControl, Text, TextField } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
 import type { TippingInfo } from "../data/countries";
+import { amountInputFormat } from "../lib/amountFormat";
 import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
@@ -79,13 +80,7 @@ export function TipCalculator({ tipping }: { tipping: TippingInfo }) {
           placeholder="금액을 입력해요"
           value={bill}
           inputMode="decimal"
-          format={{
-            transform: (v) => {
-              const [int, ...frac] = String(v).split(".");
-              const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              return frac.length > 0 ? `${grouped}.${frac.join(".")}` : grouped;
-            },
-          }}
+          format={amountInputFormat}
           onChange={(e) => setBill(e.target.value)}
         />
 
@@ -144,7 +139,7 @@ export function TipCalculator({ tipping }: { tipping: TippingInfo }) {
           style={{
             padding: "14px 16px",
             borderRadius: 14,
-            backgroundColor: colors.white,
+            backgroundColor: adaptive.background,
             display: "flex",
             flexDirection: "column",
             gap: 8,

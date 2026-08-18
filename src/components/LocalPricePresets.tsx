@@ -2,7 +2,7 @@
 // 커피·라멘·택시 같은 현지 대표 물가를 원화로 즉시 환산해 "체감 물가"를 보여줘요.
 
 import { Text } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
@@ -42,7 +42,7 @@ export function LocalPricePresets() {
                 gap: 11,
                 padding: "13px 14px",
                 borderRadius: 14,
-                backgroundColor: colors.white,
+                backgroundColor: adaptive.background,
                 boxShadow: "0 1px 2px rgba(23,31,40,0.05)",
               }}
             >

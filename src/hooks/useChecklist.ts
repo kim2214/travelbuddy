@@ -53,13 +53,18 @@ export function useChecklist(countryCode: string): UseChecklistResult {
     };
   }, [countryCode]);
 
-  // 상태 변경 시 Storage에 반영해요. (로딩 중에는 덮어쓰지 않아요)
+  // 상태 변경 시 Storage에 반영해요.
+  // 로드가 끝나기 전의 조작은 무시해요 — 빈 상태 기반으로 저장하면
+  // 곧 도착할 로드 결과가 사용자의 변경을 덮어써 유실돼요.
   const persist = useCallback(
     (next: ChecklistState) => {
+      if (loading) {
+        return;
+      }
       setState(next);
       void saveChecklist(countryCode, next);
     },
-    [countryCode],
+    [countryCode, loading],
   );
 
   const checkedSet = useMemo(() => new Set(state.checkedIds), [state.checkedIds]);

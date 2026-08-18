@@ -27,7 +27,11 @@ export function ExchangeScreen() {
       <div style={{ height: 12 }} />
       <CurrencyConverter />
       <LocalPricePresets />
-      {country.tipping != null && <TipCalculator tipping={country.tipping} />}
+      {/* 국가가 바뀌면 리마운트해요. 팁 비율 프리셋이 나라마다 달라서(예: 미국 18% → 태국 10%)
+          상태를 이어받으면 선택되지 않은 비율로 계산되는 문제가 있어요. */}
+      {country.tipping != null && (
+        <TipCalculator key={country.code} tipping={country.tipping} />
+      )}
     </div>
   );
 }

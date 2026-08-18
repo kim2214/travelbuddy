@@ -2,9 +2,10 @@
 // 금액을 입력하면 KRW ↔ 현지 통화를 즉시 환산하고, 방향 전환 버튼을 제공해요.
 
 import { Button, Loader, Skeleton, Text, TextButton, TextField } from "@toss/tds-mobile";
-import { adaptive, colors } from "@toss/tds-colors";
+import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
+import { amountInputFormat } from "../lib/amountFormat";
 import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
@@ -44,11 +45,28 @@ function presetsFor(currency: string): number[] {
   return AMOUNT_PRESETS[currency] ?? [10, 50, 100];
 }
 
+/** 최초 진입/국가 변경 시 기본 입력 금액. 해당 통화 프리셋 중 가장 큰 값을 써요. */
+function defaultAmountFor(currency: string): number {
+  const presets = presetsFor(currency);
+  return presets[presets.length - 1];
+}
+
 export function CurrencyConverter() {
   const { country } = useCountry();
   const { rates, fetchedAt, fromCache, loading, error, reload } = useExchangeRateContext();
   const [direction, setDirection] = useState<Direction>("foreignToKrw");
-  const [input, setInput] = useState("10000");
+  const [input, setInput] = useState(() => String(defaultAmountFor(country.currency)));
+
+  // 국가가 바뀌면 입력 금액을 새 통화의 기본값으로 리셋해요(렌더 중 상태 보정 패턴).
+  // 이전 값(예: ¥10,000)을 두면 $10,000처럼 의미가 바뀌어요.
+  // 단, KRW 입력 모드(krwToForeign)에서는 입력 통화가 그대로 KRW라 값을 유지해요.
+  const [lastCountryCode, setLastCountryCode] = useState(country.code);
+  if (lastCountryCode !== country.code) {
+    setLastCountryCode(country.code);
+    if (direction === "foreignToKrw") {
+      setInput(String(defaultAmountFor(country.currency)));
+    }
+  }
 
   const from = direction === "foreignToKrw" ? country.currency : "KRW";
   const to = direction === "foreignToKrw" ? "KRW" : country.currency;
@@ -149,14 +167,7 @@ export function CurrencyConverter() {
         placeholder="금액을 입력해요"
         value={input}
         inputMode="decimal"
-        format={{
-          transform: (v) => {
-            // 정수부에만 천 단위 콤마를 넣어요. 소수부까지 그룹핑하면 "1,234.5,678"처럼 깨져요.
-            const [int, ...frac] = String(v).split(".");
-            const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            return frac.length > 0 ? `${grouped}.${frac.join(".")}` : grouped;
-          },
-        }}
+        format={amountInputFormat}
         onChange={(e) => setInput(e.target.value)}
       />
 
@@ -176,7 +187,7 @@ export function CurrencyConverter() {
               padding: "8px 0",
               borderRadius: 10,
               border: `1px solid ${adaptive.grey200}`,
-              backgroundColor: colors.white,
+              backgroundColor: adaptive.background,
               cursor: "pointer",
             }}
           >
@@ -199,7 +210,7 @@ export function CurrencyConverter() {
         style={{
           padding: "16px 12px",
           borderRadius: 14,
-          backgroundColor: colors.white,
+          backgroundColor: adaptive.background,
           textAlign: "right",
         }}
       >
@@ -247,7 +258,7 @@ export function CurrencyConverter() {
               gap: 8,
             }}
           >
-            <Text typography="st12" color={colors.red500}>
+            <Text typography="st12" color={adaptive.red500}>
               최신 환율 갱신에 실패했어요 · 저장된 값
             </Text>
             <TextButton size="small" variant="underline" onClick={reload}>
@@ -259,6 +270,10 @@ export function CurrencyConverter() {
             {updatedLabel}
           </Text>
         )}
+        {/* 시장 평균(mid-market) 환율이라 실제 환전 적용 환율과 달라요. 오해 방지용 고지. */}
+        <Text typography="st12" color={adaptive.grey400} style={{ display: "block", marginTop: 2 }}>
+          시장 평균 환율 기준이라 실제 환전 환율과 다를 수 있어요
+        </Text>
       </div>
 
       {loading && (
