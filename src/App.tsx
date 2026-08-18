@@ -17,18 +17,20 @@ const TABS: { key: TabKey; label: string; emoji: string }[] = [
   { key: "guide", label: "가이드", emoji: "🧭" },
 ];
 
-const TAB_BAR_HEIGHT = 64;
+const TAB_BAR_HEIGHT = 60;
+// 플로팅 탭바가 화면 하단에서 떨어져 있는 간격 (앱인토스 브랜딩 가이드의 플로팅 형태)
+const TAB_BAR_BOTTOM_GAP = 16;
 
 function App() {
   const [tab, setTab] = useState<TabKey>("exchange");
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: adaptive.background }}>
-      {/* 탭 컨텐츠 (상단 노치/상태바 + 하단 탭바 높이 + safe area만큼 여백 확보) */}
+      {/* 탭 컨텐츠 (상단 노치/상태바 + 하단 플로팅 탭바 높이 + safe area만큼 여백 확보) */}
       <div
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
-          paddingBottom: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))`,
+          paddingBottom: `calc(${TAB_BAR_HEIGHT + TAB_BAR_BOTTOM_GAP * 2}px + env(safe-area-inset-bottom, 0px))`,
         }}
       >
         {tab === "exchange" && <ExchangeScreen />}
@@ -36,18 +38,20 @@ function App() {
         {tab === "guide" && <GuideScreen />}
       </div>
 
-      {/* 하단 탭바 */}
+      {/* 하단 플로팅 탭바: 토스 탭바 브랜딩 가이드에 따라 화면 가장자리에서 띄운 캡슐 형태로 표시해요. */}
       <nav
         style={{
           position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          bottom: `calc(${TAB_BAR_BOTTOM_GAP}px + env(safe-area-inset-bottom, 0px))`,
           display: "flex",
           height: TAB_BAR_HEIGHT,
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
-          backgroundColor: adaptive.background,
-          borderTop: `1px solid ${adaptive.grey100}`,
+          padding: "0 8px",
+          backgroundColor: adaptive.floatBackground,
+          border: `1px solid ${adaptive.greyOpacity50}`,
+          borderRadius: TAB_BAR_HEIGHT / 2,
+          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08)",
           zIndex: 10,
         }}
       >
@@ -73,7 +77,7 @@ function App() {
                 logEvent("tab_change", { tab: t.key });
               }}
               style={{
-                flex: 1,
+                width: 76,
                 border: "none",
                 background: "transparent",
                 cursor: "pointer",
@@ -82,6 +86,7 @@ function App() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 2,
+                borderRadius: TAB_BAR_HEIGHT / 2,
                 color: active ? adaptive.blue500 : adaptive.grey400,
               }}
             >
