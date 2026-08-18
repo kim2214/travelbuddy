@@ -162,7 +162,7 @@ export function CurrencyConverter() {
       {/* 입력 (from 통화) */}
       <TextField
         variant="box"
-        label={`${symbolOf(from, country)} ${from} (입력)`}
+        label={`${symbolOf(from, country)} ${from} 입력 금액`}
         labelOption="sustain"
         placeholder="금액을 입력해요"
         value={input}
@@ -205,59 +205,59 @@ export function CurrencyConverter() {
         </Button>
       </div>
 
-      {/* 결과 (to 통화) */}
+      {/* 결과 (to 통화). 통화 라벨과 금액이 겹치지 않도록 flex로 명시적으로 나눠요. */}
       <div
         style={{
-          padding: "16px 12px",
+          padding: "16px",
           borderRadius: 14,
           backgroundColor: adaptive.background,
-          textAlign: "right",
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <Text
-          typography="t7"
-          color={adaptive.grey500}
-          style={{ display: "block", marginBottom: 4 }}
-        >
+        <Text typography="t7" fontWeight="semibold" color={adaptive.grey500} style={{ flexShrink: 0 }}>
           {symbolOf(to, country)} {to}
         </Text>
         <Text
           typography="st2"
           fontWeight="bold"
           color={adaptive.grey800}
-          style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
+          style={{ fontVariantNumeric: "tabular-nums", textAlign: "right", minWidth: 0 }}
         >
           {result == null
             ? "—"
-            : `${symbolOf(to, country)} ${formatAmount(
-                Number(result.toFixed(fractionDigitsFor(to))),
-                to,
-              )}`}
+            : formatAmount(Number(result.toFixed(fractionDigitsFor(to))), to)}
         </Text>
       </div>
 
-      {/* 기준 환율 + 갱신 시각 */}
-      <div style={{ textAlign: "center" }}>
+      {/* 기준 환율 · 갱신 시각 · 고지. 줄이 섞이지 않게 각 줄을 div로 분리해요. */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3,
+          textAlign: "center",
+        }}
+      >
         {unitRate != null && (
-          <Text
-            typography="st12"
-            color={adaptive.grey500}
-            style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
-          >
-            {unitAmount.toLocaleString("ko-KR")} {country.currencySymbol}
-            {country.currency} = {formatAmount(Math.round(unitRate), "KRW")}원
-          </Text>
+          <div>
+            <Text
+              typography="st12"
+              fontWeight="semibold"
+              color={adaptive.grey600}
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {country.currencySymbol}
+              {unitAmount.toLocaleString("ko-KR")} ={" "}
+              {formatAmount(Math.round(unitRate), "KRW")}원
+            </Text>
+          </div>
         )}
         {error ? (
-          <div
-            style={{
-              marginTop: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Text typography="st12" color={adaptive.red500}>
               최신 환율 갱신에 실패했어요 · 저장된 값
             </Text>
@@ -266,14 +266,20 @@ export function CurrencyConverter() {
             </TextButton>
           </div>
         ) : (
-          <Text typography="st12" color={adaptive.grey400} style={{ display: "block", marginTop: 2 }}>
-            {updatedLabel}
-          </Text>
+          updatedLabel !== "" && (
+            <div>
+              <Text typography="st12" color={adaptive.grey400}>
+                {updatedLabel}
+              </Text>
+            </div>
+          )
         )}
         {/* 시장 평균(mid-market) 환율이라 실제 환전 적용 환율과 달라요. 오해 방지용 고지. */}
-        <Text typography="st12" color={adaptive.grey400} style={{ display: "block", marginTop: 2 }}>
-          시장 평균 환율 기준이라 실제 환전 환율과 다를 수 있어요
-        </Text>
+        <div>
+          <Text typography="st12" color={adaptive.grey400}>
+            시장 평균 환율 기준이라 실제 환전 환율과 다를 수 있어요
+          </Text>
+        </div>
       </div>
 
       {loading && (
