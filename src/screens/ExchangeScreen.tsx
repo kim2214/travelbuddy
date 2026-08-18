@@ -5,6 +5,7 @@ import { Top } from "@toss/tds-mobile";
 import { CountryHero } from "../components/CountryHero";
 import { CurrencyConverter } from "../components/CurrencyConverter";
 import { LocalPricePresets } from "../components/LocalPricePresets";
+import { RateTrend } from "../components/RateTrend";
 import { ShareButton } from "../components/ShareButton";
 import { TipCalculator } from "../components/TipCalculator";
 import { useCountry } from "../context/CountryContext";
@@ -26,6 +27,8 @@ export function ExchangeScreen() {
       <CountryHero />
       <div style={{ height: 12 }} />
       <CurrencyConverter />
+      <div style={{ height: 12 }} />
+      <RateTrend />
       <LocalPricePresets />
       {/* 국가가 바뀌면 리마운트해요. 팁 비율 프리셋이 나라마다 달라서(예: 미국 18% → 태국 10%)
           상태를 이어받으면 선택되지 않은 비율로 계산되는 문제가 있어요. */}
