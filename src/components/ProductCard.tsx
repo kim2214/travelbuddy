@@ -1,6 +1,7 @@
 // eSIM / 여행자보험 / 환전 연계 상품 카드.
 // 카드 클릭 → 안내 BottomSheet → 종류별 안내 문구 + CTA로 외부 서비스(openExternal)로 이동해요.
-// CTA는 eSIM·보험은 '확인하기'(외부 비교/정보), 환전은 '환전하러 가기'예요.
+// 외부 링크 가이드라인(정보 확인·제품 추천 후 이동은 허용)에 맞춰 가입/결제를 유도하는 문구는 쓰지 않아요.
+// CTA는 eSIM·보험은 '알아보기'(외부 비교/정보 확인), 환전은 '환전하러 가기'예요.
 
 import { Badge, Button, Text, useBottomSheet } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
@@ -25,15 +26,15 @@ const KIND_META: Record<
     emoji: "📶",
     badge: "eSIM",
     badgeColor: "blue",
-    cta: "확인하기",
-    guide: "여행 eSIM 비교 사이트(로밍도깨비)로 이동합니다.",
+    cta: "알아보기",
+    guide: "여행 eSIM 요금제 정보 사이트(로밍도깨비)로 이동합니다.",
   },
   insurance: {
     emoji: "🛡️",
     badge: "여행자보험",
     badgeColor: "teal",
-    cta: "확인하기",
-    guide: "보험 비교 사이트(투어모즈)로 이동합니다.",
+    cta: "알아보기",
+    guide: "여행자보험 비교 정보 사이트(투어모즈)로 이동합니다.",
   },
   exchange: {
     emoji: "💱",

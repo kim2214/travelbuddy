@@ -96,9 +96,9 @@ describe("<RateTrend />", () => {
 
     const { container } = renderTrend();
 
-    // 비동기 로드(국가 감지·환율 요청)가 모두 끝난 뒤에도 위젯이 없어요.
+    // 비동기 로드(저장된 국가 조회·환율 요청)가 모두 끝난 뒤에도 위젯이 없어요.
     await waitFor(() => {
-      expect(vi.mocked(detectCountryByGPS)).toHaveBeenCalled();
+      expect(vi.mocked(loadSelectedCountry)).toHaveBeenCalled();
     });
     await waitFor(() => {
       expect(screen.queryByText("환율 추이 · 최근 30일")).not.toBeInTheDocument();

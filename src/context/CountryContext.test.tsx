@@ -50,7 +50,7 @@ describe("CountryContext 국가 결정 규칙", () => {
     expect(detectGPS).not.toHaveBeenCalled();
   });
 
-  it("저장된 수동 선택이 있으면 그것을 쓰고 GPS 감지는 하지 않는다", async () => {
+  it("저장된 선택이 있으면 그것을 쓰고, GPS는 자동으로 호출하지 않는다", async () => {
     loadSaved.mockResolvedValue("TH");
     detectGPS.mockResolvedValue("US");
 
@@ -60,29 +60,54 @@ describe("CountryContext 국가 결정 규칙", () => {
     expect(detectGPS).not.toHaveBeenCalled();
   });
 
-  it("저장된 선택이 없으면 GPS로 감지한 국가를 쓴다", async () => {
+  it("저장된 선택이 없으면 GPS를 자동 호출하지 않고 기본 국가(JP)를 유지한다", async () => {
     loadSaved.mockResolvedValue(null);
     detectGPS.mockResolvedValue("TH");
 
     const { result } = renderHook(() => useCountry(), { wrapper });
 
-    await waitFor(() => expect(result.current.countryCode).toBe("TH"));
+    await waitFor(() => expect(loadSaved).toHaveBeenCalled());
+    expect(result.current.countryCode).toBe("JP");
+    expect(result.current.detecting).toBe(false);
+    expect(detectGPS).not.toHaveBeenCalled();
   });
 
-  it("저장도 없고 GPS도 실패하면 기본 국가(JP)를 유지한다", async () => {
-    loadSaved.mockResolvedValue(null);
+  it("detectByLocation은 사용자가 호출할 때만 GPS로 감지하고, 찾으면 반영·저장한다", async () => {
+    detectGPS.mockResolvedValue("TH");
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+    await waitFor(() => expect(loadSaved).toHaveBeenCalled());
+
+    let detected: string | null = null;
+    await act(async () => {
+      detected = await result.current.detectByLocation();
+    });
+
+    expect(detected).toBe("TH");
+    expect(result.current.countryCode).toBe("TH");
+    expect(result.current.detecting).toBe(false);
+    expect(saveSaved).toHaveBeenCalledWith("TH");
+  });
+
+  it("detectByLocation이 국가를 못 찾으면 null을 반환하고 기존 국가를 유지한다", async () => {
     detectGPS.mockResolvedValue(null);
 
     const { result } = renderHook(() => useCountry(), { wrapper });
+    await waitFor(() => expect(loadSaved).toHaveBeenCalled());
 
-    await waitFor(() => expect(detectGPS).toHaveBeenCalled());
-    await waitFor(() => expect(result.current.detecting).toBe(false));
+    let detected: string | null = "unset";
+    await act(async () => {
+      detected = await result.current.detectByLocation();
+    });
+
+    expect(detected).toBeNull();
     expect(result.current.countryCode).toBe("JP");
+    expect(result.current.detecting).toBe(false);
   });
 
   it("setCountryCode는 선택을 저장하고 즉시 반영한다", async () => {
     const { result } = renderHook(() => useCountry(), { wrapper });
-    await waitFor(() => expect(result.current.detecting).toBe(false));
+    await waitFor(() => expect(loadSaved).toHaveBeenCalled());
 
     act(() => result.current.setCountryCode("VN"));
 

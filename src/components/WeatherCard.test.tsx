@@ -94,7 +94,7 @@ describe("<WeatherCard />", () => {
     renderCard();
 
     await waitFor(() => {
-      expect(vi.mocked(detectCountryByGPS)).toHaveBeenCalled();
+      expect(vi.mocked(loadSelectedCountry)).toHaveBeenCalled();
     });
     await waitFor(() => {
       expect(screen.queryByText("Open-Meteo 제공")).not.toBeInTheDocument();

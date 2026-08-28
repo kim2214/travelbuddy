@@ -105,7 +105,7 @@ const commonChecklist: ChecklistPresetItem[] = [
 
 const TOSS_EXCHANGE_DEEPLINK =
   "https://www.tossbank.com/product-service/fx/account";
-// 투어모즈(위비즈엔㈜) 여행자보험 비교·가입 — 삼성·메리츠·한화 등 여러 보험사 비교
+// 투어모즈(위비즈엔㈜) 여행자보험 비교 — 삼성·메리츠·한화 등 여러 보험사 비교 (정보 확인용)
 const TRAVEL_INSURANCE_LINK = "https://www.tourmoz.com/v2/find";
 // 로밍도깨비(유엔젤㈜) 여행 eSIM 스토어
 const ROKEBI_ESIM_LINK = "https://www.rokebi.com/store?tab=best";
@@ -1020,23 +1020,23 @@ export const COUNTRIES: Country[] = [
   },
 ];
 
-/** 모든 국가에 공통으로 노출하는 여행 eSIM 연계 상품 (로밍도깨비) */
+/** 모든 국가에 공통으로 노출하는 여행 eSIM 안내 (로밍도깨비) — 요금제 정보 확인용 외부 링크 */
 export const ESIM_PRODUCT: Product = {
   id: "esim-rokebi",
   kind: "esim",
   name: "여행 eSIM",
   description: "여행지 데이터, QR 한 번으로 도착 즉시 연결",
-  priceLabel: "베스트 요금제 보기",
+  priceLabel: "요금제 알아보기",
   deeplink: ROKEBI_ESIM_LINK,
 };
 
-/** 모든 국가에 공통으로 노출하는 여행자보험 비교·가입 상품 (투어모즈) */
+/** 모든 국가에 공통으로 노출하는 여행자보험 비교 안내 (투어모즈) — 정보 확인용 외부 링크 */
 export const INSURANCE_PRODUCT: Product = {
   id: "insurance-tourmoz",
   kind: "insurance",
-  name: "여행자보험 비교·가입",
-  description: "여러 보험사를 비교하고 바로 가입해요",
-  priceLabel: "보험료 비교",
+  name: "여행자보험 비교",
+  description: "여러 보험사의 보험료와 보장을 한눈에 비교해요",
+  priceLabel: "보험료 비교해 보기",
   deeplink: TRAVEL_INSURANCE_LINK,
 };
 
