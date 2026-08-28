@@ -3,13 +3,13 @@ import { adaptive } from "@toss/tds-colors";
 import { useState } from "react";
 
 import { logEvent } from "./lib/analytics";
+import { getTabFromEntry } from "./lib/entry";
+import { DEFAULT_TAB, type TabKey } from "./lib/tabs";
 
 import { ChecklistScreen } from "./screens/ChecklistScreen";
 import { ExchangeScreen } from "./screens/ExchangeScreen";
 import { GuideScreen } from "./screens/GuideScreen";
 import "./App.css";
-
-type TabKey = "exchange" | "checklist" | "guide";
 
 const TABS: { key: TabKey; label: string; emoji: string }[] = [
   { key: "exchange", label: "환율", emoji: "💱" },
@@ -22,7 +22,8 @@ const TAB_BAR_HEIGHT = 60;
 const TAB_BAR_BOTTOM_GAP = 16;
 
 function App() {
-  const [tab, setTab] = useState<TabKey>("exchange");
+  // 콘솔 '앱 내 기능' 스킴(?tab=...)으로 진입했다면 그 탭으로 바로 열어요.
+  const [tab, setTab] = useState<TabKey>(() => getTabFromEntry() ?? DEFAULT_TAB);
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: adaptive.background }}>

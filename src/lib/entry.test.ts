@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getCountryFromEntry } from "./entry";
+import { getCountryFromEntry, getTabFromEntry } from "./entry";
 
 vi.mock("@apps-in-toss/web-framework", () => ({
   getSchemeUri: vi.fn(),
@@ -50,5 +50,40 @@ describe("getCountryFromEntry", () => {
       throw new Error("no bridge");
     });
     expect(getCountryFromEntry()).toBeNull();
+  });
+});
+
+describe("getTabFromEntry", () => {
+  it("tab 파라미터의 탭 키를 반환한다", () => {
+    schemeUri.mockReturnValue("intoss://travelbuddy?tab=checklist");
+    expect(getTabFromEntry()).toBe("checklist");
+  });
+
+  it("대문자도 정규화한다", () => {
+    schemeUri.mockReturnValue("intoss://travelbuddy?tab=GUIDE");
+    expect(getTabFromEntry()).toBe("guide");
+  });
+
+  it("country와 함께 와도 각각 읽는다", () => {
+    schemeUri.mockReturnValue("intoss://travelbuddy?country=JP&tab=exchange");
+    expect(getTabFromEntry()).toBe("exchange");
+    expect(getCountryFromEntry()).toBe("JP");
+  });
+
+  it("알 수 없는 탭은 null", () => {
+    schemeUri.mockReturnValue("intoss://travelbuddy?tab=settings");
+    expect(getTabFromEntry()).toBeNull();
+  });
+
+  it("파라미터가 없으면 null", () => {
+    schemeUri.mockReturnValue("intoss://travelbuddy?country=JP");
+    expect(getTabFromEntry()).toBeNull();
+  });
+
+  it("스킴을 못 읽으면(throw) null", () => {
+    schemeUri.mockImplementation(() => {
+      throw new Error("no bridge");
+    });
+    expect(getTabFromEntry()).toBeNull();
   });
 });
