@@ -3,7 +3,7 @@
 // 국가 결정 규칙:
 //  0) 진입 스킴(공유 링크 등)에 국가가 있으면 최우선으로 사용하고 저장
 //  1) 저장된 선택이 있으면 그대로 사용
-//  2) 없으면 기본 국가
+//  2) 없으면 기본 국가 (이때 needsCountryChoice=true로 첫 진입 힌트를 보여줘요)
 //  - 현재 위치(GPS) 감지는 자동으로 하지 않아요. 앱을 열자마자 위치 권한 팝업이 뜨지 않도록
 //    (앱인토스 출시 가이드: 기기 권한은 사용자 동의를 먼저 받아요) 사용자가
 //    "현재 위치로 찾기"를 눌렀을 때만 detectByLocation으로 요청해요.
@@ -25,9 +25,14 @@ import { CountryContext, type CountryContextValue } from "./CountryContext";
 export function CountryProvider({ children }: { children: ReactNode }) {
   const [countryCode, setCode] = useState(DEFAULT_COUNTRY_CODE);
   const [detecting, setDetecting] = useState(false);
+  // 사용자가 여행지를 정했는지(직접 선택·현재 위치·저장값·진입 스킴) 여부
+  const [chosen, setChosen] = useState(false);
+  // 저장값 조회가 끝났는지 여부. 끝나기 전에는 힌트를 띄우지 않아요.
+  const [loaded, setLoaded] = useState(false);
 
   const setCountryCode = useCallback((code: string) => {
     setCode(code);
+    setChosen(true);
     void saveSelectedCountry(code);
   }, []);
 
@@ -37,6 +42,7 @@ export function CountryProvider({ children }: { children: ReactNode }) {
       const detected = await detectCountryByGPS();
       if (detected != null) {
         setCode(detected);
+        setChosen(true);
         void saveSelectedCountry(detected);
       }
       return detected;
@@ -53,6 +59,8 @@ export function CountryProvider({ children }: { children: ReactNode }) {
       const fromEntry = getCountryFromEntry();
       if (fromEntry != null) {
         setCode(fromEntry);
+        setChosen(true);
+        setLoaded(true);
         void saveSelectedCountry(fromEntry);
         return;
       }
@@ -64,8 +72,10 @@ export function CountryProvider({ children }: { children: ReactNode }) {
       }
       if (saved != null && getCountry(saved).code === saved) {
         setCode(saved);
+        setChosen(true);
       }
-      // 2) 없으면 기본 국가를 유지해요.
+      // 2) 없으면 기본 국가를 유지하고, 첫 진입 힌트를 보여줘요.
+      setLoaded(true);
     })();
 
     return () => {
@@ -80,8 +90,9 @@ export function CountryProvider({ children }: { children: ReactNode }) {
       setCountryCode,
       detectByLocation,
       detecting,
+      needsCountryChoice: loaded && !chosen,
     }),
-    [countryCode, setCountryCode, detectByLocation, detecting],
+    [countryCode, setCountryCode, detectByLocation, detecting, loaded, chosen],
   );
 
   return <CountryContext.Provider value={value}>{children}</CountryContext.Provider>;

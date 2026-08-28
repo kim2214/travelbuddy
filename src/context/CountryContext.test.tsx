@@ -105,6 +105,43 @@ describe("CountryContext 국가 결정 규칙", () => {
     expect(result.current.detecting).toBe(false);
   });
 
+  it("진입 스킴이나 저장값이 있으면 첫 진입 힌트(needsCountryChoice)를 보이지 않는다", async () => {
+    loadSaved.mockResolvedValue("TH");
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    await waitFor(() => expect(result.current.countryCode).toBe("TH"));
+    expect(result.current.needsCountryChoice).toBe(false);
+  });
+
+  it("저장값이 없으면 조회가 끝난 뒤 힌트를 보이고, 직접 고르면 사라진다", async () => {
+    loadSaved.mockResolvedValue(null);
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    // 조회 전에는 깜빡임 방지를 위해 false
+    expect(result.current.needsCountryChoice).toBe(false);
+    await waitFor(() => expect(result.current.needsCountryChoice).toBe(true));
+
+    act(() => result.current.setCountryCode("VN"));
+
+    expect(result.current.needsCountryChoice).toBe(false);
+  });
+
+  it("현재 위치로 찾기에 성공하면 힌트가 사라진다", async () => {
+    loadSaved.mockResolvedValue(null);
+    detectGPS.mockResolvedValue("TH");
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+    await waitFor(() => expect(result.current.needsCountryChoice).toBe(true));
+
+    await act(async () => {
+      await result.current.detectByLocation();
+    });
+
+    expect(result.current.needsCountryChoice).toBe(false);
+  });
+
   it("setCountryCode는 선택을 저장하고 즉시 반영한다", async () => {
     const { result } = renderHook(() => useCountry(), { wrapper });
     await waitFor(() => expect(loadSaved).toHaveBeenCalled());

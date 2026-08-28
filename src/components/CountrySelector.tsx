@@ -8,7 +8,7 @@ import { useCountry } from "../context/CountryContext";
 import { CountryPickerSheet } from "./CountryPickerSheet";
 
 export function CountrySelector() {
-  const { country, detecting } = useCountry();
+  const { country, detecting, needsCountryChoice } = useCountry();
   const [open, setOpen] = useState(false);
 
   return (
@@ -22,7 +22,13 @@ export function CountrySelector() {
         contents={
           <ListRow.Texts
             type="2RowTypeB"
-            top={detecting ? "📍 현재 위치로 찾는 중…" : "여행지"}
+            top={
+              detecting
+                ? "📍 현재 위치로 찾는 중…"
+                : needsCountryChoice
+                  ? "👉 여행지를 골라주세요"
+                  : "여행지"
+            }
             bottom={`${country.name} · ${country.currencyName}(${country.currency})`}
           />
         }

@@ -31,7 +31,7 @@ const GRADIENTS: Record<string, [string, string]> = {
 const DEFAULT_GRADIENT: [string, string] = ["#4C7DF0", "#2748B0"];
 
 export function CountryHero() {
-  const { country, detecting } = useCountry();
+  const { country, detecting, needsCountryChoice } = useCountry();
   const [open, setOpen] = useState(false);
   const info = getPracticalInfo(country.code);
   const [from, to] = GRADIENTS[country.code] ?? DEFAULT_GRADIENT;
@@ -90,7 +90,9 @@ export function CountryHero() {
             <Text typography="t7" color="#fff" style={{ display: "block", opacity: 0.9, marginTop: 1 }}>
               {detecting
                 ? "📍 현재 위치로 찾는 중…"
-                : `${country.currencyName} · ${country.currency}`}
+                : needsCountryChoice
+                  ? "👉 탭해서 여행지를 골라주세요"
+                  : `${country.currencyName} · ${country.currency}`}
             </Text>
           </div>
           <Text
@@ -99,7 +101,7 @@ export function CountryHero() {
             color="#fff"
             style={{ marginLeft: "auto", opacity: 0.9, whiteSpace: "nowrap" }}
           >
-            바꾸기 ▾
+            {needsCountryChoice ? "고르기 ▾" : "바꾸기 ▾"}
           </Text>
         </div>
 

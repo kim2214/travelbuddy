@@ -16,6 +16,12 @@ export interface CountryContextValue {
   detectByLocation: () => Promise<string | null>;
   /** 현재 위치로 감지를 진행 중인지 여부 (UX 표시용) */
   detecting: boolean;
+  /**
+   * 사용자가 아직 여행지를 고르지 않아 기본 국가로 열려 있는지 여부 (첫 진입 힌트용).
+   * 저장된 선택·진입 스킴이 없고, 아직 직접 고르거나 현재 위치로 찾지 않았을 때만 true예요.
+   * 저장값 조회가 끝나기 전에는 false라 힌트가 깜빡이지 않아요.
+   */
+  needsCountryChoice: boolean;
 }
 
 export const CountryContext = createContext<CountryContextValue | null>(null);
