@@ -165,7 +165,7 @@
 - [Sentry 통합](https://developers-apps-in-toss.toss.im/unity/sdk/sentry-integration.md): 앱인토스 Unity SDK와 Sentry 통합 방법을 안내해요. 자동 컨텍스트 주입, CI/CD 설정 등을 확인할 수 있어요.
 - [Supabase 연동하기](https://developers-apps-in-toss.toss.im/supabase/intro.md): 앱인토스(미니앱) WebView 환경에서 Supabase를 연동하는 방법을 안내해요.
 - [Tab](https://developers-apps-in-toss.toss.im/design/components/tab.md): 토스 디자인 시스템(TDS)의 Tab 컴포넌트 가이드입니다. 탭 네비게이션 구성 및 사용법을 확인하세요.
-- [Tabbar](https://developers-apps-in-toss.toss.im/design/components/tabbar.md): 토스 디자인 시스템(TDS)의 Tabbar 컴포넌트 가이드입니다. 하단 탭바 구성 및 사용법을 확인하세요.
+- [탭바 (UI/UX 가이드 → 브랜딩 → 3. 탭바)](https://developers-apps-in-toss.toss.im/design/consumer-ux-guide.md): 탭바는 필수가 아니지만 사용한다면 토스가 제공하는 플로팅(캡슐) 형태를 유지해야 하고, 탭은 2~5개예요. TDS에 별도 Tabbar 컴포넌트는 없어 예시 형태에 맞춰 직접 구현해요. (기존 design/components/tabbar.md 링크는 삭제됨)
 - [Text](https://developers-apps-in-toss.toss.im/design/components/text.md): 토스 디자인 시스템(TDS)의 Text 컴포넌트 가이드입니다. 텍스트 스타일 및 타이포그래피 사용법을 확인하세요.
 - [Top](https://developers-apps-in-toss.toss.im/design/components/top.md): 토스 디자인 시스템(TDS)의 Top 컴포넌트 가이드입니다. 상단 영역 구성 및 사용법을 확인하세요.
 - [UI/UX 가이드](https://developers-apps-in-toss.toss.im/design/consumer-ux-guide.md): 앱인토스 미니앱 디자인 가이드입니다. 브랜딩, 다크패턴 방지 정책, UX 라이팅, 그래픽 리소스, 해상도 기준을 확인하세요.
@@ -230,7 +230,7 @@
 - [릴리즈 노트](https://developers-apps-in-toss.toss.im/release-note.md): 앱인토스 제품, API, SDK의 새로운 기능과 변경 사항을 확인하세요. 주요 업데이트와 릴리즈 노트를 한눈에 볼 수 있습니다.
 - [문제 해결](https://developers-apps-in-toss.toss.im/unity/sdk/troubleshooting.md): 앱인토스 Unity SDK 사용 중 발생할 수 있는 문제와 해결 방법을 안내해요.
 - [미니앱 만들기](https://developers-apps-in-toss.toss.im/tutorials/ai-vibe-coding.md): 코드를 잘 몰라도 괜찮아요. AI와 함께 앱인토스 미니앱을 처음부터 끝까지 만드는 방법을 안내해요.
-- [미니앱 브랜딩 가이드](https://developers-apps-in-toss.toss.im/design/miniapp-branding-guide.md): 앱인토스 미니앱 브랜딩 가이드입니다. 브랜드 로고, 이름, 컬러, 내비게이션 바, 브릿지, 탭바 등 브랜드 요소 적용 가이드를 확인하세요.
+- [미니앱 브랜딩 가이드 (UI/UX 가이드에 통합)](https://developers-apps-in-toss.toss.im/design/consumer-ux-guide.md): 브랜드 로고(600×600), 이름(한글 권장), 컬러(brand.primaryColor), 내비게이션 바, 플로팅 탭바 등 브랜드 요소 적용 가이드와 다크패턴 방지 정책을 확인하세요. (기존 design/miniapp-branding-guide.md 링크는 삭제됨)
 - [미디어](https://developers-apps-in-toss.toss.im/unity/sdk/api-media.md): 앱인토스 Unity SDK의 미디어 API 레퍼런스예요.
 - [보도자료 가이드](https://developers-apps-in-toss.toss.im/checklist/publicity.md): 앱인토스 미니앱 서비스의 보도자료 배포 가이드입니다. 배포 절차, 제목 템플릿, 작성 리소스, 표현 가이드, 앱인토스 로고 활용 방법을 확인하세요.
 - [본인확인 결과 조회](https://developers-apps-in-toss.toss.im/bedrock/reference/framework/인증/tosscertResult.md)
