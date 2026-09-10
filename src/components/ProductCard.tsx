@@ -27,21 +27,21 @@ const KIND_META: Record<
     badge: "eSIM",
     badgeColor: "blue",
     cta: "알아보기",
-    guide: "여행 eSIM 요금제 정보 사이트(로밍도깨비)로 이동합니다.",
+    guide: "여행 eSIM 요금제 정보 사이트(로밍도깨비)로 이동해요.",
   },
   insurance: {
     emoji: "🛡️",
     badge: "여행자보험",
     badgeColor: "teal",
     cta: "알아보기",
-    guide: "여행자보험 비교 정보 사이트(투어모즈)로 이동합니다.",
+    guide: "여행자보험 비교 정보 사이트(투어모즈)로 이동해요.",
   },
   exchange: {
     emoji: "💱",
     badge: "환전",
     badgeColor: "green",
     cta: "환전하러 가기",
-    guide: "토스뱅크 외화통장(환전) 화면으로 이동합니다.",
+    guide: "토스뱅크 외화통장(환전) 화면으로 이동해요.",
   },
 };
 
