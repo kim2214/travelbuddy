@@ -4,9 +4,9 @@
 
 import { getTossShareLink, share } from "@apps-in-toss/web-framework";
 
-// granite.config.ts의 appName과 동일해야 해요.
+// apps-in-toss.config.ts의 appName과 동일해야 해요.
 const APP_DEEPLINK = "intoss://travelbuddy";
-// 공유 카드 미리보기(OG) 이미지 — granite.config.ts의 앱 아이콘과 동일해요.
+// 공유 카드 미리보기(OG) 이미지 — 콘솔에 등록한 앱 아이콘과 동일해요.
 const OG_IMAGE_URL =
   "https://static.toss.im/appsintoss/53765/c9fb1bd6-f85b-4725-a2e3-c4aa2a7e759b.png";
 

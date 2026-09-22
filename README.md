@@ -16,7 +16,7 @@
 
 ## 진입 스킴 (앱 내 기능 · 공유 링크)
 
-`granite.config.ts`의 `appName`이 `travelbuddy`라서 스킴은 `intoss://travelbuddy`예요.
+`apps-in-toss.config.ts`의 `appName`이 `travelbuddy`라서 스킴은 `intoss://travelbuddy`예요.
 
 | 스킴 | 동작 |
 | --- | --- |
@@ -32,7 +32,7 @@
 
 ```bash
 npm install
-npm run dev        # granite dev (vite dev 서버 + 토스 샌드박스 연결)
+npm run dev        # vite dev 서버 + AIT Devtools (로컬 브라우저에서 바로 테스트)
 npm run typecheck  # tsc --noEmit
 npm run lint       # eslint
 npm test           # vitest
