@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
-  HISTORY_DAYS_AGO,
+  HISTORY_SAMPLE_COUNT,
+  HISTORY_SAMPLE_INTERVAL_DAYS,
   MIN_TREND_POINTS,
   buildTrendPoints,
   dateStringDaysAgo,
   fetchRateHistory,
+  historySampleDates,
   summarizeTrend,
   type RateHistory,
   type TrendPoint,
@@ -28,7 +30,7 @@ const NOW = 1_700_000_000_000;
 
 /** 샘플 날짜 전체(옛날 → 최근 순)를 만들어요. */
 function sampleDates(now = NOW): string[] {
-  return HISTORY_DAYS_AGO.map((daysAgo) => dateStringDaysAgo(now, daysAgo));
+  return historySampleDates(now);
 }
 
 beforeEach(() => {
@@ -47,7 +49,59 @@ describe("dateStringDaysAgo", () => {
   });
 });
 
+describe("historySampleDates", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+
+  it("옛날 → 최근 순으로 고정 개수의 날짜를 반환한다", () => {
+    const dates = sampleDates();
+    expect(dates).toHaveLength(HISTORY_SAMPLE_COUNT);
+    expect([...dates].sort()).toEqual(dates);
+    expect(new Set(dates).size).toBe(HISTORY_SAMPLE_COUNT);
+  });
+
+  it("가장 최근 샘플은 1~5일 전, 가장 오래된 샘플은 30일 이내다", () => {
+    // 격자 위상과 무관하게 성립하도록 연속된 여러 날에 대해 확인해요.
+    for (let offset = 0; offset < HISTORY_SAMPLE_INTERVAL_DAYS * 2; offset += 1) {
+      const now = NOW + offset * DAY;
+      const dates = historySampleDates(now);
+      const latest = dates[dates.length - 1];
+      expect(latest <= dateStringDaysAgo(now, 1)).toBe(true);
+      expect(latest >= dateStringDaysAgo(now, HISTORY_SAMPLE_INTERVAL_DAYS)).toBe(true);
+      expect(dates[0] >= dateStringDaysAgo(now, 30)).toBe(true);
+    }
+  });
+
+  it("날짜가 바뀌어도 샘플 날짜가 통째로 밀리지 않는다 (캐시 재사용)", () => {
+    // 연속된 이틀은 샘플이 완전히 같거나, 격자가 넘어가며 하나만 새로 생겨요.
+    for (let offset = 0; offset < HISTORY_SAMPLE_INTERVAL_DAYS * 2; offset += 1) {
+      const today = historySampleDates(NOW + offset * DAY);
+      const tomorrow = historySampleDates(NOW + (offset + 1) * DAY);
+      const fresh = tomorrow.filter((date) => !today.includes(date));
+      expect(fresh.length).toBeLessThanOrEqual(1);
+    }
+    // 간격(5일) 동안 격자는 정확히 한 번 넘어가요.
+    const start = historySampleDates(NOW);
+    const later = historySampleDates(NOW + HISTORY_SAMPLE_INTERVAL_DAYS * DAY);
+    expect(later.filter((date) => !start.includes(date))).toHaveLength(1);
+  });
+});
+
 describe("fetchRateHistory", () => {
+  it("다음 날에는 전날 캐시를 재사용해 새 날짜만 요청한다", async () => {
+    const DAY = 24 * 60 * 60 * 1000;
+    const cached: RateHistory = {};
+    for (const date of sampleDates()) {
+      cached[date] = { JPY: 0.11 };
+    }
+    getItem.mockResolvedValue(JSON.stringify(cached));
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ krw: { jpy: 0.1 } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchRateHistory(NOW + DAY);
+
+    expect(fetchMock.mock.calls.length).toBeLessThanOrEqual(1);
+  });
+
   it("샘플 날짜들을 받아 지원 통화만 대문자 키로 모은다", async () => {
     vi.stubGlobal(
       "fetch",
@@ -60,7 +114,7 @@ describe("fetchRateHistory", () => {
 
     const history = await fetchRateHistory(NOW);
 
-    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(HISTORY_DAYS_AGO.length);
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(HISTORY_SAMPLE_COUNT);
     for (const date of sampleDates()) {
       // 미지원 통화(btc)와 숫자가 아닌 값(bad)은 걸러져요.
       expect(history[date]).toEqual({ JPY: 0.1, USD: 0.00075 });
@@ -142,8 +196,8 @@ describe("buildTrendPoints", () => {
     // 과거: 1엔 = 10원(100엔 = 1,000원), 오늘: 100엔 = 800원
     const points = buildTrendPoints(historyOf(0.1), "JPY", 100, 0.125, NOW);
 
-    expect(points).toHaveLength(HISTORY_DAYS_AGO.length + 1);
-    expect(points[0].date).toBe(dateStringDaysAgo(NOW, 30));
+    expect(points).toHaveLength(HISTORY_SAMPLE_COUNT + 1);
+    expect(points[0].date).toBe(sampleDates()[0]);
     expect(points[0].krwPerUnit).toBeCloseTo(1000);
     const last = points[points.length - 1];
     expect(last.date).toBe(dateStringDaysAgo(NOW, 0));
@@ -152,14 +206,14 @@ describe("buildTrendPoints", () => {
 
   it("실시간 환율이 없으면 과거 점만 만든다", () => {
     const points = buildTrendPoints(historyOf(0.1), "JPY", 100, null, NOW);
-    expect(points).toHaveLength(HISTORY_DAYS_AGO.length);
+    expect(points).toHaveLength(HISTORY_SAMPLE_COUNT);
   });
 
   it("값이 없는 날짜는 건너뛴다", () => {
     const history = historyOf(0.1);
-    delete history[dateStringDaysAgo(NOW, 15)];
+    delete history[sampleDates()[3]];
     const points = buildTrendPoints(history, "JPY", 100, 0.1, NOW);
-    expect(points).toHaveLength(HISTORY_DAYS_AGO.length); // 5개 과거 + 오늘
+    expect(points).toHaveLength(HISTORY_SAMPLE_COUNT); // 5개 과거 + 오늘
   });
 });
 

@@ -1,14 +1,22 @@
 // 환율 추이(최근 30일) 데이터.
 // fawazahmed0 currency-api(무료·무키)의 날짜 고정 URL로 과거 KRW 기준 환율을 샘플링해요.
 // 날짜별 응답은 불변이라 Storage에 캐시하고, 오래된 날짜는 저장 시점에 정리해요.
+//
+// 샘플 날짜는 "오늘 기준 N일 전"이 아니라 달력에 고정된 5일 간격 격자에 맞춰요.
+// 오늘 기준으로 잡으면 하루가 지날 때마다 모든 샘플 날짜가 하루씩 밀려 캐시가 전혀
+// 맞지 않고 매일 전부 다시 받게 돼요. 격자에 맞추면 같은 날짜들을 5일간 재사용하고,
+// 격자가 넘어갈 때도 새 날짜 하나만 받으면 돼요.
 
 import { Storage } from "@apps-in-toss/web-framework";
 
 import { COUNTRIES } from "../data/countries";
 import { fetchWithTimeout } from "./fetchWithTimeout";
 
-/** 과거 샘플 지점(며칠 전). 오늘(실시간 환율)을 더해 총 7개 점으로 추이를 그려요. */
-export const HISTORY_DAYS_AGO = [30, 25, 20, 15, 10, 5] as const;
+/** 과거 샘플 개수. 오늘(실시간 환율)을 더해 총 7개 점으로 추이를 그려요. */
+export const HISTORY_SAMPLE_COUNT = 6;
+
+/** 과거 샘플 사이 간격(일). 샘플 날짜는 이 간격의 고정 격자 위에 놓여요. */
+export const HISTORY_SAMPLE_INTERVAL_DAYS = 5;
 
 /** 추이를 보여주기 위한 최소 점 개수. 못 채우면 위젯을 숨겨요. */
 export const MIN_TREND_POINTS = 5;
@@ -47,6 +55,35 @@ export function dateStringDaysAgo(now: number, daysAgo: number): string {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${d.getFullYear()}-${month}-${day}`;
+}
+
+/** 로컬 날짜를 epoch 기준 일련번호(일 단위 정수)로 바꿔요. 시간대·서머타임과 무관해요. */
+function localDayNumber(now: number): number {
+  const d = new Date(now);
+  return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY_MS);
+}
+
+function dateStringOfDayNumber(dayNumber: number): string {
+  const d = new Date(dayNumber * DAY_MS);
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${d.getUTCFullYear()}-${month}-${day}`;
+}
+
+/**
+ * 과거 샘플 날짜들(YYYY-MM-DD)을 옛날 → 최근 순으로 반환해요.
+ * 가장 최근 샘플은 어제 이전의 가장 가까운 격자 날짜(1~5일 전)이고,
+ * 거기서 5일 간격으로 거슬러 올라가요(가장 오래된 샘플은 26~30일 전).
+ * 오늘 날짜는 실시간 환율이 맡으므로 샘플에 넣지 않아요.
+ */
+export function historySampleDates(now: number): string[] {
+  const interval = HISTORY_SAMPLE_INTERVAL_DAYS;
+  const latest = Math.floor((localDayNumber(now) - 1) / interval) * interval;
+  const dates: string[] = [];
+  for (let i = HISTORY_SAMPLE_COUNT - 1; i >= 0; i -= 1) {
+    dates.push(dateStringOfDayNumber(latest - i * interval));
+  }
+  return dates;
 }
 
 function historyUrlFor(date: string): string {
@@ -137,7 +174,7 @@ async function fetchDay(date: string): Promise<DailyRates | null> {
  */
 export async function fetchRateHistory(now: number = Date.now()): Promise<RateHistory> {
   const cache = await readCache();
-  const dates = HISTORY_DAYS_AGO.map((daysAgo) => dateStringDaysAgo(now, daysAgo));
+  const dates = historySampleDates(now);
   const missing = dates.filter((date) => cache[date] == null);
 
   if (missing.length > 0) {
@@ -171,9 +208,8 @@ export function buildTrendPoints(
   now: number = Date.now(),
 ): TrendPoint[] {
   const points: TrendPoint[] = [];
-  // HISTORY_DAYS_AGO가 내림차순(옛날 → 최근)이라 그대로 시간순이에요.
-  for (const daysAgo of HISTORY_DAYS_AGO) {
-    const date = dateStringDaysAgo(now, daysAgo);
+  // historySampleDates가 옛날 → 최근 순이라 그대로 시간순이에요.
+  for (const date of historySampleDates(now)) {
     const perKrw = history[date]?.[currency];
     if (perKrw != null && perKrw > 0) {
       points.push({ date, krwPerUnit: unitAmount / perKrw });
