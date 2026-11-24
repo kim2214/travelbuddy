@@ -14,7 +14,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@apps-in-toss/web-framework": "^3.5.0",
+    "@apps-in-toss/web-framework": "^3.10.0",
     "@emotion/react": "^11.14.0",
     "@toss/tds-colors": "^0.1.0",
     "@toss/tds-mobile": "^2.5.1",
@@ -23,6 +23,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@apps-in-toss/devtools": "^3.10.0",
     "@eslint/js": "^9.21.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -39,7 +40,6 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
-    "vitest": "^2.1.9",
-    "@apps-in-toss/devtools": "^3.5.0"
+    "vitest": "^2.1.9"
   }
 }

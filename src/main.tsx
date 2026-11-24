@@ -11,7 +11,8 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TDSMobileAITProvider brandPrimaryColor={config.brand.primaryColor}>
+    {/* SDK 3.10부터 brand 설정이 선택 사항이라 타입이 optional이에요. 값은 apps-in-toss.config.ts에 그대로 있어요. */}
+    <TDSMobileAITProvider brandPrimaryColor={config.brand?.primaryColor}>
       {/* Provider 안쪽에 두어 에러 화면(TDS Result)도 TDS 테마로 렌더돼요. */}
       <AppErrorBoundary>
         <CountryProvider>
