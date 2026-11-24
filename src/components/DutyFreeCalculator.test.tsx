@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -12,6 +12,13 @@ vi.mock("../lib/countryPreference", () => ({
   saveSelectedCountry: vi.fn(),
 }));
 vi.mock("../lib/geo", () => ({ detectCountryByGPS: vi.fn() }));
+// TDS 확인 창은 테스트 환경(jsdom)에서 닫힐 때 오류가 나서, 사용자의 선택만 흉내 내요.
+// 여기서는 "확인하면 지우고 취소하면 그대로 둔다"는 우리 쪽 동작만 확인해요.
+const { openConfirm } = vi.hoisted(() => ({ openConfirm: vi.fn() }));
+vi.mock("@toss/tds-mobile", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@toss/tds-mobile")>()),
+  useDialog: () => ({ openConfirm }),
+}));
 
 import { ThemeProvider } from "@toss/tds-mobile";
 
@@ -158,10 +165,29 @@ describe("<DutyFreeCalculator />", () => {
     await addAmount("5000");
     await screen.findByText("¥5,000");
 
+    openConfirm.mockResolvedValue(true);
     await userEvent.click(screen.getByText("전체 비우기"));
 
-    expect(screen.queryByText("¥10,000")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("¥10,000")).not.toBeInTheDocument());
     expect(screen.queryByText("¥5,000")).not.toBeInTheDocument();
     expect(await screen.findByText(/남은 한도 \$800\.00/)).toBeInTheDocument();
+    // 되돌릴 수 없는 동작이라 지우기 전에 확인을 받아요.
+    expect(openConfirm).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "구매 내역을 모두 지울까요?", confirmButton: "지우기" }),
+    );
+  });
+
+  it("확인 창에서 취소하면 내역을 그대로 둔다", async () => {
+    renderCalculator();
+    await addAmount("10000");
+    await screen.findByText("≈ $75.00");
+    vi.mocked(Storage.setItem).mockClear();
+
+    openConfirm.mockResolvedValue(false);
+    await userEvent.click(screen.getByText("전체 비우기"));
+
+    await waitFor(() => expect(openConfirm).toHaveBeenCalledTimes(1));
+    expect(screen.getByText("¥10,000")).toBeInTheDocument();
+    expect(Storage.setItem).not.toHaveBeenCalled();
   });
 });

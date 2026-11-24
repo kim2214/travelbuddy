@@ -4,7 +4,7 @@
 // 면세 한도는 입국 한 번에 적용되므로 여러 나라에서 산 금액을 한 목록에 모아 합산해요.
 // 내역은 Storage에 영속되고, 여행이 끝나면 전체 비우기로 비워요.
 
-import { Button, ProgressBar, Text, TextButton, TextField } from "@toss/tds-mobile";
+import { Button, ProgressBar, Text, TextButton, TextField, useDialog } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
@@ -27,6 +27,7 @@ export function DutyFreeCalculator() {
   const { country } = useCountry();
   const { rates } = useExchangeRateContext();
   const { items, addItem, removeItem, clearAll } = useDutyFree();
+  const { openConfirm } = useDialog();
   const [input, setInput] = useState("");
   // 여행지를 바꾸면 입력 통화가 달라지므로, 입력 중이던 금액은 비워요. (내역은 그대로 유지)
   const [inputCountryCode, setInputCountryCode] = useState(country.code);
@@ -64,6 +65,21 @@ export function DutyFreeCalculator() {
   const fmtItem = (item: { amount: number; currency: string }) =>
     `${symbolOf(item.currency)}${formatAmount(item.amount, item.currency)}`;
   const fmtUsd = (value: number) => `$${formatAmount(value, "USD")}`;
+
+  // 여행 전체 내역이 한 번에 지워지고 되돌릴 수 없어서, 지우기 전에 한 번 확인해요.
+  const handleClearAll = async () => {
+    const confirmed = await openConfirm({
+      title: "구매 내역을 모두 지울까요?",
+      description: "지운 내역은 되돌릴 수 없어요.",
+      confirmButton: "지우기",
+      cancelButton: "취소",
+    });
+    if (!confirmed) {
+      return;
+    }
+    clearAll();
+    logEvent("dutyfree_clear", { country: country.code });
+  };
 
   const handleAdd = () => {
     if (inputAmount <= 0) {
@@ -238,10 +254,7 @@ export function DutyFreeCalculator() {
             <TextButton
               size="small"
               variant="clear"
-              onClick={() => {
-                clearAll();
-                logEvent("dutyfree_clear", { country: country.code });
-              }}
+              onClick={() => void handleClearAll()}
             >
               전체 비우기
             </TextButton>
