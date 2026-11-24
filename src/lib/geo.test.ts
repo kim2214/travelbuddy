@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { detectCountryByGPS } from "./geo";
+import { coarsenCoordinate, detectCountryByGPS } from "./geo";
 
 vi.mock("@apps-in-toss/web-framework", () => ({
   getCurrentLocation: vi.fn(),
@@ -20,7 +20,32 @@ beforeEach(() => {
   getLocation.mockResolvedValue({ coords: { latitude: 35.6, longitude: 139.7 } } as never);
 });
 
+describe("coarsenCoordinate", () => {
+  it("좌표를 소수 2자리(약 1km)로 반올림한다", () => {
+    expect(coarsenCoordinate(37.566535)).toBe(37.57);
+    expect(coarsenCoordinate(126.977969)).toBe(126.98);
+    expect(coarsenCoordinate(-33.868819)).toBe(-33.87);
+    expect(coarsenCoordinate(35.6)).toBe(35.6);
+  });
+});
+
 describe("detectCountryByGPS", () => {
+  it("외부 API에는 정확한 좌표 대신 반올림한 좌표만 보낸다", async () => {
+    getLocation.mockResolvedValue({
+      coords: { latitude: 35.681236, longitude: 139.767125 },
+    } as never);
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ countryCode: "JP" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await detectCountryByGPS();
+
+    const url = String(fetchMock.mock.calls[0][0]);
+    expect(url).toContain("latitude=35.68&");
+    expect(url).toContain("longitude=139.77&");
+    expect(url).not.toContain("35.681236");
+    expect(url).not.toContain("139.767125");
+  });
+
   it("지원 국가면 대문자 코드로 반환한다", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ countryCode: "jp" })));
     expect(await detectCountryByGPS()).toBe("JP");
