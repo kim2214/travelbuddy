@@ -7,6 +7,7 @@ import {
   getCountry,
   getPracticalInfo,
 } from "./countries";
+import { minutesAheadOfKorea } from "../lib/timeDiff";
 
 describe("countries 데이터 정합성", () => {
   it("모든 국가가 현지 물가 프리셋을 가진다", () => {
@@ -25,6 +26,13 @@ describe("countries 데이터 정합성", () => {
       const info = getPracticalInfo(c.code);
       expect(info.timeDiffShort.trim(), `${c.code} timeDiffShort`).toBeTruthy();
       expect(info.plugShort.trim(), `${c.code} plugShort`).toBeTruthy();
+    }
+  });
+
+  it("모든 국가의 시간대로 시차를 계산할 수 있다", () => {
+    for (const c of COUNTRIES) {
+      const info = getPracticalInfo(c.code);
+      expect(minutesAheadOfKorea(info.timeZone), `${c.code} timeZone`).not.toBeNull();
     }
   });
 

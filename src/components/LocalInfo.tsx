@@ -7,11 +7,13 @@ import { getPracticalInfo } from "../data/countries";
 import { useCountry } from "../context/CountryContext";
 import { dial } from "../lib/links";
 import { cardSurface } from "../lib/styles";
+import { currentTimeDiff } from "../lib/timeDiff";
 import { SectionHeader } from "./SectionHeader";
 
 export function LocalInfo() {
   const { country } = useCountry();
   const info = getPracticalInfo(country.code);
+  const timeDiff = currentTimeDiff(info, { long: info.timeDiff, short: info.timeDiffShort });
 
   return (
     <div style={{ marginTop: 16 }}>
@@ -26,7 +28,7 @@ export function LocalInfo() {
           backgroundColor: adaptive.grey50,
         }}
       >
-        <TableRow align="space-between" left="시차" right={info.timeDiff} />
+        <TableRow align="space-between" left="시차" right={timeDiff.long} />
         <TableRow align="space-between" left="전원" right={info.plug} />
         <TableRow align="space-between" left="수돗물" right={info.tapWater} />
       </div>

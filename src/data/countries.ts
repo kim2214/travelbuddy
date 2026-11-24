@@ -1095,9 +1095,13 @@ export interface EmergencyContact {
 }
 
 export interface PracticalInfo {
-  /** 한국과의 시차 안내 문구 */
+  /** 시차 계산에 쓰는 IANA 시간대. 시간대가 여러 개인 나라는 한국인이 많이 찾는 도시 기준이에요. */
+  timeZone: string;
+  /** 시간대가 여러 개인 나라에서 기준으로 삼은 도시 이름 (예: "LA") */
+  timeZoneLabel?: string;
+  /** 시차 안내 문구. 기기에서 시간대를 계산할 수 없을 때만 써요. */
   timeDiff: string;
-  /** 히어로 카드용 짧은 시차 표기 (예: "없음", "−2시간") */
+  /** 히어로 카드용 짧은 시차 표기 (예: "없음", "−2시간"). 계산할 수 없을 때만 써요. */
   timeDiffShort: string;
   /** 콘센트 플러그 타입 + 전압 */
   plug: string;
@@ -1121,6 +1125,7 @@ const CONSULAR_CALL_CENTER: EmergencyContact = {
 
 const PRACTICAL: Record<string, PracticalInfo> = {
   JP: {
+    timeZone: "Asia/Tokyo",
     timeDiff: "한국과 시차가 없어요",
     timeDiffShort: "없음",
     plug: "A타입 · 100V (한국 어댑터 필요)",
@@ -1137,6 +1142,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   TH: {
+    timeZone: "Asia/Bangkok",
     timeDiff: "한국보다 2시간 느려요",
     timeDiffShort: "−2시간",
     plug: "A·C·F타입 혼용 · 220V",
@@ -1154,6 +1160,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   VN: {
+    timeZone: "Asia/Ho_Chi_Minh",
     timeDiff: "한국보다 2시간 느려요",
     timeDiffShort: "−2시간",
     plug: "A·C타입 · 220V",
@@ -1171,6 +1178,8 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   US: {
+    timeZone: "America/Los_Angeles",
+    timeZoneLabel: "LA",
     timeDiff: "지역별로 13~16시간 느려요",
     timeDiffShort: "−13~16시간",
     plug: "A·B타입 · 120V",
@@ -1184,6 +1193,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   SG: {
+    timeZone: "Asia/Singapore",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "G타입(영국식) · 230V (전용 어댑터 필요)",
@@ -1200,6 +1210,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   TW: {
+    timeZone: "Asia/Taipei",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "A·B타입 · 110V",
@@ -1216,6 +1227,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   PH: {
+    timeZone: "Asia/Manila",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "A·B·C타입 · 220V",
@@ -1229,6 +1241,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   FR: {
+    timeZone: "Europe/Paris",
     timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
     timeDiffShort: "−7~8시간",
     plug: "C·E타입 · 230V",
@@ -1246,6 +1259,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   IT: {
+    timeZone: "Europe/Rome",
     timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
     timeDiffShort: "−7~8시간",
     plug: "C·F·L타입 · 230V",
@@ -1259,6 +1273,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   ES: {
+    timeZone: "Europe/Madrid",
     timeDiff: "한국보다 7~8시간 느려요 (서머타임)",
     timeDiffShort: "−7~8시간",
     plug: "C·F타입 · 230V",
@@ -1272,6 +1287,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   GB: {
+    timeZone: "Europe/London",
     timeDiff: "한국보다 8~9시간 느려요 (서머타임)",
     timeDiffShort: "−8~9시간",
     plug: "G타입(영국식) · 230V (전용 어댑터 필요)",
@@ -1288,6 +1304,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   CN: {
+    timeZone: "Asia/Shanghai",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "A·C·I타입 · 220V",
@@ -1305,6 +1322,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   HK: {
+    timeZone: "Asia/Hong_Kong",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "G타입(영국식) · 220V",
@@ -1318,6 +1336,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   GU: {
+    timeZone: "Pacific/Guam",
     timeDiff: "한국보다 1시간 빨라요",
     timeDiffShort: "+1시간",
     plug: "A·B타입 · 110~120V",
@@ -1331,6 +1350,8 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   AU: {
+    timeZone: "Australia/Sydney",
+    timeZoneLabel: "시드니",
     timeDiff: "한국보다 1~2시간 빨라요 (동부·서머타임)",
     timeDiffShort: "+1~2시간",
     plug: "I타입 · 230V (전용 어댑터 필요)",
@@ -1347,6 +1368,7 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   MY: {
+    timeZone: "Asia/Kuala_Lumpur",
     timeDiff: "한국보다 1시간 느려요",
     timeDiffShort: "−1시간",
     plug: "G타입(영국식) · 240V",
@@ -1363,6 +1385,8 @@ const PRACTICAL: Record<string, PracticalInfo> = {
     ],
   },
   ID: {
+    timeZone: "Asia/Makassar",
+    timeZoneLabel: "발리",
     timeDiff: "한국보다 1~2시간 느려요 (지역별)",
     timeDiffShort: "−1~2시간",
     plug: "C·F타입 · 230V",

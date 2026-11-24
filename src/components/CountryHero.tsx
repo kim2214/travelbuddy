@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { getPracticalInfo } from "../data/countries";
 import { useCountry } from "../context/CountryContext";
+import { currentTimeDiff } from "../lib/timeDiff";
 import { CountryPickerSheet } from "./CountryPickerSheet";
 
 // 국가별 히어로 그라디언트 (시각 테마, 데이터와 분리)
@@ -34,11 +35,12 @@ export function CountryHero() {
   const { country, detecting, needsCountryChoice } = useCountry();
   const [open, setOpen] = useState(false);
   const info = getPracticalInfo(country.code);
+  const timeDiff = currentTimeDiff(info, { long: info.timeDiff, short: info.timeDiffShort });
   const [from, to] = GRADIENTS[country.code] ?? DEFAULT_GRADIENT;
 
   const stats: { k: string; v: string }[] = [
     { k: "통화", v: `${country.currencySymbol} ${country.currency}` },
-    { k: "시차", v: info.timeDiffShort },
+    { k: "시차", v: timeDiff.short },
     { k: "전원", v: info.plugShort },
   ];
 
