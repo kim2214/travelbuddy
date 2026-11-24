@@ -22,6 +22,12 @@ export interface CountryContextValue {
    * 저장값 조회가 끝나기 전에는 false라 힌트가 깜빡이지 않아요.
    */
   needsCountryChoice: boolean;
+  /**
+   * 여행지가 정해져 국가별 화면을 그려도 되는지 여부.
+   * 저장값 조회가 끝나기 전에는 false라, 기본 국가로 그렸다가 저장된 국가로 바뀌는 깜빡임과
+   * 기본 국가 기준의 불필요한 요청을 막아요. 조회가 오래 걸리면 기본 국가로 먼저 true가 돼요.
+   */
+  ready: boolean;
 }
 
 export const CountryContext = createContext<CountryContextValue | null>(null);

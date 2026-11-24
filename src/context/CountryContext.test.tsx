@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { act, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useCountry } from "./CountryContext";
-import { CountryProvider } from "./CountryProvider";
+import { COUNTRY_LOAD_TIMEOUT_MS, CountryProvider } from "./CountryProvider";
 
 vi.mock("../lib/countryPreference", () => ({
   loadSelectedCountry: vi.fn(),
@@ -151,5 +151,92 @@ describe("CountryContext 국가 결정 규칙", () => {
     expect(result.current.countryCode).toBe("VN");
     expect(result.current.country.code).toBe("VN");
     expect(saveSaved).toHaveBeenCalledWith("VN");
+  });
+
+  it("저장값 조회 중에 사용자가 먼저 고르면, 늦게 도착한 저장값이 덮어쓰지 않는다", async () => {
+    let resolveLoad: (value: string | null) => void = () => {};
+    loadSaved.mockReturnValue(
+      new Promise((resolve) => {
+        resolveLoad = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    act(() => result.current.setCountryCode("VN"));
+    await act(async () => {
+      resolveLoad("TH");
+    });
+
+    expect(result.current.countryCode).toBe("VN");
+    expect(result.current.ready).toBe(true);
+    expect(result.current.needsCountryChoice).toBe(false);
+  });
+
+  it("저장값 조회가 끝나야 ready가 되고, 그때 저장된 국가가 이미 반영돼 있다", async () => {
+    let resolveLoad: (value: string | null) => void = () => {};
+    loadSaved.mockReturnValue(
+      new Promise((resolve) => {
+        resolveLoad = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    expect(result.current.ready).toBe(false);
+
+    await act(async () => {
+      resolveLoad("TH");
+    });
+
+    expect(result.current.ready).toBe(true);
+    expect(result.current.countryCode).toBe("TH");
+  });
+
+  it("진입 스킴에 국가가 있으면 조회 없이 바로 ready가 된다", async () => {
+    fromEntry.mockReturnValue("VN");
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+    expect(result.current.countryCode).toBe("VN");
+    expect(loadSaved).not.toHaveBeenCalled();
+  });
+});
+
+describe("CountryContext 저장값 조회 지연", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("조회가 오래 걸리면 기본 국가로 먼저 ready가 되고, 늦게 온 저장값도 반영한다", async () => {
+    let resolveLoad: (value: string | null) => void = () => {};
+    loadSaved.mockReturnValue(
+      new Promise((resolve) => {
+        resolveLoad = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useCountry(), { wrapper });
+    expect(result.current.ready).toBe(false);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(COUNTRY_LOAD_TIMEOUT_MS);
+    });
+
+    expect(result.current.ready).toBe(true);
+    expect(result.current.countryCode).toBe("JP");
+    // 조회가 끝나지 않았으니 첫 진입 힌트는 아직 띄우지 않아요.
+    expect(result.current.needsCountryChoice).toBe(false);
+
+    await act(async () => {
+      resolveLoad("TH");
+    });
+
+    expect(result.current.countryCode).toBe("TH");
   });
 });

@@ -2,6 +2,7 @@ import { Text } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 import { useState, type ComponentType } from "react";
 
+import { useCountry } from "./context/CountryContext";
 import { TabActiveContext } from "./context/tabActiveContext";
 import { logEvent } from "./lib/analytics";
 import { getTabFromEntry } from "./lib/entry";
@@ -23,6 +24,8 @@ const TAB_BAR_HEIGHT = 60;
 const TAB_BAR_BOTTOM_GAP = 16;
 
 function App() {
+  // 저장된 여행지 조회가 끝난 뒤에 화면을 그려요. (기본 국가로 그렸다가 바뀌는 깜빡임 방지)
+  const { ready } = useCountry();
   // 콘솔 '앱 내 기능' 스킴(?tab=...)으로 진입했다면 그 탭으로 바로 열어요.
   const [tab, setTab] = useState<TabKey>(() => getTabFromEntry() ?? DEFAULT_TAB);
   // 한 번이라도 연 탭은 언마운트하지 않고 숨기기만 해요. 탭을 오가도 입력 중인 금액 같은
@@ -46,6 +49,7 @@ function App() {
       >
         {TABS.map(
           (t) =>
+            ready &&
             visited.has(t.key) && (
               <div key={t.key} hidden={tab !== t.key}>
                 {/* 숨겨진 탭의 컴포넌트가 노출 로그를 남기지 않도록 보이는 탭인지 알려줘요. */}
