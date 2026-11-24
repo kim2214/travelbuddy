@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { amountInputFormat, fromGroupedAmount, toGroupedAmount } from "./amountFormat";
+import {
+  amountInputFormat,
+  fromGroupedAmount,
+  toGroupedAmount,
+  parseAmount,
+} from "./amountFormat";
 
 describe("toGroupedAmount", () => {
   it("정수부에 천 단위 콤마를 찍는다", () => {
@@ -28,6 +33,21 @@ describe("fromGroupedAmount", () => {
   it("콤마를 제거해 원본 입력값으로 되돌린다", () => {
     expect(fromGroupedAmount("1,000,000")).toBe("1000000");
     expect(fromGroupedAmount("1,234.5678")).toBe("1234.5678");
+  });
+});
+
+describe("parseAmount", () => {
+  it("콤마나 통화 기호가 섞여도 숫자로 읽는다", () => {
+    expect(parseAmount("1,234.5")).toBe(1234.5);
+    expect(parseAmount("₩1000원")).toBe(1000);
+    expect(parseAmount(1500)).toBe(1500);
+  });
+
+  it("비어 있거나 숫자로 읽을 수 없으면 0이다", () => {
+    expect(parseAmount("")).toBe(0);
+    expect(parseAmount("abc")).toBe(0);
+    expect(parseAmount(".")).toBe(0);
+    expect(parseAmount("1.2.3")).toBe(0);
   });
 });
 

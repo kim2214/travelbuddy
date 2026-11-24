@@ -7,7 +7,7 @@ import { Button, ProgressBar, Text, TextButton, TextField } from "@toss/tds-mobi
 import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
-import { amountInputFormat } from "../lib/amountFormat";
+import { amountInputFormat, parseAmount } from "../lib/amountFormat";
 import { logEvent } from "../lib/analytics";
 import { DUTY_FREE_LIMIT_USD } from "../lib/dutyFree";
 import { convert, formatAmount } from "../lib/exchangeRate";
@@ -25,11 +25,7 @@ export function DutyFreeCalculator() {
   const cur = country.currency;
   const sym = country.currencySymbol;
 
-  const inputAmount = useMemo(() => {
-    const cleaned = input.replace(/[^0-9.]/g, "");
-    const value = Number(cleaned);
-    return Number.isFinite(value) ? value : 0;
-  }, [input]);
+  const inputAmount = useMemo(() => parseAmount(input), [input]);
 
   /** 현지 통화 금액을 USD로 환산해요. 환율이 없으면 null이에요(USD 국가는 그대로). */
   const usdOf = (amount: number): number | null => {

@@ -7,7 +7,7 @@ import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
 import type { TippingInfo } from "../data/countries";
-import { amountInputFormat } from "../lib/amountFormat";
+import { amountInputFormat, parseAmount } from "../lib/amountFormat";
 import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
@@ -28,11 +28,7 @@ export function TipCalculator({ tipping }: { tipping: TippingInfo }) {
   const cur = country.currency;
   const sym = country.currencySymbol;
 
-  const billAmount = useMemo(() => {
-    const cleaned = bill.replace(/[^0-9.]/g, "");
-    const v = Number(cleaned);
-    return Number.isFinite(v) ? v : 0;
-  }, [bill]);
+  const billAmount = useMemo(() => parseAmount(bill), [bill]);
 
   const tip = billAmount * (tipPct / 100);
   const total = billAmount + tip;

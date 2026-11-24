@@ -5,7 +5,7 @@ import { Button, Loader, Skeleton, Text, TextButton, TextField } from "@toss/tds
 import { adaptive } from "@toss/tds-colors";
 import { useMemo, useState, type CSSProperties } from "react";
 
-import { amountInputFormat } from "../lib/amountFormat";
+import { amountInputFormat, parseAmount } from "../lib/amountFormat";
 import { logEvent } from "../lib/analytics";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
@@ -71,12 +71,7 @@ export function CurrencyConverter() {
   const from = direction === "foreignToKrw" ? country.currency : "KRW";
   const to = direction === "foreignToKrw" ? "KRW" : country.currency;
 
-  // 입력에서 숫자/소수점만 추출
-  const numericInput = useMemo(() => {
-    const cleaned = input.replace(/[^0-9.]/g, "");
-    const value = Number(cleaned);
-    return Number.isFinite(value) ? value : 0;
-  }, [input]);
+  const numericInput = useMemo(() => parseAmount(input), [input]);
 
   const result = useMemo(() => {
     if (rates == null) {

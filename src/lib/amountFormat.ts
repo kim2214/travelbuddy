@@ -19,6 +19,15 @@ export function fromGroupedAmount(formatted: string | number): string {
   return String(formatted).replace(/[^0-9.]/g, "");
 }
 
+/**
+ * 금액 입력값을 숫자로 바꿔요. 숫자/소수점 외 문자는 무시하고,
+ * 비어 있거나 숫자로 읽을 수 없으면("1.2.3" 등) 0을 돌려줘요.
+ */
+export function parseAmount(input: string | number): number {
+  const value = Number(fromGroupedAmount(input));
+  return Number.isFinite(value) ? value : 0;
+}
+
 /** TDS TextField의 `format` prop에 그대로 전달하는 금액 콤마 포맷터예요. */
 export const amountInputFormat = {
   transform: toGroupedAmount,
