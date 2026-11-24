@@ -48,6 +48,8 @@ describe("<Checklist />", () => {
     // 카테고리 헤더
     expect(screen.getByText("📄 서류")).toBeInTheDocument();
     expect(screen.getByText("🔌 전자기기")).toBeInTheDocument();
+    // 입국 서류는 점검 시점과 재확인 안내를 함께 보여줘요.
+    expect(screen.getByText(/입국 서류는 \d{4}년 \d{1,2}월 기준이에요/)).toBeInTheDocument();
   });
 
   it("항목을 탭하면 체크 상태가 토글된다", async () => {

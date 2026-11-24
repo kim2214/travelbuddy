@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   COUNTRIES,
   DEFAULT_COUNTRY_CODE,
+  ENTRY_INFO_VERIFIED_AT,
   getCountry,
   getPracticalInfo,
 } from "./countries";
@@ -34,6 +35,46 @@ describe("countries 데이터 정합성", () => {
         expect(allowed.has(item.category), `${c.code} ${item.id} category`).toBe(true);
       }
     }
+  });
+
+  it("국가 안에서 준비물 id가 겹치지 않는다", () => {
+    for (const c of COUNTRIES) {
+      const ids = c.checklistPreset.map((item) => item.id);
+      expect(new Set(ids).size, `${c.code} 준비물 id 중복`).toBe(ids.length);
+    }
+  });
+
+  it("사전 등록이 필요한 나라는 입국 서류 준비물을 가진다", () => {
+    // [국가, 준비물 id] — 전자여행허가·입국카드·비자처럼 출발 전에 챙겨야 하는 항목
+    const required: [string, string][] = [
+      ["JP", "visit-japan"],
+      ["TH", "tdac"],
+      ["US", "esta"],
+      ["SG", "sg-arrival"],
+      ["TW", "tw-arrival"],
+      ["PH", "etravel"],
+      ["GB", "uk-eta"],
+      ["GU", "gu-entry"],
+      ["AU", "au-eta"],
+      ["MY", "mdac"],
+      ["ID", "id-visa"],
+      ["ID", "all-indonesia"],
+    ];
+    for (const [code, id] of required) {
+      const item = getCountry(code).checklistPreset.find((i) => i.id === id);
+      expect(item, `${code} ${id}`).toBeDefined();
+      expect(item?.category, `${code} ${id}`).toBe("서류");
+    }
+  });
+
+  it("베트남은 무비자(45일) 안내를 하고 전자비자 발급을 필수처럼 안내하지 않는다", () => {
+    const preset = getCountry("VN").checklistPreset;
+    expect(preset.some((i) => i.id === "evisa")).toBe(false);
+    expect(preset.find((i) => i.id === "vn-visa")?.hint).toContain("45일");
+  });
+
+  it("입국 서류 점검 시점이 YYYY-MM 형식이다", () => {
+    expect(ENTRY_INFO_VERIFIED_AT).toMatch(/^\d{4}-(0[1-9]|1[0-2])$/);
   });
 
   it("모든 국가가 여행 회화를 가진다", () => {

@@ -5,7 +5,7 @@ import { Button, Checkbox, ListRow, ProgressBar, Text, TextField } from "@toss/t
 import { adaptive } from "@toss/tds-colors";
 import { useEffect, useRef, useState } from "react";
 
-import type { ChecklistCategory } from "../data/countries";
+import { ENTRY_INFO_VERIFIED_AT, type ChecklistCategory } from "../data/countries";
 import { logEvent } from "../lib/analytics";
 import { requestAppReview } from "../lib/review";
 import { useCountry } from "../context/CountryContext";
@@ -18,6 +18,10 @@ const CATEGORY_ORDER: { key: ChecklistCategory; emoji: string }[] = [
   { key: "상비약", emoji: "💊" },
   { key: "기타", emoji: "📦" },
 ];
+
+// "2026-11" → "2026년 11월"
+const [verifiedYear, verifiedMonth] = ENTRY_INFO_VERIFIED_AT.split("-");
+const ENTRY_INFO_NOTICE = `입국 서류는 ${verifiedYear}년 ${Number(verifiedMonth)}월 기준이에요 · 출발 전 공식 안내를 확인하세요`;
 
 export function Checklist() {
   const { country } = useCountry();
@@ -177,6 +181,16 @@ export function Checklist() {
                 </Text>
               </div>
               {group.items.map(renderRow)}
+              {/* 입국 요건은 자주 바뀌어서 점검 시점과 재확인 안내를 함께 보여줘요. */}
+              {group.key === "서류" && (
+                <Text
+                  typography="st12"
+                  color={adaptive.grey400}
+                  style={{ display: "block", padding: "4px 24px 0" }}
+                >
+                  {ENTRY_INFO_NOTICE}
+                </Text>
+              )}
             </div>
           );
         })}

@@ -110,6 +110,12 @@ const TRAVEL_INSURANCE_LINK = "https://www.tourmoz.com/v2/find";
 // 로밍도깨비(유엔젤㈜) 여행 eSIM 스토어
 const ROKEBI_ESIM_LINK = "https://www.rokebi.com/store?tab=best";
 
+/**
+ * 입국 서류(비자·전자여행허가·입국카드) 준비물을 마지막으로 점검한 시점 (YYYY-MM).
+ * 입국 요건은 자주 바뀌므로 화면에 함께 표기하고, 데이터를 다시 점검하면 이 값도 갱신해요.
+ */
+export const ENTRY_INFO_VERIFIED_AT = "2026-11";
+
 export const COUNTRIES: Country[] = [
   {
     code: "JP",
@@ -213,6 +219,12 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
+      {
+        id: "tdac",
+        label: "TDAC 디지털 입국카드 작성",
+        hint: "도착 3일 전부터 온라인",
+        category: "서류",
+      },
       { id: "repellent", label: "모기 기피제 / 상비약", category: "상비약" },
       { id: "adapter", label: "멀티 어댑터", hint: "A/C/F 타입 혼용", category: "전자기기" },
     ],
@@ -268,9 +280,11 @@ export const COUNTRIES: Country[] = [
     checklistPreset: [
       ...commonChecklist,
       {
-        id: "evisa",
-        label: "전자비자(E-visa) 발급",
-        hint: "입국 전 필수 확인",
+        // 한국 여권은 45일까지 무비자예요. 예전 항목(evisa, "전자비자 발급")과 뜻이 달라
+        // 저장된 체크가 이어지지 않도록 id를 바꿨어요.
+        id: "vn-visa",
+        label: "무비자 체류 기간 확인",
+        hint: "45일 이내 무비자 · 넘으면 E-visa",
         category: "서류",
       },
       { id: "small-cash", label: "소액권 현금 준비", category: "기타" },
@@ -694,6 +708,12 @@ export const COUNTRIES: Country[] = [
     ],
     checklistPreset: [
       ...commonChecklist,
+      {
+        id: "uk-eta",
+        label: "ETA 전자여행허가 신청",
+        hint: "영국 입국 전 온라인",
+        category: "서류",
+      },
       { id: "adapter-g", label: "G타입(영국식) 어댑터", category: "전자기기" },
       { id: "contactless", label: "컨택리스 결제 카드", category: "기타" },
     ],
@@ -747,7 +767,7 @@ export const COUNTRIES: Country[] = [
       {
         id: "cn-visa",
         label: "비자·무비자 조건 확인",
-        hint: "체류 목적·기간별로 달라요",
+        hint: "무비자(30일) 시행 기간을 확인하세요",
         category: "서류",
       },
       { id: "cn-pay", label: "알리페이·위챗페이 설정", category: "기타" },
@@ -841,15 +861,16 @@ export const COUNTRIES: Country[] = [
       },
       {
         title: "입국",
-        description: "ESTA 또는 괌·CNMI 전용 무비자(G-visa) 자격을 확인하세요.",
+        description:
+          "ESTA 또는 괌·북마리아나 전용 전자여행허가(G-CNMI ETA)가 필요해요. 출발 5일 전까지 신청을 권장해요.",
       },
     ],
     checklistPreset: [
       ...commonChecklist,
       {
         id: "gu-entry",
-        label: "ESTA 또는 무비자 서류 확인",
-        hint: "괌 G-visa waiver",
+        label: "ESTA 또는 G-CNMI ETA 신청",
+        hint: "괌 전자여행허가 · 출발 5일 전까지",
         category: "서류",
       },
       { id: "sunscreen-gu", label: "자외선 차단제 / 물놀이 용품", category: "상비약" },
@@ -1013,6 +1034,12 @@ export const COUNTRIES: Country[] = [
         id: "id-visa",
         label: "도착비자(VOA) 또는 e-VOA 준비",
         hint: "발리 등 입국 시",
+        category: "서류",
+      },
+      {
+        id: "all-indonesia",
+        label: "All Indonesia 입국신고",
+        hint: "도착 3일 전부터 온라인",
         category: "서류",
       },
       { id: "repellent-id", label: "모기 기피제 / 지사제", category: "상비약" },
