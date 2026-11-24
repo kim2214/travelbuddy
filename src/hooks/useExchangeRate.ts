@@ -6,17 +6,20 @@ import { fetchRates, type Rates } from "../lib/exchangeRate";
 
 export interface UseExchangeRateResult {
   rates: Rates | null;
-  fetchedAt: number | null;
-  fromCache: boolean;
+  /** 환율 제공처가 이 환율을 갱신한 시각 (epoch ms). "○○ 기준" 표시에 써요. */
+  updatedAt: number | null;
+  /** 최신 환율을 받지 못해 저장된(만료된) 환율을 쓰고 있는지 여부 */
+  stale: boolean;
   loading: boolean;
+  /** 환율을 전혀 구하지 못했는지 여부 (저장된 환율도 없음) */
   error: boolean;
   reload: () => void;
 }
 
 export function useExchangeRate(): UseExchangeRateResult {
   const [rates, setRates] = useState<Rates | null>(null);
-  const [fetchedAt, setFetchedAt] = useState<number | null>(null);
-  const [fromCache, setFromCache] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
+  const [stale, setStale] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -30,8 +33,8 @@ export function useExchangeRate(): UseExchangeRateResult {
         return;
       }
       setRates(result.rates);
-      setFetchedAt(result.fetchedAt);
-      setFromCache(result.fromCache);
+      setUpdatedAt(result.updatedAt);
+      setStale(result.stale);
     } catch {
       if (isActive()) {
         setError(true);
@@ -51,5 +54,5 @@ export function useExchangeRate(): UseExchangeRateResult {
     };
   }, [load]);
 
-  return { rates, fetchedAt, fromCache, loading, error, reload: () => void load() };
+  return { rates, updatedAt, stale, loading, error, reload: () => void load() };
 }

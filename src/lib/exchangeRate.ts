@@ -27,15 +27,37 @@ export type Rates = Record<string, number>;
 
 export interface RatesResult {
   rates: Rates;
-  /** epoch ms */
+  /** 우리가 환율을 받아온 시각 (epoch ms). 캐시 신선도 판단에 써요. */
   fetchedAt: number;
-  /** 캐시(오프라인 폴백)에서 가져온 값인지 여부 */
+  /**
+   * 환율 제공처가 이 환율을 갱신한 시각 (epoch ms). 화면의 "○○ 기준" 표시에 써요.
+   * 제공처는 하루 한 번 정도만 갱신하므로 fetchedAt보다 한참 이전일 수 있어요.
+   */
+  updatedAt: number;
+  /** 캐시에서 가져온 값인지 여부 */
   fromCache: boolean;
+  /** 최신 환율을 받지 못해 만료된 캐시로 폴백했는지 여부 (재시도 안내용) */
+  stale: boolean;
 }
 
 interface CachePayload {
   rates: Rates;
   fetchedAt: number;
+  updatedAt: number;
+}
+
+interface FetchedRates {
+  rates: Rates;
+  /** 제공처가 알려준 갱신 시각 (epoch ms). 알 수 없으면 null이에요. */
+  updatedAt: number | null;
+}
+
+/** 제공처 갱신 시각이 쓸 만한 값인지 확인해요. 미래 시각은 믿지 않아요. */
+function sanitizeUpdatedAt(value: unknown, now: number): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0 || value > now) {
+    return null;
+  }
+  return value;
 }
 
 /** 값이 모두 유한한 숫자인 Rates 형태인지 런타임 검증해요. */
@@ -55,7 +77,15 @@ async function readCache(): Promise<CachePayload | null> {
     }
     const parsed = JSON.parse(raw) as Partial<CachePayload>;
     if (isValidRates(parsed.rates) && typeof parsed.fetchedAt === "number") {
-      return { rates: parsed.rates, fetchedAt: parsed.fetchedAt };
+      return {
+        rates: parsed.rates,
+        fetchedAt: parsed.fetchedAt,
+        // 구버전 캐시(updatedAt 없음)는 받아온 시각으로 대신해요.
+        updatedAt:
+          typeof parsed.updatedAt === "number" && Number.isFinite(parsed.updatedAt)
+            ? parsed.updatedAt
+            : parsed.fetchedAt,
+      };
     }
     return null;
   } catch {
@@ -72,28 +102,36 @@ async function writeCache(payload: CachePayload): Promise<void> {
 }
 
 /** 주 소스(open.er-api.com)에서 환율을 받아 검증해요. */
-async function fetchPrimary(): Promise<Rates> {
+async function fetchPrimary(): Promise<FetchedRates> {
   const res = await fetchWithTimeout(PRIMARY_URL);
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
   }
-  const data = (await res.json()) as { result?: string; rates?: unknown };
+  const data = (await res.json()) as {
+    result?: string;
+    rates?: unknown;
+    time_last_update_unix?: unknown;
+  };
   if (data.result !== "success" || !isValidRates(data.rates)) {
     throw new Error("invalid primary response");
   }
-  return data.rates;
+  // time_last_update_unix는 초 단위예요.
+  const updatedAt =
+    typeof data.time_last_update_unix === "number" ? data.time_last_update_unix * 1000 : null;
+  return { rates: data.rates, updatedAt };
 }
 
 /**
  * 보조 소스(fawazahmed0 currency-api)에서 환율을 받아 우리 형식으로 정규화해요.
- * 응답은 `{ krw: { usd: 0.0007, jpy: 0.1, ... } }`처럼 소문자 키라 대문자로 바꿔요.
+ * 응답은 `{ date: "2024-01-01", krw: { usd: 0.0007, jpy: 0.1, ... } }`처럼 소문자 키라
+ * 대문자로 바꿔요. 갱신 시각은 날짜(UTC 자정)까지만 알 수 있어요.
  */
-async function fetchSecondary(): Promise<Rates> {
+async function fetchSecondary(): Promise<FetchedRates> {
   const res = await fetchWithTimeout(SECONDARY_URL);
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
   }
-  const data = (await res.json()) as { krw?: unknown };
+  const data = (await res.json()) as { date?: unknown; krw?: unknown };
   if (data.krw == null || typeof data.krw !== "object") {
     throw new Error("invalid secondary response");
   }
@@ -106,14 +144,18 @@ async function fetchSecondary(): Promise<Rates> {
   if (!isValidRates(rates)) {
     throw new Error("invalid secondary rates");
   }
-  return rates;
+  const parsedDate =
+    typeof data.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(data.date)
+      ? Date.parse(data.date)
+      : NaN;
+  return { rates, updatedAt: Number.isFinite(parsedDate) ? parsedDate : null };
 }
 
 /**
  * 환율을 가져와요.
  * 1) 유효한(6시간 이내) 캐시가 있으면 그대로 사용
  * 2) 없으면 주 소스 호출 → 실패 시 보조 소스로 폴백 → 성공 시 캐시 갱신
- * 3) 두 소스 모두 실패하면 오래된 캐시라도 폴백 사용
+ * 3) 두 소스 모두 실패하면 오래된 캐시라도 폴백 사용 (stale=true)
  */
 export async function fetchRates(now: number = Date.now()): Promise<RatesResult> {
   const cached = await readCache();
@@ -121,25 +163,30 @@ export async function fetchRates(now: number = Date.now()): Promise<RatesResult>
     const age = now - cached.fetchedAt;
     // age가 음수면(기기 시계 역행 등) 신선하다고 오판하지 않고 새로 받아요.
     if (age >= 0 && age < CACHE_TTL_MS) {
-      return { rates: cached.rates, fetchedAt: cached.fetchedAt, fromCache: true };
+      return { ...cached, fromCache: true, stale: false };
     }
   }
 
   try {
-    let rates: Rates;
+    let fetched: FetchedRates;
     try {
-      rates = await fetchPrimary();
+      fetched = await fetchPrimary();
     } catch {
       // 주 소스 실패 → 보조 소스로 한 번 더 시도해요.
-      rates = await fetchSecondary();
+      fetched = await fetchSecondary();
     }
-    const fetchedAt = now;
-    await writeCache({ rates, fetchedAt });
-    return { rates, fetchedAt, fromCache: false };
+    const payload: CachePayload = {
+      rates: fetched.rates,
+      fetchedAt: now,
+      // 제공처가 갱신 시각을 주지 않으면 받아온 시각으로 대신해요.
+      updatedAt: sanitizeUpdatedAt(fetched.updatedAt, now) ?? now,
+    };
+    await writeCache(payload);
+    return { ...payload, fromCache: false, stale: false };
   } catch (error) {
     if (cached != null) {
       // 두 소스 모두 실패 → 만료됐더라도 마지막 캐시로 폴백
-      return { rates: cached.rates, fetchedAt: cached.fetchedAt, fromCache: true };
+      return { ...cached, fromCache: true, stale: true };
     }
     throw error;
   }

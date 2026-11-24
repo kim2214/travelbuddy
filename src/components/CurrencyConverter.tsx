@@ -53,7 +53,7 @@ function defaultAmountFor(currency: string): number {
 
 export function CurrencyConverter() {
   const { country } = useCountry();
-  const { rates, fetchedAt, fromCache, loading, error, reload } = useExchangeRateContext();
+  const { rates, updatedAt, stale, loading, error, reload } = useExchangeRateContext();
   const [direction, setDirection] = useState<Direction>("foreignToKrw");
   const [input, setInput] = useState(() => String(defaultAmountFor(country.currency)));
 
@@ -99,24 +99,16 @@ export function CurrencyConverter() {
     logEvent("converter_swap", { country: country.code });
   };
 
-  const updatedLabel = (() => {
-    if (loading) {
-      return "환율 불러오는 중…";
-    }
-    if (error) {
-      return "환율을 불러오지 못했어요. 다시 시도해 주세요.";
-    }
-    if (fetchedAt == null) {
-      return "";
-    }
-    const time = new Date(fetchedAt).toLocaleString("ko-KR", {
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return fromCache ? `${time} 기준 (저장된 환율)` : `${time} 기준`;
-  })();
+  // 환율 제공처가 갱신한 시각이에요(우리가 받아온 시각이 아니에요).
+  const updatedTime =
+    updatedAt == null
+      ? null
+      : new Date(updatedAt).toLocaleString("ko-KR", {
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
 
   const containerStyle: CSSProperties = {
     margin: "0 24px",
@@ -256,23 +248,33 @@ export function CurrencyConverter() {
             </Text>
           </div>
         )}
-        {error ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Text typography="st12" color={adaptive.red500}>
-              최신 환율 갱신에 실패했어요 · 저장된 값
+        {loading ? (
+          <div>
+            <Text typography="st12" color={adaptive.grey400}>
+              환율 불러오는 중…
             </Text>
-            <TextButton size="small" variant="underline" onClick={reload}>
-              다시 시도
-            </TextButton>
           </div>
         ) : (
-          updatedLabel !== "" && (
-            <div>
-              <Text typography="st12" color={adaptive.grey400}>
-                {updatedLabel}
-              </Text>
-            </div>
-          )
+          <>
+            {/* 최신 환율을 못 받아 저장된 환율을 쓰는 중이면 알리고 재시도할 수 있게 해요. */}
+            {(stale || error) && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Text typography="st12" color={adaptive.red500}>
+                  최신 환율을 받지 못해 저장된 환율이에요
+                </Text>
+                <TextButton size="small" variant="underline" onClick={reload}>
+                  다시 시도
+                </TextButton>
+              </div>
+            )}
+            {updatedTime != null && (
+              <div>
+                <Text typography="st12" color={adaptive.grey400}>
+                  {updatedTime} 기준
+                </Text>
+              </div>
+            )}
+          </>
         )}
         {/* 시장 평균(mid-market) 환율이라 실제 환전 적용 환율과 달라요. 오해 방지용 고지. */}
         <div>

@@ -116,8 +116,61 @@ describe("fetchRates", () => {
 
     const result = await fetchRates(NOW);
 
-    expect(result).toEqual({ rates: { JPY: 0.1 }, fetchedAt: NOW - HOUR, fromCache: true });
+    expect(result).toEqual({
+      rates: { JPY: 0.1 },
+      fetchedAt: NOW - HOUR,
+      // 구버전 캐시(updatedAt 없음)는 받아온 시각으로 대신해요.
+      updatedAt: NOW - HOUR,
+      fromCache: true,
+      stale: false,
+    });
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("캐시에 저장된 제공처 갱신 시각을 그대로 돌려준다", async () => {
+    vi.stubGlobal("fetch", vi.fn());
+    getItem.mockResolvedValue(
+      JSON.stringify({ rates: { JPY: 0.1 }, fetchedAt: NOW - HOUR, updatedAt: NOW - 20 * HOUR }),
+    );
+
+    const result = await fetchRates(NOW);
+
+    expect(result.updatedAt).toBe(NOW - 20 * HOUR);
+    expect(result.stale).toBe(false);
+  });
+
+  it("주 소스의 갱신 시각(time_last_update_unix)을 updatedAt으로 쓰고 캐시에 저장한다", async () => {
+    const updatedSec = Math.floor((NOW - 15 * HOUR) / 1000);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse({
+          result: "success",
+          time_last_update_unix: updatedSec,
+          rates: { JPY: 0.1 },
+        }),
+      ),
+    );
+
+    const result = await fetchRates(NOW);
+
+    expect(result.fetchedAt).toBe(NOW);
+    expect(result.updatedAt).toBe(updatedSec * 1000);
+    const saved = JSON.parse(setItem.mock.calls[0][1] as string) as { updatedAt: number };
+    expect(saved.updatedAt).toBe(updatedSec * 1000);
+  });
+
+  it("갱신 시각이 미래거나 숫자가 아니면 받아온 시각으로 대신한다", async () => {
+    for (const bad of [Math.floor((NOW + 48 * HOUR) / 1000), "yesterday", -1]) {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn().mockResolvedValue(
+          jsonResponse({ result: "success", time_last_update_unix: bad, rates: { JPY: 0.1 } }),
+        ),
+      );
+      const result = await fetchRates(NOW);
+      expect(result.updatedAt, String(bad)).toBe(NOW);
+    }
   });
 
   it("캐시가 없으면 API를 호출하고 결과를 캐시에 저장한다", async () => {
@@ -128,7 +181,14 @@ describe("fetchRates", () => {
 
     const result = await fetchRates(NOW);
 
-    expect(result).toEqual({ rates: { JPY: 0.1 }, fetchedAt: NOW, fromCache: false });
+    expect(result).toEqual({
+      rates: { JPY: 0.1 },
+      fetchedAt: NOW,
+      // 제공처가 갱신 시각을 주지 않으면 받아온 시각으로 대신해요.
+      updatedAt: NOW,
+      fromCache: false,
+      stale: false,
+    });
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(setItem).toHaveBeenCalledOnce();
   });
@@ -138,7 +198,8 @@ describe("fetchRates", () => {
       url.includes("open.er-api.com")
         ? Promise.resolve(jsonResponse({ result: "error" }, false, 500))
         : Promise.resolve(
-            jsonResponse({ date: "2024-01-01", krw: { jpy: 0.1, usd: 0.00075 } }),
+            // NOW(2023-11-14)보다 이전 날짜여야 갱신 시각으로 인정돼요.
+            jsonResponse({ date: "2023-11-13", krw: { jpy: 0.1, usd: 0.00075 } }),
           ),
     );
     vi.stubGlobal("fetch", fetchMock);
@@ -148,6 +209,8 @@ describe("fetchRates", () => {
     expect(result.fromCache).toBe(false);
     expect(result.rates.JPY).toBeCloseTo(0.1);
     expect(result.rates.USD).toBeCloseTo(0.00075);
+    // 보조 소스는 날짜(UTC 자정)까지만 알려줘요.
+    expect(result.updatedAt).toBe(Date.parse("2023-11-13"));
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(setItem).toHaveBeenCalledOnce();
   });
@@ -187,6 +250,8 @@ describe("fetchRates", () => {
     const result = await fetchRates(NOW);
 
     expect(result.fromCache).toBe(true);
+    // 만료된 캐시로 폴백한 사실을 알려 화면에서 재시도를 안내할 수 있게 해요.
+    expect(result.stale).toBe(true);
     expect(result.rates).toEqual({ JPY: 0.09 });
     expect(result.fetchedAt).toBe(NOW - 10 * HOUR);
   });

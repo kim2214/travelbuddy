@@ -174,4 +174,57 @@ describe("<CurrencyConverter />", () => {
     expect(await screen.findByText("환율을 불러오지 못했어요")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "다시 시도" })).toBeInTheDocument();
   });
+  it("최신 환율을 못 받아 저장된 환율로 폴백하면 알리고, 다시 시도하면 갱신한다", async () => {
+    const DAY = 24 * 60 * 60 * 1000;
+    // 만료된(하루 지난) 캐시만 있고 네트워크는 실패해요.
+    vi.mocked(Storage.getItem).mockImplementation(async (key: string) =>
+      key === "rates_cache_v1"
+        ? JSON.stringify({
+            rates: { JPY: 0.1 },
+            fetchedAt: Date.now() - DAY,
+            updatedAt: Date.now() - DAY,
+          })
+        : null,
+    );
+    const fetchMock = vi.fn().mockRejectedValue(new Error("network down"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderConverter();
+
+    // 저장된 환율로 계산은 계속 되고(10,000엔 = 100,000원), 폴백 사실을 알려요.
+    expect(await screen.findByText("100,000")).toBeInTheDocument();
+    expect(screen.getByText("최신 환율을 받지 못해 저장된 환율이에요")).toBeInTheDocument();
+
+    // 네트워크가 돌아온 뒤 다시 시도하면 새 환율로 바뀌고 안내가 사라져요.
+    fetchMock.mockResolvedValue(jsonResponse({ result: "success", rates: { JPY: 0.125 } }));
+    await userEvent.click(screen.getByText("다시 시도"));
+
+    expect(await screen.findByText("80,000")).toBeInTheDocument();
+    expect(screen.queryByText("최신 환율을 받지 못해 저장된 환율이에요")).not.toBeInTheDocument();
+  });
+
+  it("기준 시각은 받아온 시각이 아니라 제공처의 환율 갱신 시각을 보여준다", async () => {
+    // 제공처 갱신 시각: 2024-01-01 00:00 UTC
+    const updatedMs = Date.parse("2024-01-01T00:00:00Z");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse({
+          result: "success",
+          time_last_update_unix: updatedMs / 1000,
+          rates: { JPY: 0.1 },
+        }),
+      ),
+    );
+
+    renderConverter();
+
+    const expected = new Date(updatedMs).toLocaleString("ko-KR", {
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    expect(await screen.findByText(`${expected} 기준`)).toBeInTheDocument();
+  });
 });
