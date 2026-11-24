@@ -70,9 +70,9 @@ describe("<DutyFreeCalculator />", () => {
     // 10,000엔 ≈ $75 → 남은 한도 $725
     expect(await screen.findByText("≈ $75.00")).toBeInTheDocument();
     expect(screen.getByText(/남은 한도 \$725\.00/)).toBeInTheDocument();
-    expect(Storage.setItem).toHaveBeenCalledWith(
-      "dutyfree_JP_v1",
-      expect.stringContaining('"amount":10000'),
+    expect(Storage.setItem).toHaveBeenLastCalledWith(
+      "dutyfree_trip_v2",
+      JSON.stringify({ items: [{ id: "buy_0", amount: 10000, currency: "JPY" }], nextSeq: 1 }),
     );
 
     // 입력은 초기화돼요.
@@ -89,6 +89,46 @@ describe("<DutyFreeCalculator />", () => {
   });
 
   it("저장된 내역을 복원한다", async () => {
+    vi.mocked(Storage.getItem).mockImplementation(async (key: string) =>
+      key === "dutyfree_trip_v2"
+        ? JSON.stringify({
+            items: [{ id: "buy_0", amount: 10000, currency: "JPY" }],
+            nextSeq: 1,
+          })
+        : null,
+    );
+
+    renderCalculator();
+
+    expect(await screen.findByText("¥10,000")).toBeInTheDocument();
+    expect(await screen.findByText(/남은 한도 \$725\.00/)).toBeInTheDocument();
+  });
+
+  it("다른 나라에서 산 금액도 함께 합산한다", async () => {
+    // 10,000엔 = $75, 100달러 = $100 → 합계 $175, 남은 한도 $625
+    vi.mocked(Storage.getItem).mockImplementation(async (key: string) =>
+      key === "dutyfree_trip_v2"
+        ? JSON.stringify({
+            items: [
+              { id: "buy_0", amount: 10000, currency: "JPY" },
+              { id: "buy_1", amount: 100, currency: "USD" },
+            ],
+            nextSeq: 2,
+          })
+        : null,
+    );
+
+    renderCalculator();
+
+    expect(await screen.findByText("¥10,000")).toBeInTheDocument();
+    expect(screen.getByText("$100.00")).toBeInTheDocument();
+    // 통화가 섞이면 통화 코드를 함께 보여줘요.
+    expect(await screen.findByText("JPY · ≈ $75.00")).toBeInTheDocument();
+    expect(screen.getByText("USD")).toBeInTheDocument();
+    expect(await screen.findByText(/남은 한도 \$625\.00/)).toBeInTheDocument();
+  });
+
+  it("국가별로 저장돼 있던 이전 내역을 옮겨 보여준다", async () => {
     vi.mocked(Storage.getItem).mockImplementation(async (key: string) =>
       key === "dutyfree_JP_v1"
         ? JSON.stringify({ items: [{ id: "buy_JP_0", amount: 10000 }], nextSeq: 1 })

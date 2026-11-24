@@ -36,8 +36,8 @@ export function ExchangeScreen() {
       {country.tipping != null && (
         <TipCalculator key={country.code} tipping={country.tipping} />
       )}
-      {/* 입력 상태가 국가 간에 이어지지 않도록 리마운트해요. 내역 자체는 국가별로 저장돼요. */}
-      <DutyFreeCalculator key={`dutyfree-${country.code}`} />
+      {/* 구매 내역은 여행 전체에 하나라서 여행지를 바꿔도 리마운트하지 않아요. */}
+      <DutyFreeCalculator />
     </div>
   );
 }

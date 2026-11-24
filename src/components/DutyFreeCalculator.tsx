@@ -1,7 +1,8 @@
 // 면세 한도 계산기.
 // 구매할 때마다 현지 통화 금액을 추가하면 USD로 환산해 합산하고,
 // 한국 입국 기본 면세 한도(US$800) 대비 사용량과 남은 한도를 보여줘요.
-// 내역은 국가별로 Storage에 영속돼요.
+// 면세 한도는 입국 한 번에 적용되므로 여러 나라에서 산 금액을 한 목록에 모아 합산해요.
+// 내역은 Storage에 영속되고, 여행이 끝나면 전체 비우기로 비워요.
 
 import { Button, ProgressBar, Text, TextButton, TextField } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
@@ -13,42 +14,62 @@ import { DUTY_FREE_LIMIT_USD } from "../lib/dutyFree";
 import { convert, formatAmount } from "../lib/exchangeRate";
 import { useCountry } from "../context/CountryContext";
 import { useExchangeRateContext } from "../context/exchangeRateContext";
+import { COUNTRIES } from "../data/countries";
 import { useDutyFree } from "../hooks/useDutyFree";
 import { SectionHeader } from "./SectionHeader";
+
+/** 통화 코드에 맞는 기호를 찾아요. 지원 목록에 없는 통화는 코드를 그대로 써요. */
+function symbolOf(currency: string): string {
+  return COUNTRIES.find((c) => c.currency === currency)?.currencySymbol ?? `${currency} `;
+}
 
 export function DutyFreeCalculator() {
   const { country } = useCountry();
   const { rates } = useExchangeRateContext();
-  const { items, addItem, removeItem, clearAll } = useDutyFree(country.code);
+  const { items, addItem, removeItem, clearAll } = useDutyFree();
   const [input, setInput] = useState("");
+  // 여행지를 바꾸면 입력 통화가 달라지므로, 입력 중이던 금액은 비워요. (내역은 그대로 유지)
+  const [inputCountryCode, setInputCountryCode] = useState(country.code);
+  if (inputCountryCode !== country.code) {
+    setInputCountryCode(country.code);
+    setInput("");
+  }
 
   const cur = country.currency;
   const sym = country.currencySymbol;
 
   const inputAmount = useMemo(() => parseAmount(input), [input]);
 
-  /** 현지 통화 금액을 USD로 환산해요. 환율이 없으면 null이에요(USD 국가는 그대로). */
-  const usdOf = (amount: number): number | null => {
-    if (cur === "USD") {
+  /** 금액을 다른 통화로 환산해요. 같은 통화는 그대로, 환율이 없으면 null이에요. */
+  const convertTo = (amount: number, from: string, to: string): number | null => {
+    if (from === to) {
       return amount;
     }
-    return rates == null ? null : convert(amount, cur, "USD", rates);
+    return rates == null ? null : convert(amount, from, to, rates);
   };
+  /** 통화가 섞인 내역을 한 통화로 합산해요. 하나라도 환산할 수 없으면 null이에요. */
+  const totalIn = (to: string): number | null =>
+    items.reduce<number | null>((sum, item) => {
+      const converted = convertTo(item.amount, item.currency, to);
+      return sum == null || converted == null ? null : sum + converted;
+    }, 0);
 
-  const totalLocal = items.reduce((sum, item) => sum + item.amount, 0);
-  const totalUsd = usdOf(totalLocal);
-  const totalKrw = rates == null ? null : convert(totalLocal, cur, "KRW", rates);
+  const totalUsd = totalIn("USD");
+  const totalKrw = totalIn("KRW");
   const remainingUsd = totalUsd == null ? null : DUTY_FREE_LIMIT_USD - totalUsd;
   const isOver = remainingUsd != null && remainingUsd < 0;
+  // 여러 통화가 섞이면 기호만으로 구분하기 어려워(엔·위안 모두 ¥) 통화 코드를 함께 보여줘요.
+  const mixedCurrencies = new Set(items.map((item) => item.currency)).size > 1;
 
-  const fmtLocal = (value: number) => `${sym}${formatAmount(value, cur)}`;
+  const fmtItem = (item: { amount: number; currency: string }) =>
+    `${symbolOf(item.currency)}${formatAmount(item.amount, item.currency)}`;
   const fmtUsd = (value: number) => `$${formatAmount(value, "USD")}`;
 
   const handleAdd = () => {
     if (inputAmount <= 0) {
       return;
     }
-    addItem(inputAmount);
+    addItem(inputAmount, cur);
     logEvent("dutyfree_add", { country: country.code, amount: inputAmount });
     setInput("");
   };
@@ -72,7 +93,7 @@ export function DutyFreeCalculator() {
         style={{ display: "block", padding: "0 24px 10px" }}
       >
         한국 입국 기본 면세 한도는 US$800이에요. 술 2병(2L)·담배 200개비·향수
-        100mL는 별도 한도예요.
+        100mL는 별도 한도예요. 여러 나라에서 산 금액도 함께 합산해요.
       </Text>
 
       <div style={containerStyle}>
@@ -99,7 +120,13 @@ export function DutyFreeCalculator() {
         {items.length > 0 && (
           <div style={{ borderRadius: 14, backgroundColor: adaptive.background, overflow: "hidden" }}>
             {items.map((item, index) => {
-              const usd = usdOf(item.amount);
+              const usd = convertTo(item.amount, item.currency, "USD");
+              const note = [
+                mixedCurrencies ? item.currency : null,
+                item.currency !== "USD" && usd != null ? `≈ ${fmtUsd(usd)}` : null,
+              ]
+                .filter((part) => part != null)
+                .join(" · ");
               return (
                 <div
                   key={item.id}
@@ -117,15 +144,15 @@ export function DutyFreeCalculator() {
                     color={adaptive.grey800}
                     style={{ fontVariantNumeric: "tabular-nums" }}
                   >
-                    {fmtLocal(item.amount)}
+                    {fmtItem(item)}
                   </Text>
-                  {cur !== "USD" && (
+                  {note !== "" && (
                     <Text
                       typography="st12"
                       color={adaptive.grey500}
                       style={{ fontVariantNumeric: "tabular-nums" }}
                     >
-                      {usd == null ? "" : `≈ ${fmtUsd(usd)}`}
+                      {note}
                     </Text>
                   )}
                   <div style={{ marginLeft: "auto" }}>
@@ -198,7 +225,7 @@ export function DutyFreeCalculator() {
               style={{ display: "block", fontVariantNumeric: "tabular-nums" }}
             >
               남은 한도 {fmtUsd(remainingUsd!)}
-              {totalKrw != null && totalLocal > 0
+              {totalKrw != null && items.length > 0
                 ? ` · 지금까지 ≈ ${formatAmount(Math.round(totalKrw), "KRW")}원`
                 : ""}
             </Text>
