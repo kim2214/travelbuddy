@@ -2,6 +2,7 @@ import { Text } from "@toss/tds-mobile";
 import { adaptive } from "@toss/tds-colors";
 import { useState, type ComponentType } from "react";
 
+import { TabActiveContext } from "./context/tabActiveContext";
 import { logEvent } from "./lib/analytics";
 import { getTabFromEntry } from "./lib/entry";
 import { DEFAULT_TAB, type TabKey } from "./lib/tabs";
@@ -47,7 +48,10 @@ function App() {
           (t) =>
             visited.has(t.key) && (
               <div key={t.key} hidden={tab !== t.key}>
-                <t.Screen />
+                {/* 숨겨진 탭의 컴포넌트가 노출 로그를 남기지 않도록 보이는 탭인지 알려줘요. */}
+                <TabActiveContext.Provider value={tab === t.key}>
+                  <t.Screen />
+                </TabActiveContext.Provider>
               </div>
             ),
         )}

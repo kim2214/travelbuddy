@@ -11,6 +11,7 @@ import { parseDateString } from "../lib/departureDate";
 import { weatherInfoFor, type DailyForecast } from "../lib/weather";
 import { WEATHER_CITY_BY_COUNTRY } from "../data/weatherCities";
 import { useCountry } from "../context/CountryContext";
+import { useIsTabActive } from "../context/tabActiveContext";
 import { useWeather } from "../hooks/useWeather";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
@@ -43,11 +44,13 @@ export function WeatherCard() {
   const { weather, loading } = useWeather(country.code);
 
   const hasWeather = weather != null;
+  // 탭이 숨겨져 있는 동안에는 노출로 세지 않아요.
+  const tabActive = useIsTabActive();
   useEffect(() => {
-    if (hasWeather) {
+    if (hasWeather && tabActive) {
       logImpression("weather_view", { country: country.code });
     }
-  }, [hasWeather, country.code]);
+  }, [hasWeather, tabActive, country.code]);
 
   const containerStyle: CSSProperties = {
     margin: "0 24px",

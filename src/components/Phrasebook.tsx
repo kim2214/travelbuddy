@@ -10,6 +10,7 @@ import { logEvent, logImpression } from "../lib/analytics";
 import { copyText } from "../lib/clipboard";
 import { haptic } from "../lib/haptics";
 import { useCountry } from "../context/CountryContext";
+import { useIsTabActive } from "../context/tabActiveContext";
 import { SectionHeader } from "./SectionHeader";
 
 // 카테고리 표시 순서 + 아이콘 (항목이 있는 그룹만 노출)
@@ -26,9 +27,13 @@ export function Phrasebook() {
   const toast = useToast();
   const phrases = country.phrases;
 
+  // 탭이 숨겨져 있는 동안(다른 탭에서 여행지를 바꾼 경우 등)에는 노출로 세지 않아요.
+  const tabActive = useIsTabActive();
   useEffect(() => {
-    logImpression("phrasebook_view", { country: country.code });
-  }, [country.code]);
+    if (tabActive) {
+      logImpression("phrasebook_view", { country: country.code });
+    }
+  }, [tabActive, country.code]);
 
   if (phrases.length === 0) {
     return null;

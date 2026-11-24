@@ -11,6 +11,7 @@ import { logImpression } from "../lib/analytics";
 import { formatAmount, rateDisplayUnitFor } from "../lib/exchangeRate";
 import type { TrendPoint } from "../lib/rateTrend";
 import { useCountry } from "../context/CountryContext";
+import { useIsTabActive } from "../context/tabActiveContext";
 import { useRateTrend } from "../hooks/useRateTrend";
 
 // 평균 대비 이 비율(0.3%) 이상 차이날 때만 낮음/높음 신호를 줘요. 그 미만은 "비슷한 수준"이에요.
@@ -104,11 +105,13 @@ export function RateTrend() {
   const { points, summary, loading } = useRateTrend(country.currency, unitAmount);
 
   const hasSummary = summary != null;
+  // 탭이 숨겨져 있는 동안에는 노출로 세지 않아요.
+  const tabActive = useIsTabActive();
   useEffect(() => {
-    if (hasSummary) {
+    if (hasSummary && tabActive) {
       logImpression("rate_trend_view", { country: country.code });
     }
-  }, [hasSummary, country.code]);
+  }, [hasSummary, tabActive, country.code]);
 
   const containerStyle: CSSProperties = {
     margin: "0 24px",
