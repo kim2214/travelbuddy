@@ -18,3 +18,5 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      # 배포용 번들 생성(ait build)은 제외하고, 웹 빌드가 깨지지 않는지만 확인해요.
+      - run: npx vite build
